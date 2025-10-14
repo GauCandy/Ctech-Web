@@ -252,16 +252,23 @@
               </span>
             </div>
           </div>
-                    <div class="chat-widget__actions">
-            <button class="chat-widget__expand" type="button" data-chat-expand aria-label="M? r?ng khung tr? chuy?n">
+          <div class="chat-widget__actions">
+            <button class="chat-widget__theme-toggle" type="button" data-theme-toggle aria-label="Chuyển chế độ tối/sáng" title="Chuyển chế độ">
+              <span class="material-icons" aria-hidden="true" data-theme-icon>dark_mode</span>
+            </button>
+            <button class="chat-widget__expand" type="button" data-chat-expand aria-label="Mở rộng khung trò chuyện">
               <span class="material-icons" aria-hidden="true" data-expand-icon>open_in_full</span>
             </button>
-            <button class="chat-widget__close" type="button" data-chat-close aria-label="D?ng h?p tr? chuy?n">
+            <button class="chat-widget__close" type="button" data-chat-close aria-label="Đóng hộp trò chuyện">
               <span class="material-icons" aria-hidden="true">close</span>
             </button>
           </div>
         </header>
-        <div class="chat-widget__messages" data-chat-messages role="log" aria-live="polite" aria-relevant="additions"></div>
+        <div class="chat-widget__messages" data-chat-messages role="log" aria-live="polite" aria-relevant="additions">
+          <button class="chat-widget__scroll-bottom" data-scroll-bottom aria-label="Cuộn xuống cuối">
+            <span class="material-icons" aria-hidden="true">keyboard_arrow_down</span>
+          </button>
+        </div>
         <form class="chat-widget__form" data-chat-form novalidate>
           <label class="chat-widget__label" for="chatMessage">Tin nhắn của bạn</label>
           <div class="chat-widget__composer">
@@ -293,6 +300,9 @@
         const closeBtn = root.querySelector('[data-chat-close]');
         const expandBtn = root.querySelector('[data-chat-expand]');
         const expandIcon = expandBtn ? expandBtn.querySelector('[data-expand-icon]') : null;
+        const themeToggleBtn = root.querySelector('[data-theme-toggle]');
+        const themeIcon = themeToggleBtn ? themeToggleBtn.querySelector('[data-theme-icon]') : null;
+        const scrollBottomBtn = root.querySelector('[data-scroll-bottom]');
         const form = root.querySelector('[data-chat-form]');
         const input = root.querySelector('[data-chat-input]');
         const messageList = root.querySelector('[data-chat-messages]');
@@ -300,6 +310,7 @@
         const sendBtn = root.querySelector('[data-chat-send]');
         const history = [];
         const maxHistory = 20;
+        let currentTheme = localStorage.getItem('chatTheme') || 'light';
         const greetingMessage =
           'Xin chào! Tôi là BotChat của CTECH. Tôi có thể hỗ trợ bạn với thông tin tuyển sinh, học phí và các dịch vụ của trường.\nBạn có thể bắt đầu với một số câu hỏi phổ biến dưới đây:';
         const suggestedPrompts = [
@@ -433,6 +444,103 @@
         toggle.setAttribute('aria-expanded', 'false');
         toggle.setAttribute('aria-haspopup', 'dialog');
 
+        // Dark mode functions
+        function applyTheme(theme) {
+          currentTheme = theme;
+          document.documentElement.setAttribute('data-theme', theme);
+          localStorage.setItem('chatTheme', theme);
+          if (themeIcon) {
+            themeIcon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
+          }
+        }
+
+        function toggleTheme() {
+          applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        }
+
+        // Apply saved theme on load
+        applyTheme(currentTheme);
+
+        // Typing indicator functions
+        function showTypingIndicator() {
+          if (!messageList) return;
+          const indicator = document.createElement('div');
+          indicator.className = 'chat-widget__typing-indicator';
+          indicator.setAttribute('data-typing-indicator', '');
+          indicator.innerHTML = `
+            <span class="chat-widget__typing-meta">BotChat</span>
+            <div class="chat-widget__typing-bubble">
+              <div class="chat-widget__typing-dot"></div>
+              <div class="chat-widget__typing-dot"></div>
+              <div class="chat-widget__typing-dot"></div>
+            </div>
+          `;
+          messageList.appendChild(indicator);
+          messageList.scrollTop = messageList.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+          const indicator = messageList?.querySelector('[data-typing-indicator]');
+          if (indicator) {
+            indicator.remove();
+          }
+        }
+
+        // Scroll to bottom functions
+        function updateScrollButton() {
+          if (!messageList || !scrollBottomBtn) return;
+          const isNearBottom = messageList.scrollHeight - messageList.scrollTop - messageList.clientHeight < 100;
+          if (isNearBottom) {
+            scrollBottomBtn.classList.remove('visible');
+          } else {
+            scrollBottomBtn.classList.add('visible');
+          }
+        }
+
+        function scrollToBottom(smooth = true) {
+          if (!messageList) return;
+          messageList.scrollTo({
+            top: messageList.scrollHeight,
+            behavior: smooth ? 'smooth' : 'auto'
+          });
+        }
+
+        // Copy code function
+        function setupCodeCopyButtons(bubble) {
+          const codeBlocks = bubble.querySelectorAll('pre');
+          codeBlocks.forEach((pre) => {
+            if (pre.querySelector('.chat-widget__code-header')) return;
+
+            const code = pre.querySelector('code');
+            if (!code) return;
+
+            const header = document.createElement('div');
+            header.className = 'chat-widget__code-header';
+
+            const copyBtn = document.createElement('button');
+            copyBtn.type = 'button';
+            copyBtn.className = 'chat-widget__copy-btn';
+            copyBtn.innerHTML = '<span class="material-icons">content_copy</span><span>Copy</span>';
+
+            copyBtn.addEventListener('click', async () => {
+              try {
+                await navigator.clipboard.writeText(code.textContent || '');
+                copyBtn.classList.add('copied');
+                copyBtn.innerHTML = '<span class="material-icons">check</span><span>Copied!</span>';
+                setTimeout(() => {
+                  copyBtn.classList.remove('copied');
+                  copyBtn.innerHTML = '<span class="material-icons">content_copy</span><span>Copy</span>';
+                }, 2000);
+              } catch (err) {
+                console.error('Failed to copy:', err);
+              }
+            });
+
+            header.appendChild(copyBtn);
+            pre.insertBefore(header, pre.firstChild);
+          });
+        }
+
         function shouldLockScroll(target, deltaY) {
           if (!target) {
             return false;
@@ -515,7 +623,9 @@
 
           const meta = document.createElement('span');
           meta.className = 'chat-widget__meta';
-          meta.textContent = role === 'user' ? 'Bạn' : 'BotChat';
+          meta.innerHTML = role === 'user'
+            ? '<span class="material-icons" style="font-size: 12px;">person</span> Bạn'
+            : '<span class="material-icons" style="font-size: 12px;">smart_toy</span> BotChat';
 
           const bubble = document.createElement('div');
           bubble.className = 'chat-widget__bubble';
@@ -523,6 +633,11 @@
             bubble.innerHTML = typeof content === 'string' ? content : String(content || '');
           } else {
             bubble.innerHTML = renderRichContent(content);
+          }
+
+          // Setup copy buttons for code blocks
+          if (role === 'assistant') {
+            setupCodeCopyButtons(bubble);
           }
 
           const timestamp = document.createElement('time');
@@ -554,7 +669,8 @@
           }
           wrapper.appendChild(timestamp);
           messageList.appendChild(wrapper);
-          messageList.scrollTop = messageList.scrollHeight;
+          scrollToBottom();
+          updateScrollButton();
         }
 
         function initializeChatIfNeeded() {
@@ -650,6 +766,9 @@
             sendBtn.disabled = true;
           }
 
+          // Show typing indicator
+          showTypingIndicator();
+
           try {
             const response = await fetch('/api/chatbot/chat', {
               method: 'POST',
@@ -671,6 +790,9 @@
               payload = fallbackText ? { reply: fallbackText } : null;
             }
 
+            // Hide typing indicator
+            hideTypingIndicator();
+
             if (!response.ok) {
               throw { status: response.status, payload };
             }
@@ -686,6 +808,9 @@
               appendMessage('assistant', 'BotChat chưa có phản hồi. Vui lòng thử lại sau.');
             }
           } catch (error) {
+            // Hide typing indicator on error
+            hideTypingIndicator();
+
             let detail = '';
             if (error && error.payload && typeof error.payload === 'object' && error.payload.error) {
               detail = ': ' + String(error.payload.error);
@@ -703,6 +828,24 @@
         toggle.addEventListener('click', () => {
           toggleChat();
         });
+
+        if (themeToggleBtn) {
+          themeToggleBtn.addEventListener('click', () => {
+            toggleTheme();
+          });
+        }
+
+        if (scrollBottomBtn) {
+          scrollBottomBtn.addEventListener('click', () => {
+            scrollToBottom(true);
+          });
+        }
+
+        if (messageList) {
+          messageList.addEventListener('scroll', () => {
+            updateScrollButton();
+          });
+        }
 
         if (expandBtn) {
           expandBtn.addEventListener('click', () => {
