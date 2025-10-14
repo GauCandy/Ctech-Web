@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/loader.css" />
     <link rel="stylesheet" href="/css/services.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="/js/themeManager.js"></script>
   </head>
   <body>
     <div id="app-loader" class="loader-backdrop" aria-hidden="true">
@@ -35,6 +37,7 @@
             <a href="/services" aria-current="page">Dịch vụ</a>
             <a href="/home#tin-tuc">Tin tức</a>
           </nav>
+          <div id="theme-toggle-container"></div>
           <div class="user-indicator" data-user-indicator>
             <a class="user-link" href="/login">Đăng nhập</a>
           </div>
@@ -900,6 +903,19 @@
         fetchServices();
         if (state.session && state.session.token) {
           syncSessionWithServer();
+        }
+      })();
+    </script>
+
+    <script>
+      // Initialize theme toggle button
+      (() => {
+        const container = document.getElementById('theme-toggle-container');
+        if (container && window.ThemeManager) {
+          window.ThemeManager.createToggleButton(container, {
+            showLabel: false,
+            showDropdown: true
+          });
         }
       })();
     </script>

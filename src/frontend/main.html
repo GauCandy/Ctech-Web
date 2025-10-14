@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="/css/loader.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="/js/themeManager.js"></script>
   </head>
   <body>
     <div id="app-loader" class="loader-backdrop" aria-hidden="true">
@@ -36,6 +37,7 @@
             <a href="/services">Dịch vụ</a>
             <a href="#tin-tuc">Tin tức</a>
           </nav>
+          <div id="theme-toggle-container"></div>
           <div class="user-indicator" data-user-indicator>
             <a class="user-link" href="/login">Đăng nhập</a>
           </div>
@@ -310,7 +312,6 @@
         const sendBtn = root.querySelector('[data-chat-send]');
         const history = [];
         const maxHistory = 20;
-        let currentTheme = localStorage.getItem('chatTheme') || 'light';
         const greetingMessage =
           'Xin chào! Tôi là BotChat của CTECH. Tôi có thể hỗ trợ bạn với thông tin tuyển sinh, học phí và các dịch vụ của trường.\nBạn có thể bắt đầu với một số câu hỏi phổ biến dưới đây:';
         const suggestedPrompts = [
@@ -444,22 +445,22 @@
         toggle.setAttribute('aria-expanded', 'false');
         toggle.setAttribute('aria-haspopup', 'dialog');
 
-        // Dark mode functions
-        function applyTheme(theme) {
-          currentTheme = theme;
-          document.documentElement.setAttribute('data-theme', theme);
-          localStorage.setItem('chatTheme', theme);
-          if (themeIcon) {
-            themeIcon.textContent = theme === 'dark' ? 'light_mode' : 'dark_mode';
-          }
+        // Sync with global theme manager
+        function updateThemeIcon() {
+          if (!themeIcon || !window.ThemeManager) return;
+          const currentThemeInfo = window.ThemeManager.getThemeInfo();
+          themeIcon.textContent = currentThemeInfo.icon;
         }
 
-        function toggleTheme() {
-          applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
-        }
+        // Initialize theme icon
+        updateThemeIcon();
 
-        // Apply saved theme on load
-        applyTheme(currentTheme);
+        // Listen for theme changes from global theme manager
+        if (window.ThemeManager) {
+          window.ThemeManager.subscribe((theme, themeInfo) => {
+            updateThemeIcon();
+          });
+        }
 
         // Typing indicator functions
         function showTypingIndicator() {
@@ -829,9 +830,9 @@
           toggleChat();
         });
 
-        if (themeToggleBtn) {
+        if (themeToggleBtn && window.ThemeManager) {
           themeToggleBtn.addEventListener('click', () => {
-            toggleTheme();
+            window.ThemeManager.cycleTheme();
           });
         }
 
@@ -963,6 +964,19 @@
 
           window.addEventListener('load', hideLoader, { once: true });
           setTimeout(hideLoader, 2500);
+        }
+      })();
+    </script>
+
+    <script>
+      // Initialize theme toggle button
+      (() => {
+        const container = document.getElementById('theme-toggle-container');
+        if (container && window.ThemeManager) {
+          window.ThemeManager.createToggleButton(container, {
+            showLabel: false,
+            showDropdown: true
+          });
         }
       })();
     </script>
