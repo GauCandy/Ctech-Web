@@ -10,6 +10,30 @@
   --services-warning: #f59e0b;
 }
 
+[data-theme="dark"] {
+  --services-hero-bg: linear-gradient(160deg, rgba(22, 163, 74, 0.08), rgba(14, 165, 233, 0.06));
+  --services-panel-bg: rgba(30, 41, 59, 0.96);
+  --services-border: rgba(148, 163, 184, 0.1);
+  --services-border-strong: rgba(255, 255, 255, 0.08);
+  --services-shadow: 0 18px 38px rgba(0, 0, 0, 0.25);
+  --services-success: #34d399;
+  --services-muted: rgba(148, 163, 184, 0.8);
+  --services-danger: #fb7185;
+  --services-warning: #fbbf24;
+}
+
+[data-theme="presentation"] {
+  --services-hero-bg: linear-gradient(160deg, rgba(22, 163, 74, 0.15), rgba(14, 165, 233, 0.12));
+  --services-panel-bg: rgba(255, 255, 255, 0.98);
+  --services-border: rgba(15, 23, 42, 0.15);
+  --services-border-strong: rgba(15, 23, 42, 0.12);
+  --services-shadow: 0 18px 38px rgba(15, 23, 42, 0.12);
+  --services-success: #059669;
+  --services-muted: rgba(51, 65, 85, 0.9);
+  --services-danger: #dc2626;
+  --services-warning: #d97706;
+}
+
 .services-main {
   flex: 1;
   display: flex;
@@ -83,7 +107,7 @@
   gap: clamp(16px, 3vw, 24px);
   padding: clamp(24px, 4vw, 32px);
   border-bottom: 1px solid var(--services-border-strong);
-  background: rgba(248, 250, 252, 0.72);
+  background: var(--services-panel-bg);
 }
 
 .services-controls__row {
@@ -116,7 +140,7 @@
   padding: 12px 14px;
   border-radius: 12px;
   border: 1px solid rgba(148, 163, 184, 0.36);
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--services-panel-bg);
   color: inherit;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -172,7 +196,7 @@
 }
 
 .services-button.secondary {
-  background: rgba(14, 165, 233, 0.12);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
   color: var(--accent);
   border: 1px solid rgba(14, 165, 233, 0.24);
 }
@@ -199,7 +223,7 @@
   padding: 18px;
   border-radius: 16px;
   border: 1px dashed rgba(148, 163, 184, 0.36);
-  background: rgba(248, 250, 252, 0.8);
+  background: color-mix(in srgb, var(--services-panel-bg) 50%, transparent);
   color: var(--services-muted);
   font-size: 0.95rem;
   text-align: center;
@@ -213,7 +237,7 @@
   padding: 18px;
   border-radius: 18px;
   border: 1px solid rgba(148, 163, 184, 0.22);
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--services-panel-bg);
   text-align: left;
   cursor: pointer;
   font: inherit;
@@ -225,8 +249,8 @@
 .service-card:hover,
 .service-card:focus-visible {
   outline: none;
-  border-color: rgba(14, 165, 233, 0.4);
-  box-shadow: 0 16px 30px rgba(14, 165, 233, 0.12);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  box-shadow: 0 16px 30px color-mix(in srgb, var(--accent) 12%, transparent);
   transform: translateY(-1px);
 }
 
@@ -373,28 +397,25 @@
   padding: 14px 18px;
   border-radius: 14px;
   border: 1px solid rgba(248, 113, 113, 0.35);
-  background: rgba(248, 113, 113, 0.12);
+  background: color-mix(in srgb, var(--services-danger) 8%, transparent);
   color: var(--services-danger);
   font-size: 0.95rem;
   line-height: 1.5;
 }
 
 .service-alert.info {
-  border-color: rgba(14, 165, 233, 0.3);
-  background: rgba(14, 165, 233, 0.1);
-  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .service-alert.success {
-  border-color: rgba(22, 163, 74, 0.3);
-  background: rgba(22, 163, 74, 0.12);
-  color: var(--services-success);
+  background: color-mix(in srgb, var(--services-success) 8%, transparent);
+  border-color: color-mix(in srgb, var(--services-success) 20%, transparent);
 }
 
 .service-alert.warning {
-  border-color: rgba(249, 115, 22, 0.28);
-  background: rgba(249, 115, 22, 0.12);
-  color: var(--services-warning);
+  background: color-mix(in srgb, var(--services-warning) 8%, transparent);
+  border-color: color-mix(in srgb, var(--services-warning) 20%, transparent);
 }
 
 .service-purchase {
@@ -404,7 +425,8 @@
   padding: 18px;
   border-radius: 18px;
   border: 1px dashed rgba(148, 163, 184, 0.36);
-  background: rgba(248, 250, 252, 0.72);
+  background: color-mix(in srgb, var(--services-panel-bg) 50%, transparent);
+  border-color: var(--services-border);
 }
 
 .service-purchase textarea {
