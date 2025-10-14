@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập | CTECH</title>
+    <link rel="icon" type="image/webp" href="/img/logo.webp" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/loader.css" />
+    <link rel="stylesheet" href="/css/login.css" />
+  </head>
+  <body>
+    <div id="app-loader" class="loader-backdrop" aria-hidden="true">
+      <div class="loader-logo">
+        <img src="/img/logo.webp" alt="Logo CTECH" />
+      </div>
+    </div>
+
+    <div class="auth-shell">
+      <aside class="auth-hero" aria-hidden="true">
+        <img class="auth-hero__image" src="/img/background.webp" alt="" data-auth-visual-img />
+        <div class="auth-hero__overlay"></div>
+        <div class="auth-hero__content">
+          <span class="auth-hero__badge">CTECH Portal</span>
+          <h2 class="auth-hero__title">Kết nối học tập và dịch vụ trong một nơi duy nhất</h2>
+          <p class="auth-hero__intro">
+            Truy cập tài liệu, theo dõi lớp, liên lạc giảng viên và sử dụng dịch vụ sinh viên với chỉ một tài khoản.
+          </p>
+          <section class="auth-hero__hints">
+            <div>
+              <strong>Cần hỗ trợ kỹ thuật?</strong>
+              <span>
+                Gửi email về <a class="auth-hero__link" href="mailto:contact@ctech.edu.vn">contact@ctech.edu.vn</a> hoặc gọi
+                <a class="auth-hero__link" href="tel:18006770">1800 6770</a>.
+              </span>
+            </div>
+            <div>
+              <strong>An toàn tài khoản</strong>
+              <span>Chỉ đăng nhập từ thiết bị tin cậy và không chia sẻ thông tin đăng nhập của bạn.</span>
+            </div>
+          </section>
+        </div>
+      </aside>
+
+      <main class="auth-content">
+        <header class="auth-header">
+          <div class="auth-brand">
+            <img src="/img/logo.webp" alt="Logo CTECH" />
+            <div class="auth-brand__text">
+              <h1 data-auth-title>Chào mừng trở lại</h1>
+              <p class="auth-header__subtitle" data-auth-subtitle>
+                Đăng nhập để tiếp tục hành trình học tập của bạn.
+              </p>
+            </div>
+          </div>
+        </header>
+
+        <div class="auth-toggle" role="tablist">
+          <span class="auth-toggle__indicator" aria-hidden="true"></span>
+          <button type="button" class="auth-toggle__tab" data-auth-tab="login" aria-selected="true">Đăng nhập</button>
+          <button type="button" class="auth-toggle__tab" data-auth-tab="register" aria-selected="false">
+            Đăng ký
+          </button>
+        </div>
+
+        <form class="auth-form" data-login-form novalidate role="tabpanel" aria-hidden="false">
+          <div class="auth-field">
+            <label class="auth-field__label" for="login-username">Mã người dùng</label>
+            <input
+              class="auth-field__input"
+              id="login-username"
+              name="username"
+              type="text"
+              placeholder="Email / SĐT / ID người dùng"
+              autocomplete="username"
+              required
+            />
+          </div>
+          <div class="auth-field">
+            <label class="auth-field__label" for="login-password">Mật khẩu</label>
+            <div class="password-field" data-password-field>
+              <input
+                class="auth-field__input"
+                id="login-password"
+                name="password"
+                type="password"
+                placeholder="Nhập mật khẩu"
+                autocomplete="current-password"
+                required
+                maxlength="32"
+                data-password-input
+              />
+              <span class="password-field__animation" aria-hidden="true"></span>
+              <button
+                type="button"
+                class="password-field__toggle"
+                data-password-toggle="login-password"
+                aria-label="Hiện mật khẩu" aria-pressed="false"
+              >
+                <svg class="password-field__icon password-field__icon--show" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                  <path
+                    d="M2.25 12c1.5-4.5 5.25-7.5 9.75-7.5s8.25 3 9.75 7.5c-1.5 4.5-5.25 7.5-9.75 7.5S3.75 16.5 2.25 12Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M9.75 12a2.25 2.25 0 1 0 4.5 0 2.25 2.25 0 0 0-4.5 0Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <svg class="password-field__icon password-field__icon--hide" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                  <path
+                    d="M2.25 12c1.5-4.5 5.25-7.5 9.75-7.5s8.25 3 9.75 7.5c-1.5 4.5-5.25 7.5-9.75 7.5S3.75 16.5 2.25 12Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M9.75 12a2.25 2.25 0 1 0 4.5 0 2.25 2.25 0 0 0-4.5 0Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M4.5 4.5l15 15"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <span class="sr-only" data-password-toggle-label>Hiện mật khẩu</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="auth-form__meta">
+            <label class="auth-remember">
+              <input type="checkbox" name="remember" />
+              <span>Ghi nhớ đăng nhập trên thiết bị này</span>
+            </label>
+            <a class="auth-link" href="mailto:contact@ctech.edu.vn">Quên mật khẩu?</a>
+          </div>
+
+          <button class="auth-button" type="submit" data-login-submit>Đăng nhập</button>
+          <p class="auth-status" data-login-status aria-live="polite"></p>
+        </form>
+
+        <form class="auth-form" data-register-form novalidate role="tabpanel" aria-hidden="true" hidden>          <div class="auth-field">
+
+              <label class="auth-field__label" for="register-fullname">Họ và tên</label>
+              <input
+                class="auth-field__input"
+                id="register-fullname"
+                name="fullName"
+                type="text"
+                placeholder="Tên của bạn"
+                required
+              />
+            
+          </div>
+          <div class="auth-field auth-field--split">
+            <div>
+              <label class="auth-field__label" for="register-phone">Số điện thoại</label>
+              <input
+                class="auth-field__input"
+                id="register-phone"
+                name="phoneNumber"
+                type="tel"
+                placeholder="+84"
+                required
+              />
+            </div>
+            <div>
+              <label class="auth-field__label" for="register-email">Email</label>
+              <input
+                class="auth-field__input"
+                id="register-email"
+                name="email"
+                type="email"
+                placeholder="email"
+                autocomplete="email"
+                required
+              />
+            </div>
+          </div>
+
+                    <div class="auth-field">
+            <label class="auth-field__label" for="register-password">Mật khẩu</label>
+            <div class="password-field" data-password-field>
+              <input
+              class="auth-field__input"
+              id="register-password"
+              name="password"
+              type="password"
+              placeholder="Tối thiểu 8 ký tự"
+              autocomplete="new-password"
+              minlength="8"
+              maxlength="32"
+              required
+              data-password-input
+            />
+              <span class="password-field__animation" aria-hidden="true"></span>
+              <button
+                type="button"
+                class="password-field__toggle"
+                data-password-toggle="register-password"
+                aria-label="Hiện mật khẩu" aria-pressed="false"
+              >
+              <svg class="password-field__icon password-field__icon--show" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path
+                  d="M2.25 12c1.5-4.5 5.25-7.5 9.75-7.5s8.25 3 9.75 7.5c-1.5 4.5-5.25 7.5-9.75 7.5S3.75 16.5 2.25 12Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9.75 12a2.25 2.25 0 1 0 4.5 0 2.25 2.25 0 0 0-4.5 0Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <svg class="password-field__icon password-field__icon--hide" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path
+                  d="M2.25 12c1.5-4.5 5.25-7.5 9.75-7.5s8.25 3 9.75 7.5c-1.5 4.5-5.25 7.5-9.75 7.5S3.75 16.5 2.25 12Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9.75 12a2.25 2.25 0 1 0 4.5 0 2.25 2.25 0 0 0-4.5 0Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M4.5 4.5l15 15"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span class="sr-only" data-password-toggle-label>Hiện mật khẩu</span>
+            </button>
+            </div>
+          </div>
+          <div class="auth-field">
+            <label class="auth-field__label" for="register-confirm">Nhập lại mật khẩu</label>
+            <div class="password-field" data-password-field>
+              <input
+              class="auth-field__input"
+              id="register-confirm"
+              name="confirmPassword"
+              type="password"
+              placeholder="Nhập lại mật khẩu"
+              autocomplete="new-password"
+              minlength="8"
+              maxlength="32"
+              required
+              data-password-input
+            />
+              <span class="password-field__animation" aria-hidden="true"></span>
+              <button
+                type="button"
+                class="password-field__toggle"
+                data-password-toggle="register-confirm"
+                aria-label="Hiện mật khẩu" aria-pressed="false"
+              >
+              <svg class="password-field__icon password-field__icon--show" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path
+                  d="M2.25 12c1.5-4.5 5.25-7.5 9.75-7.5s8.25 3 9.75 7.5c-1.5 4.5-5.25 7.5-9.75 7.5S3.75 16.5 2.25 12Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9.75 12a2.25 2.25 0 1 0 4.5 0 2.25 2.25 0 0 0-4.5 0Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <svg class="password-field__icon password-field__icon--hide" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                <path
+                  d="M2.25 12c1.5-4.5 5.25-7.5 9.75-7.5s8.25 3 9.75 7.5c-1.5 4.5-5.25 7.5-9.75 7.5S3.75 16.5 2.25 12Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M9.75 12a2.25 2.25 0 1 0 4.5 0 2.25 2.25 0 0 0-4.5 0Z"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M4.5 4.5l15 15"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <span class="sr-only" data-password-toggle-label>Hiện mật khẩu</span>
+            </button>
+            </div>
+          </div>
+
+          <div class="auth-form__meta auth-form__meta--stack">
+            <span>Bằng cách đăng ký, bạn đồng ý với <a class="auth-link" href="#!">quy chế sử dụng</a>.</span>
+          </div>
+
+          <button class="auth-button" type="submit" data-register-submit>Đăng ký tài khoản</button>
+          <p class="auth-status" data-register-status aria-live="polite"></p>
+        </form>
+
+        <footer class="auth-footer">
+          <a class="auth-link" href="/home">&#8592; Quay lại trang chủ</a>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      (() => {
+        const loader = document.getElementById('app-loader');
+        if (loader) {
+          const hideLoader = () => {
+            requestAnimationFrame(() => {
+              loader.dataset.hidden = 'true';
+              setTimeout(() => {
+                loader.remove();
+              }, 600);
+            });
+          };
+
+          window.addEventListener('load', hideLoader, { once: true });
+          setTimeout(hideLoader, 2500);
+        }
+      })();
+    </script>
+
+    <script>
+      (() => {
+        const sessionKey = 'ctechSession';
+        const displayNameKey = 'ctechDisplayName';
+
+        function loadSession() {
+          try {
+            return JSON.parse(localStorage.getItem(sessionKey) || 'null');
+          } catch (error) {
+            console.warn('Không thể đọc session:', error);
+            return null;
+          }
+        }
+
+        const existingSession = loadSession();
+        if (existingSession && existingSession.token) {
+          window.location.href = '/home';
+          return;
+        }
+
+        const layout = document.querySelector('.auth-shell');
+        const loginForm = document.querySelector('[data-login-form]');
+        const visualImg = document.querySelector('[data-auth-visual-img]');
+        const title = document.querySelector('[data-auth-title]');
+        const subtitle = document.querySelector('[data-auth-subtitle]');
+        const loginStatus = loginForm.querySelector('[data-login-status]');
+        const loginSubmit = loginForm.querySelector('[data-login-submit]');
+        const loginUsername = loginForm.querySelector('#login-username');
+        const loginPassword = loginForm.querySelector('#login-password');
+
+        const registerForm = document.querySelector('[data-register-form]');
+        const registerStatus = registerForm.querySelector('[data-register-status]');
+        const registerSubmit = registerForm.querySelector('[data-register-submit]');
+
+        const tabs = document.querySelectorAll('[data-auth-tab]');
+        const forms = {
+          login: loginForm,
+          register: registerForm,
+        };
+        const formList = [loginForm, registerForm].filter(Boolean);
+
+        const MAX_PASSWORD_LENGTH = 32;
+
+        const tabMessages = {
+          login: {
+            title: 'Chào mừng trở lại',
+            subtitle: 'Đăng nhập để tiếp tục hành trình học tập của bạn.',
+          },
+          register: {
+            title: 'Tạo tài khoản mới',
+            subtitle: 'Chỉ mất vài phút để truy cập đầy đủ các dịch vụ CTECH.',
+          },
+        };
+        const syncFormHeights = () => {
+          if (!formList.length) {
+            return;
+          }
+
+          let maxHeight = 0;
+          formList.forEach((form) => {
+            if (!form) {
+              return;
+            }
+            const previousMinHeight = form.style.minHeight;
+            form.style.minHeight = '';
+            const wasHidden = form.hasAttribute('hidden');
+            const previousAriaHidden = form.getAttribute('aria-hidden');
+            const prevPosition = form.style.position;
+            const prevVisibility = form.style.visibility;
+            const prevPointerEvents = form.style.pointerEvents;
+
+            if (wasHidden) {
+              form.removeAttribute('hidden');
+              form.style.position = 'absolute';
+              form.style.visibility = 'hidden';
+              form.style.pointerEvents = 'none';
+              if (previousAriaHidden !== null) {
+                form.setAttribute('aria-hidden', 'true');
+              }
+            }
+
+            maxHeight = Math.max(maxHeight, form.scrollHeight);
+
+            if (wasHidden) {
+              form.setAttribute('hidden', '');
+              if (previousAriaHidden !== null) {
+                form.setAttribute('aria-hidden', previousAriaHidden);
+              } else {
+                form.removeAttribute('aria-hidden');
+              }
+              form.style.position = prevPosition;
+              form.style.visibility = prevVisibility;
+              form.style.pointerEvents = prevPointerEvents;
+            }
+
+            form.style.minHeight = previousMinHeight;
+          });
+
+          const targetHeight = maxHeight ? `${Math.ceil(maxHeight)}px` : '';
+          formList.forEach((form) => {
+            if (form) {
+              form.style.minHeight = targetHeight;
+            }
+          });
+        };
+
+
+        const passwordToggles = document.querySelectorAll('[data-password-toggle]');
+        const scrambleSequence = Array.from({ length: 95 }, (_, index) => String.fromCharCode(32 + index)).join('');
+        const maskChar = '•';
+        const frameInterval = 50;
+        const scrambleTickInterval = 10;
+
+        passwordToggles.forEach((toggle) => {
+          const targetId = toggle.dataset.passwordToggle;
+          const field = toggle.closest('[data-password-field]');
+          const input = document.getElementById(targetId);
+          const animationEl = field ? field.querySelector('.password-field__animation') : null;
+
+          if (!input || !field || !animationEl) {
+            return;
+          }
+
+          const updateToggleLabel = () => {
+            const showing = input.type === 'text';
+            const label = toggle.querySelector('[data-password-toggle-label]');
+            if (label) {
+              label.textContent = showing ? 'Ẩn mật khẩu' : 'Hiện mật khẩu';
+            }
+            toggle.setAttribute('aria-label', showing ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+            toggle.setAttribute('aria-pressed', showing ? 'true' : 'false');
+            toggle.classList.toggle('password-field__toggle--visible', showing);
+          };
+
+          const finalizeAnimation = (reveal) => {
+            field.classList.remove('is-animating');
+            delete field.dataset.animating;
+            animationEl.textContent = '';
+            toggle.disabled = false;
+            input.type = reveal ? 'text' : 'password';
+            updateToggleLabel();
+            input.focus({ preventScroll: true });
+            const cursor = input.value.length;
+            try {
+              input.setSelectionRange(cursor, cursor);
+            } catch (error) {
+              /* Trình duyệt không hỗ trợ setSelectionRange */
+            }
+          };
+
+          const runPasswordAnimation = (reveal) => {
+            const value = input.value || '';
+            const length = value.length;
+            let scrambleIndex = 0;
+
+            const nextScrambleChar = () => {
+              const char = scrambleSequence[scrambleIndex % scrambleSequence.length];
+              scrambleIndex += 1;
+              return char;
+            };
+
+            const buildScrambleChunk = (count) =>
+              Array.from({ length: count }, () => nextScrambleChar()).join('');
+
+            if (!length) {
+              input.type = reveal ? 'text' : 'password';
+              updateToggleLabel();
+              input.focus({ preventScroll: true });
+              return;
+            }
+
+            if (field.dataset.animating === 'true') {
+              return;
+            }
+
+            field.dataset.animating = 'true';
+            field.classList.add('is-animating');
+            toggle.disabled = true;
+
+            const scrambleWindow = Math.max(1, Math.min(8, Math.ceil(length / 4)));
+            const ticksPerCharacter = Math.max(1, Math.round(frameInterval / scrambleTickInterval));
+
+            const renderFrame = (resolvedCount) => {
+              const clampedResolved = Math.min(resolvedCount, length);
+              const scrambleCount = Math.min(scrambleWindow, Math.max(length - clampedResolved, 0));
+              const resolvedPart = reveal
+                ? value.slice(0, clampedResolved)
+                : maskChar.repeat(clampedResolved);
+              const scramblePart = buildScrambleChunk(scrambleCount);
+              const trailingCount = length - clampedResolved - scrambleCount;
+              const trailingPart = reveal
+                ? maskChar.repeat(Math.max(trailingCount, 0))
+                : value.slice(clampedResolved + scrambleCount, length);
+              return resolvedPart + scramblePart + trailingPart;
+            };
+
+            animationEl.textContent = renderFrame(0);
+
+            let progress = 0;
+            let tickCounter = 0;
+
+            const interval = setInterval(() => {
+              tickCounter += 1;
+
+              if (tickCounter % ticksPerCharacter === 0 && progress < length) {
+                progress = Math.min(progress + 1, length);
+              }
+
+              animationEl.textContent = renderFrame(progress);
+
+              if (progress >= length) {
+                clearInterval(interval);
+                finalizeAnimation(reveal);
+              }
+            }, scrambleTickInterval);
+          };
+
+          toggle.addEventListener('click', () => {
+            const reveal = input.type === 'password';
+            runPasswordAnimation(reveal);
+          });
+
+          toggle.addEventListener('mousedown', (event) => {
+            event.preventDefault();
+          });
+
+          input.addEventListener('input', () => {
+            if (field.dataset.animating === 'true') {
+              return;
+            }
+            animationEl.textContent = '';
+          });
+
+          updateToggleLabel();
+        });
+
+        syncFormHeights();
+
+        const handleResize = (() => {
+          let frame = null;
+
+          return () => {
+            if (frame !== null) {
+              cancelAnimationFrame(frame);
+            }
+
+            frame = requestAnimationFrame(() => {
+              frame = null;
+              syncFormHeights();
+            });
+          };
+        })();
+
+        window.addEventListener('resize', handleResize);
+
+        function setStatus(element, type, message) {
+          if (!element) {
+            return;
+          }
+          element.textContent = message || '';
+          if (!message) {
+            delete element.dataset.status;
+          } else if (type) {
+            element.dataset.status = type;
+          } else {
+            delete element.dataset.status;
+          }
+        }
+
+        function activateTab(target) {
+          Object.entries(forms).forEach(([name, form]) => {
+            const isActive = name === target;
+            form.hidden = !isActive;
+            form.setAttribute('aria-hidden', isActive ? 'false' : 'true');
+          });
+
+          tabs.forEach((tab) => {
+            const isActive = tab.dataset.authTab === target;
+            tab.setAttribute('aria-selected', String(isActive));
+            tab.classList.toggle('is-active', isActive);
+          });
+
+          if (layout) {
+            layout.classList.toggle('is-register', target === 'register');
+          }
+
+          if (visualImg) {
+            visualImg.src = target === 'register' ? '/img/background-2.webp' : '/img/background.webp';
+          }
+
+          const message = tabMessages[target];
+          if (message && title && subtitle) {
+            title.textContent = message.title;
+            subtitle.textContent = message.subtitle;
+          }
+
+          syncFormHeights();
+        }
+
+        tabs.forEach((tab) => {
+          tab.addEventListener('click', () => {
+            activateTab(tab.dataset.authTab);
+          });
+        });
+
+        activateTab('login');
+
+        async function attemptLogin({ username, password, statusElement, submitButton, displayName }) {
+          setStatus(statusElement, '', '');
+          if (submitButton) {
+            submitButton.disabled = true;
+          }
+
+          try {
+            const response = await fetch('/api/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username, password }),
+            });
+
+            if (!response.ok) {
+              const errorPayload = await response.json().catch(() => ({}));
+              const message = errorPayload && errorPayload.error ? errorPayload.error : `Lỗi ${response.status}`;
+              throw new Error(message);
+            }
+
+            const payload = await response.json();
+            try {
+              localStorage.setItem(sessionKey, JSON.stringify(payload));
+              const fallbackName = payload.user && payload.user.userId ? payload.user.userId : username;
+              localStorage.setItem(displayNameKey, displayName || fallbackName);
+            } catch (storageError) {
+              console.warn('Không thể lưu session vào localStorage:', storageError);
+            }
+
+            setStatus(statusElement, 'success', 'Đăng nhập thành công, đang chuyển hướng...');
+            window.location.href = '/home';
+          } catch (error) {
+            console.error('Login failed:', error);
+            setStatus(statusElement, 'error', error.message || 'Không thể đăng nhập. Vui lòng thử lại.');
+            throw error;
+          } finally {
+            if (submitButton) {
+              submitButton.disabled = false;
+            }
+          }
+        }
+
+        loginForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const username = loginUsername ? loginUsername.value.trim() : '';
+          const password = loginPassword ? loginPassword.value : '';
+
+          if (!username || !password) {
+            setStatus(loginStatus, 'error', 'Vui lòng nhập đầy đủ tài khoản và mật khẩu.');
+            (username ? loginPassword : loginUsername).focus();
+            return;
+          }
+
+          if (password.length > MAX_PASSWORD_LENGTH) {
+            setStatus(loginStatus, 'error', `Mật khẩu tối đa ${MAX_PASSWORD_LENGTH} ký tự.`);
+            loginPassword.focus();
+            return;
+          }
+
+          try {
+            await attemptLogin({ username, password, statusElement: loginStatus, submitButton: loginSubmit });
+          } catch (error) {
+            // lỗi đã được hiển thị trong attemptLogin
+          }
+        });
+
+        registerForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+
+          const fullName = registerForm.querySelector('#register-fullname').value.trim();
+          const email = registerForm.querySelector('#register-email').value.trim();
+          const phoneNumber = registerForm.querySelector('#register-phone').value.trim();
+          const password = registerForm.querySelector('#register-password').value;
+          const confirmPassword = registerForm.querySelector('#register-confirm').value;
+
+          if (!fullName || !email || !phoneNumber || !password || !confirmPassword) {
+            setStatus(registerStatus, 'error', 'Vui lòng nhập đầy đủ thông tin đăng ký.');
+            return;
+          }
+
+          if (password.length > MAX_PASSWORD_LENGTH || confirmPassword.length > MAX_PASSWORD_LENGTH) {
+            setStatus(registerStatus, 'error', `Mật khẩu tối đa ${MAX_PASSWORD_LENGTH} ký tự.`);
+            const target =
+              password.length > MAX_PASSWORD_LENGTH
+                ? registerForm.querySelector('#register-password')
+                : registerForm.querySelector('#register-confirm');
+            if (target) {
+              target.focus();
+            }
+            return;
+          }
+
+          if (password !== confirmPassword) {
+            setStatus(registerStatus, 'error', 'Mật khẩu nhập lại không khớp.');
+            registerForm.querySelector('#register-confirm').focus();
+            return;
+          }
+
+          setStatus(registerStatus, '', '');
+          registerSubmit.disabled = true;
+
+          try {
+            const response = await fetch('/api/auth/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ fullName, email, phoneNumber, password }),
+            });
+
+            if (!response.ok) {
+              const errorPayload = await response.json().catch(() => ({}));
+              const message = errorPayload && errorPayload.error ? errorPayload.error : `Lỗi ${response.status}`;
+              throw new Error(message);
+            }
+
+            const registerResult = await response.json();
+            const userId = registerResult && registerResult.user ? registerResult.user.userId : null;
+            if (!userId) {
+              throw new Error('Không thể tự đăng nhập sau khi đăng ký. Vui lòng thử đăng nhập thủ công.');
+            }
+
+            setStatus(registerStatus, 'success', 'Đăng ký thành công, đang đăng nhập...');
+            await attemptLogin({
+              username: userId,
+              password,
+              statusElement: registerStatus,
+              submitButton: registerSubmit,
+              displayName: fullName,
+            });
+          } catch (error) {
+            setStatus(registerStatus, 'error', error.message || 'Không thể đăng ký. Vui lòng thử lại.');
+          } finally {
+            registerSubmit.disabled = false;
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

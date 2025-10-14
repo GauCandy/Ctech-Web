@@ -1,0 +1,48 @@
+.loader-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1200;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.loader-backdrop[data-hidden='true'] {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loader-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  animation: loaderPulse 1.8s ease-in-out infinite;
+}
+
+.loader-logo img {
+  width: 92px;
+  height: 92px;
+  object-fit: contain;
+}
+
+@keyframes loaderPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.75;
+    transform: scale(0.94);
+  }
+}

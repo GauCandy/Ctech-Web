@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dịch vụ trực tuyến | CTECH</title>
+    <link rel="icon" type="image/webp" href="/img/logo.webp" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/loader.css" />
+    <link rel="stylesheet" href="/css/services.css" />
+  </head>
+  <body>
+    <div id="app-loader" class="loader-backdrop" aria-hidden="true">
+      <div class="loader-logo">
+        <img src="/img/logo.webp" alt="Logo CTECH" />
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="header-inner container">
+        <a class="brand" href="/home" aria-label="Trang chủ CTECH">
+          <img src="/img/logo.webp" alt="Logo CTECH" />
+        </a>
+        <div class="header-actions">
+          <nav class="nav-links" aria-label="Điều hướng chính">
+            <a href="/home#gioi-thieu">Giới thiệu</a>
+            <a href="/home#chuong-trinh">Chương trình</a>
+            <a href="/home#doi-song">Đời sống</a>
+            <a href="/services" aria-current="page">Dịch vụ</a>
+            <a href="/home#tin-tuc">Tin tức</a>
+          </nav>
+          <div class="user-indicator" data-user-indicator>
+            <a class="user-link" href="/login">Đăng nhập</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="services-main">
+      <section class="services-hero">
+        <div class="container services-hero__content">
+          <h1 class="services-hero__title">Truy cập kho dịch vụ số của CTECH</h1>
+          <p class="services-hero__subtitle">
+            Đồng bộ dữ liệu trực tiếp từ API dịch vụ để tra cứu, theo dõi và nhận mã thanh toán một cách minh bạch.
+          </p>
+          <div class="services-hero__meta">
+            <span>Tìm kiếm theo mã, tên hoặc mô tả dịch vụ</span>
+            <span>Lọc trạng thái đang mở hoặc tạm dừng</span>
+            <span>Nhận mã thanh toán ngay sau khi đăng nhập</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="container services-shell">
+        <div class="services-panel">
+          <form class="services-controls" data-services-form>
+            <div class="services-controls__row">
+              <div class="services-field">
+                <label for="service-search">Từ khóa tìm kiếm</label>
+                <input
+                  id="service-search"
+                  name="q"
+                  type="search"
+                  inputmode="search"
+                  autocomplete="off"
+                  placeholder="Nhập mã, tên hoặc mô tả dịch vụ..."
+                  data-services-search
+                />
+              </div>
+              <div class="services-field">
+                <label for="service-active">Trạng thái</label>
+                <select id="service-active" name="active" data-services-active>
+                  <option value="any">Tất cả dịch vụ</option>
+                  <option value="active">Đang mở</option>
+                  <option value="inactive">Tạm dừng</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="services-controls__row">
+              <div class="services-actions">
+                <button type="submit" class="services-button" data-services-apply>
+                  Tìm dịch vụ
+                </button>
+                <button type="button" class="services-button secondary" data-services-refresh>
+                  Tải lại
+                </button>
+                <button type="button" class="services-button secondary" data-services-reset>
+                  Đặt lại bộ lọc
+                </button>
+              </div>
+              <div class="services-meta" data-services-summary aria-live="polite"></div>
+            </div>
+          </form>
+
+          <div class="services-layout">
+            <div class="services-list" data-services-list role="list" aria-live="polite">
+              <p class="services-list__status">Đang khởi tạo dữ liệu dịch vụ...</p>
+            </div>
+
+            <section class="services-detail" data-service-detail aria-live="polite">
+              <div class="service-detail__empty">
+                <div>
+                  <strong>Chọn một dịch vụ để xem chi tiết</strong>
+                  <p>Danh sách được đồng bộ theo thời gian thực từ API dịch vụ.</p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const loader = document.getElementById('app-loader');
+        if (loader) {
+          const hideLoader = () => {
+            requestAnimationFrame(() => {
+              loader.dataset.hidden = 'true';
+              setTimeout(() => {
+                loader.remove();
+              }, 600);
+            });
+          };
+
+          window.addEventListener('load', hideLoader, { once: true });
+          setTimeout(hideLoader, 2500);
+        }
+      })();
+    </script>
+
+    <script>
+      (() => {
+        const sessionKey = 'ctechSession';
+        const displayNameKey = 'ctechDisplayName';
+
+        const indicator = document.querySelector('[data-user-indicator]');
+        const listEl = document.querySelector('[data-services-list]');
+        const summaryEl = document.querySelector('[data-services-summary]');
+        const detailEl = document.querySelector('[data-service-detail]');
+        const formEl = document.querySelector('[data-services-form]');
+        const searchInput = document.querySelector('[data-services-search]');
+        const activeSelect = document.querySelector('[data-services-active]');
+        const refreshBtn = document.querySelector('[data-services-refresh]');
+        const resetBtn = document.querySelector('[data-services-reset]');
+
+        const numberFormatter =
+          typeof Intl !== 'undefined' && typeof Intl.NumberFormat === 'function'
+            ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' })
+            : null;
+
+        const state = {
+          session: null,
+          displayName: '',
+          services: [],
+          isLoading: false,
+          error: null,
+          selectedCode: null,
+          filters: {
+            search: '',
+            active: 'any',
+          },
+        };
+
+        const TEXT = {
+          fallbackAccount: 'Tài khoản',
+          greetingFallback: 'bạn',
+          summaryLoading: 'Đang tải dữ liệu dịch vụ...',
+          summaryEmpty: 'Không tìm thấy dịch vụ phù hợp với bộ lọc hiện tại.',
+          listLoading: 'Đang tải danh sách dịch vụ...',
+          detailLoading: 'Đang tải chi tiết dịch vụ...',
+          noResults: 'Không có dịch vụ nào khớp với điều kiện lọc.',
+          inactiveNotice:
+            'Dịch vụ đang tạm dừng tiếp nhận đăng ký. Bạn vẫn có thể xem thông tin nhưng không thể nhận mã thanh toán.',
+          loginRequired:
+            'Đăng nhập bằng tài khoản sinh viên hoặc giảng viên để nhận mã thanh toán cho dịch vụ này.',
+          roleRestricted: 'Chỉ tài khoản sinh viên hoặc giảng viên mới có thể thực hiện đặt mua dịch vụ.',
+          purchaseLoading: 'Đang tạo mã thanh toán...',
+          purchaseMissing: 'Đã tạo yêu cầu nhưng không nhận được mã thanh toán.',
+          purchaseFailed: 'Không thể tạo mã thanh toán. Vui lòng thử lại.',
+        };
+
+        function escapeHtml(value) {
+          return String(value)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+        }
+
+        function normalizeNamePart(value) {
+          if (!value) {
+            return '';
+          }
+          const lower = value.toLocaleLowerCase('vi-VN');
+          return lower.charAt(0).toLocaleUpperCase('vi-VN') + lower.slice(1);
+        }
+
+        function extractGivenName(value) {
+          if (!value) {
+            return '';
+          }
+          const trimmed = value.trim();
+          if (!trimmed) {
+            return '';
+          }
+          const parts = trimmed.split(/\s+/);
+          return normalizeNamePart(parts[parts.length - 1]);
+        }
+
+        function isLikelyIdentifier(value) {
+          if (!value) {
+            return true;
+          }
+          const sample = String(value).trim();
+          if (!sample) {
+            return true;
+          }
+          if (/[0-9]/.test(sample)) {
+            return true;
+          }
+          if (!/\s/.test(sample) && sample === sample.toUpperCase()) {
+            return true;
+          }
+          return false;
+        }
+
+        function loadSessionFromStorage() {
+          try {
+            const raw = localStorage.getItem(sessionKey);
+            if (!raw) {
+              return null;
+            }
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object' && parsed.token) {
+              return parsed;
+            }
+          } catch (error) {
+            console.warn('Không thể đọc session từ localStorage:', error);
+          }
+          return null;
+        }
+
+        function loadDisplayNameFromStorage(session) {
+          const stored = localStorage.getItem(displayNameKey) || '';
+          if (stored && !isLikelyIdentifier(stored)) {
+            return stored;
+          }
+
+          if (session && session.user) {
+            const fromProfile =
+              session.user.fullName || session.user.displayName || session.user.name || session.user.userId;
+            if (fromProfile && !isLikelyIdentifier(fromProfile)) {
+              return fromProfile;
+            }
+          }
+
+          return '';
+        }
+
+        function updateAuthState() {
+          state.session = loadSessionFromStorage();
+          state.displayName = loadDisplayNameFromStorage(state.session);
+        }
+
+        function persistSession(sessionPayload) {
+          if (!sessionPayload || typeof sessionPayload !== 'object') {
+            localStorage.removeItem(sessionKey);
+            localStorage.removeItem(displayNameKey);
+            return;
+          }
+
+          try {
+            localStorage.setItem(sessionKey, JSON.stringify(sessionPayload));
+          } catch (error) {
+            console.warn('Không thể lưu session vào localStorage:', error);
+          }
+
+          const candidate =
+            (sessionPayload.user &&
+              (sessionPayload.user.displayName ||
+                sessionPayload.user.fullName ||
+                sessionPayload.user.name ||
+                sessionPayload.user.userId)) ||
+            '';
+
+          if (candidate && !isLikelyIdentifier(candidate)) {
+            try {
+              localStorage.setItem(displayNameKey, candidate);
+            } catch (error) {
+              console.warn('Không thể lưu displayName vào localStorage:', error);
+            }
+          } else {
+            localStorage.removeItem(displayNameKey);
+          }
+        }
+
+        function handleLogout() {
+          localStorage.removeItem(sessionKey);
+          localStorage.removeItem(displayNameKey);
+          updateAuthState();
+          updateIndicator();
+          window.location.href = '/login';
+        }
+
+        function updateIndicator() {
+          if (!indicator) {
+            return;
+          }
+
+          indicator.innerHTML = '';
+
+          const session = state.session;
+          const rawName =
+            state.displayName ||
+            (session && session.user && (session.user.fullName || session.user.displayName || session.user.name)) ||
+            '';
+          const safeName = isLikelyIdentifier(rawName) ? '' : rawName;
+
+          if (session && session.token) {
+            const rawUserId = session && session.user && (session.user.userId || session.user.id);
+            const displayUserId = isLikelyIdentifier(rawUserId) ? '' : String(rawUserId || '');
+            const greetingName =
+              extractGivenName(safeName) ||
+              extractGivenName(displayUserId) ||
+              normalizeNamePart(displayUserId) ||
+              TEXT.greetingFallback;
+
+            indicator.innerHTML = `
+              <span class="user-pill">Xin chào, <strong>${escapeHtml(greetingName)}</strong></span>
+              <button type="button" class="user-logout" data-logout>Đăng xuất</button>
+            `;
+
+            const logoutBtn = indicator.querySelector('[data-logout]');
+            if (logoutBtn) {
+              logoutBtn.addEventListener('click', handleLogout);
+            }
+          } else {
+            indicator.innerHTML = '<a class="user-link" href="/login">Đăng nhập</a>';
+          }
+        }
+
+        async function syncSessionWithServer() {
+          if (!state.session || !state.session.token) {
+            return;
+          }
+
+          try {
+            const response = await fetch('/api/auth/me', {
+              headers: {
+                Authorization: `Bearer ${state.session.token}`,
+              },
+            });
+
+            if (response.status === 401 || response.status === 403) {
+              handleLogout();
+              return;
+            }
+
+            if (!response.ok) {
+              throw new Error(`Unexpected status ${response.status}`);
+            }
+
+            const payload = await response.json();
+            persistSession(payload);
+            updateAuthState();
+            updateIndicator();
+            renderDetail();
+          } catch (error) {
+            console.warn('Không thể đồng bộ thông tin người dùng:', error);
+          }
+        }
+
+        function normalizeActiveFilter(value) {
+          if (!value) {
+            return 'any';
+          }
+          const normalized = String(value).trim().toLowerCase();
+          if (!normalized) {
+            return 'any';
+          }
+          if (normalized === '1' || normalized === 'true' || normalized === 'active') {
+            return 'active';
+          }
+          if (normalized === '0' || normalized === 'false' || normalized === 'inactive') {
+            return 'inactive';
+          }
+          return 'any';
+        }
+
+        function initializeFiltersFromQuery() {
+          const params = new URLSearchParams(window.location.search);
+          const q = params.get('q') || '';
+          const active = params.get('active');
+
+          state.filters.search = q;
+          state.filters.active = normalizeActiveFilter(active);
+
+          if (searchInput) {
+            searchInput.value = state.filters.search;
+          }
+          if (activeSelect) {
+            activeSelect.value = state.filters.active;
+          }
+        }
+
+        function syncUrlWithFilters() {
+          const params = new URLSearchParams();
+          if (state.filters.search) {
+            params.set('q', state.filters.search);
+          }
+          if (state.filters.active === 'active') {
+            params.set('active', '1');
+          } else if (state.filters.active === 'inactive') {
+            params.set('active', '0');
+          }
+
+          const query = params.toString();
+          const newUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+          const current = `${window.location.pathname}${window.location.search}`;
+          if (newUrl !== current) {
+            history.replaceState({}, '', newUrl);
+          }
+        }
+
+        function formatPrice(value) {
+          if (value === undefined || value === null) {
+            return 'Liên hệ';
+          }
+          const numeric = Number(value);
+          if (Number.isFinite(numeric) && numberFormatter) {
+            return numberFormatter.format(numeric);
+          }
+          if (Number.isFinite(numeric)) {
+            return `${numeric.toLocaleString('vi-VN')} VND`;
+          }
+          return 'Liên hệ';
+        }
+
+        function formatDateTime(value) {
+          if (!value) {
+            return 'Chưa xác định';
+          }
+          const date = new Date(value);
+          if (Number.isNaN(date.getTime())) {
+            return 'Chưa xác định';
+          }
+          try {
+            return date.toLocaleString('vi-VN', {
+              hour12: false,
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            });
+          } catch (error) {
+            return date.toISOString();
+          }
+        }
+
+        function renderSummary() {
+          if (!summaryEl) {
+            return;
+          }
+          if (state.isLoading) {
+            summaryEl.textContent = TEXT.summaryLoading;
+            summaryEl.dataset.state = 'loading';
+            return;
+          }
+          if (state.error) {
+            summaryEl.textContent = state.error;
+            summaryEl.dataset.state = 'error';
+            return;
+          }
+          if (!state.services.length) {
+            summaryEl.textContent = TEXT.summaryEmpty;
+            summaryEl.dataset.state = 'empty';
+            return;
+          }
+          summaryEl.innerHTML = `Đã tải <strong>${state.services.length}</strong> dịch vụ từ API.`;
+          summaryEl.dataset.state = 'ready';
+        }
+
+        function renderList() {
+          if (!listEl) {
+            return;
+          }
+
+          listEl.innerHTML = '';
+
+          if (state.isLoading) {
+            const skeleton = document.createElement('p');
+            skeleton.className = 'services-list__status';
+            skeleton.textContent = TEXT.listLoading;
+            listEl.appendChild(skeleton);
+            return;
+          }
+
+          if (state.error) {
+            const message = document.createElement('p');
+            message.className = 'services-list__status';
+            message.textContent = state.error;
+            listEl.appendChild(message);
+            return;
+          }
+
+          if (!state.services.length) {
+            const empty = document.createElement('p');
+            empty.className = 'services-list__status';
+            empty.textContent = TEXT.noResults;
+            listEl.appendChild(empty);
+            return;
+          }
+
+          state.services.forEach((service) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'service-card';
+            button.dataset.serviceCard = 'true';
+            button.dataset.serviceCode = service.serviceCode;
+            button.setAttribute('role', 'listitem');
+
+            const statusClass = service.isActive ? 'is-active' : 'is-inactive';
+            const statusText = service.isActive ? 'Đang mở đăng ký' : 'Tạm dừng';
+            const description = service.description
+              ? escapeHtml(service.description)
+              : 'Chưa có mô tả chi tiết cho dịch vụ này.';
+
+            button.innerHTML = `
+              <div class="service-card__header">
+                <h3 class="service-card__title">${escapeHtml(service.name || service.serviceCode)}</h3>
+                <span class="service-card__status ${statusClass}">${escapeHtml(statusText)}</span>
+              </div>
+              <p class="service-card__description">${description}</p>
+              <div class="service-card__meta">
+                <span>Mã: ${escapeHtml(service.serviceCode)}</span>
+                <span>Giá: ${escapeHtml(formatPrice(service.price))}</span>
+              </div>
+            `;
+
+            if (service.serviceCode === state.selectedCode) {
+              button.classList.add('is-selected');
+            }
+
+            listEl.appendChild(button);
+          });
+        }
+
+        function setFeedback(element, message, type) {
+          if (!element) {
+            return;
+          }
+          element.textContent = message || '';
+          element.classList.remove('success', 'error');
+          if (type === 'success') {
+            element.classList.add('success');
+          } else if (type === 'error') {
+            element.classList.add('error');
+          }
+        }
+
+        function renderDetail() {
+          if (!detailEl) {
+            return;
+          }
+
+          detailEl.innerHTML = '';
+
+          if (state.isLoading) {
+            detailEl.innerHTML = `
+              <div class="service-detail__empty">
+                <div>${TEXT.detailLoading}</div>
+              </div>
+            `;
+            return;
+          }
+
+          if (state.error) {
+            detailEl.innerHTML = `
+              <div class="service-detail__empty">
+                <div class="service-alert">${escapeHtml(state.error)}</div>
+              </div>
+            `;
+            return;
+          }
+
+          const service =
+            state.services.find((item) => item.serviceCode === state.selectedCode) || state.services[0];
+
+          if (!service) {
+            detailEl.innerHTML = `
+              <div class="service-detail__empty">
+                <div>
+                  <strong>Chọn một dịch vụ để xem chi tiết</strong>
+                  <p>Danh sách được đồng bộ theo thời gian thực từ API dịch vụ.</p>
+                </div>
+              </div>
+            `;
+            return;
+          }
+
+          state.selectedCode = service.serviceCode;
+
+          const statusClass = service.isActive ? 'is-active' : 'is-inactive';
+          const statusText = service.isActive ? 'Đang mở đăng ký' : 'Tạm dừng';
+          const description = service.description
+            ? escapeHtml(service.description)
+            : 'Dịch vụ chưa có mô tả chi tiết. Vui lòng liên hệ phòng dịch vụ để được hỗ trợ thêm.';
+
+          const isLoggedIn = Boolean(state.session && state.session.token);
+          const role = state.session && state.session.user && state.session.user.role;
+          const canPurchase = isLoggedIn && service.isActive && (role === 'teacher' || role === 'student');
+
+          detailEl.innerHTML = `
+            <header class="service-detail__header">
+              <div>
+                <h2 class="service-detail__title">${escapeHtml(service.name || service.serviceCode)}</h2>
+                <span class="service-detail__status ${statusClass}">${escapeHtml(statusText)}</span>
+              </div>
+            </header>
+
+            <p class="service-detail__description">${description}</p>
+
+            <dl class="service-detail__meta">
+              <div>
+                <dt>Mã dịch vụ</dt>
+                <dd>${escapeHtml(service.serviceCode)}</dd>
+              </div>
+              <div>
+                <dt>Giá tham khảo</dt>
+                <dd>${escapeHtml(formatPrice(service.price))}</dd>
+              </div>
+              <div>
+                <dt>Ngày tạo</dt>
+                <dd>${escapeHtml(formatDateTime(service.createdAt))}</dd>
+              </div>
+              <div>
+                <dt>Cập nhật</dt>
+                <dd>${escapeHtml(formatDateTime(service.updatedAt))}</dd>
+              </div>
+            </dl>
+          `;
+
+          if (!service.isActive) {
+            const inactiveAlert = document.createElement('div');
+            inactiveAlert.className = 'service-alert warning';
+            inactiveAlert.textContent = TEXT.inactiveNotice;
+            detailEl.appendChild(inactiveAlert);
+          }
+
+          if (!isLoggedIn) {
+            const loginAlert = document.createElement('div');
+            loginAlert.className = 'service-alert info';
+            loginAlert.textContent = TEXT.loginRequired;
+            detailEl.appendChild(loginAlert);
+          } else if (role !== 'teacher' && role !== 'student') {
+            const roleAlert = document.createElement('div');
+            roleAlert.className = 'service-alert info';
+            roleAlert.textContent = TEXT.roleRestricted;
+            detailEl.appendChild(roleAlert);
+          }
+
+          const purchaseForm = document.createElement('form');
+          purchaseForm.className = 'service-purchase';
+          purchaseForm.setAttribute('novalidate', '');
+
+          const formField = document.createElement('div');
+          formField.className = 'services-field';
+
+          const label = document.createElement('label');
+          label.setAttribute('for', 'service-note');
+          label.textContent = 'Ghi chú bổ sung (tùy chọn)';
+
+          const textarea = document.createElement('textarea');
+          textarea.id = 'service-note';
+          textarea.placeholder = 'VD: Cần hỗ trợ kích hoạt trước ngày 15/10...';
+          textarea.dataset.serviceNote = 'true';
+          textarea.disabled = !canPurchase;
+
+          formField.appendChild(label);
+          formField.appendChild(textarea);
+
+          const actions = document.createElement('div');
+          actions.className = 'service-purchase__actions';
+
+          const submitBtn = document.createElement('button');
+          submitBtn.type = 'submit';
+          submitBtn.className = 'services-button';
+          submitBtn.dataset.servicePurchase = 'true';
+          submitBtn.textContent = service.isActive ? 'Nhận mã thanh toán' : 'Tạm ngừng';
+          submitBtn.disabled = !canPurchase;
+
+          const feedback = document.createElement('span');
+          feedback.className = 'service-feedback';
+          feedback.dataset.serviceFeedback = 'true';
+          feedback.setAttribute('aria-live', 'polite');
+
+          actions.appendChild(submitBtn);
+          actions.appendChild(feedback);
+
+          purchaseForm.appendChild(formField);
+          purchaseForm.appendChild(actions);
+
+          purchaseForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!canPurchase) {
+              setFeedback(feedback, TEXT.roleRestricted, 'error');
+              return;
+            }
+
+            const notes = textarea.value ? textarea.value.trim() : '';
+
+            submitBtn.disabled = true;
+            setFeedback(feedback, TEXT.purchaseLoading, '');
+
+            try {
+              const response = await fetch(
+                `/api/services/${encodeURIComponent(service.serviceCode)}/purchase`,
+                {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${state.session.token}`,
+                  },
+                  body: notes ? JSON.stringify({ notes }) : null,
+                }
+              );
+
+              if (response.status === 401 || response.status === 403) {
+                handleLogout();
+                return;
+              }
+
+              if (!response.ok) {
+                const payload = await response.json().catch(() => ({}));
+                const message = payload && payload.error ? payload.error : `Lỗi ${response.status}`;
+                throw new Error(message);
+              }
+
+              const payload = await response.json();
+              const paymentCode = payload && payload.paymentCode ? payload.paymentCode : null;
+              if (paymentCode) {
+                setFeedback(
+                  feedback,
+                  `Mã thanh toán của bạn: ${paymentCode}. Vui lòng lưu lại để hoàn tất giao dịch.`,
+                  'success'
+                );
+              } else {
+                setFeedback(feedback, TEXT.purchaseMissing, 'error');
+              }
+            } catch (error) {
+              setFeedback(
+                feedback,
+                error && error.message ? error.message : TEXT.purchaseFailed,
+                'error'
+              );
+            } finally {
+              submitBtn.disabled = false;
+            }
+          });
+
+          detailEl.appendChild(purchaseForm);
+        }
+
+        function renderServices() {
+          renderSummary();
+          renderList();
+          renderDetail();
+        }
+
+        async function fetchServices() {
+          state.isLoading = true;
+          state.error = null;
+          renderServices();
+
+          const params = new URLSearchParams();
+          if (state.filters.search) {
+            params.set('q', state.filters.search);
+          }
+          if (state.filters.active === 'active') {
+            params.set('active', '1');
+          } else if (state.filters.active === 'inactive') {
+            params.set('active', '0');
+          }
+
+          const endpoint = params.toString() ? `/api/services?${params}` : '/api/services';
+
+          try {
+            const response = await fetch(endpoint);
+            if (!response.ok) {
+              throw new Error(`Không thể tải dữ liệu dịch vụ (mã ${response.status}).`);
+            }
+
+            const payload = await response.json();
+            const services = Array.isArray(payload.services) ? payload.services : [];
+            state.services = services;
+
+            if (!services.length) {
+              state.selectedCode = null;
+            } else if (!services.some((item) => item.serviceCode === state.selectedCode)) {
+              state.selectedCode = services[0].serviceCode;
+            }
+          } catch (error) {
+            console.error('Tải dịch vụ thất bại:', error);
+            state.error =
+              (error && error.message) ||
+              'Không thể kết nối tới API dịch vụ. Vui lòng thử lại sau ít phút.';
+            state.services = [];
+            state.selectedCode = null;
+          } finally {
+            state.isLoading = false;
+            renderServices();
+          }
+        }
+
+        function resetFilters() {
+          state.filters.search = '';
+          state.filters.active = 'any';
+          if (searchInput) {
+            searchInput.value = '';
+          }
+          if (activeSelect) {
+            activeSelect.value = 'any';
+          }
+        }
+
+        function applyFilters() {
+          if (searchInput) {
+            state.filters.search = searchInput.value.trim();
+          }
+          if (activeSelect) {
+            state.filters.active = normalizeActiveFilter(activeSelect.value);
+            activeSelect.value = state.filters.active;
+          }
+
+          syncUrlWithFilters();
+          fetchServices();
+        }
+
+        if (listEl) {
+          listEl.addEventListener('click', (event) => {
+            const card = event.target.closest('[data-service-card]');
+            if (!card) {
+              return;
+            }
+            const code = card.dataset.serviceCode;
+            if (!code || code === state.selectedCode) {
+              return;
+            }
+            state.selectedCode = code;
+            renderServices();
+          });
+        }
+
+        if (formEl) {
+          formEl.addEventListener('submit', (event) => {
+            event.preventDefault();
+            applyFilters();
+          });
+        }
+
+        if (refreshBtn) {
+          refreshBtn.addEventListener('click', () => {
+            fetchServices();
+          });
+        }
+
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            resetFilters();
+            syncUrlWithFilters();
+            fetchServices();
+            if (searchInput) {
+              searchInput.focus();
+            }
+          });
+        }
+
+        window.addEventListener('storage', (event) => {
+          if (event.key === sessionKey || event.key === displayNameKey) {
+            updateAuthState();
+            updateIndicator();
+            renderDetail();
+          }
+        });
+
+        updateAuthState();
+        updateIndicator();
+        initializeFiltersFromQuery();
+        syncUrlWithFilters();
+        fetchServices();
+        if (state.session && state.session.token) {
+          syncSessionWithServer();
+        }
+      })();
+    </script>
+  </body>
+</html>

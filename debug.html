@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Auth API Tester</title>
+<style>
+body{font-family:Arial,sans-serif;margin:24px;background:#f5f7fa;color:#222;}
+section{background:#fff;padding:16px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.08);margin-bottom:18px;}
+label{display:block;margin-bottom:4px;font-weight:600;}
+input,select,textarea,button{width:100%;box-sizing:border-box;padding:8px;margin-bottom:12px;border:1px solid #cdd4e0;border-radius:4px;font-family:inherit;}
+button{background:#0069d9;color:#fff;font-weight:600;border:none;cursor:pointer;}
+button:disabled{background:#9fb8da;cursor:not-allowed;}
+small{color:#4a5568;}
+.row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
+textarea{min-height:120px;}
+#log{height:220px;overflow:auto;background:#0f172a;color:#e2e8f0;font-family:"Courier New",monospace;font-size:13px;padding:12px;border-radius:6px;white-space:pre-wrap;}
+.hidden{display:none!important;}
+.status-ok{color:#0f9d58;font-weight:600;}
+.status-error{color:#d93025;font-weight:600;}
+.token{font-family:monospace;background:#eef2ff;padding:6px;border-radius:4px;word-break:break-all;}
+.inline{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;}
+.chat-log{background:#fff;border:1px solid #cdd4e0;border-radius:6px;padding:10px;max-height:260px;overflow:auto;margin-bottom:12px;}
+.chat-entry{margin-bottom:10px;}
+.chat-entry:last-child{margin-bottom:0;}
+.chat-entry .meta{font-weight:600;font-size:13px;}
+.chat-entry.user .meta{color:#0069d9;}
+.chat-entry.assistant .meta{color:#d97706;}
+.chat-entry .content{background:#f8fafc;border-radius:4px;padding:6px;white-space:pre-wrap;}
+</style>
+</head>
+<body>
+<h1>Debug API Tester</h1>
+<section>
+  <h2>Configuration</h2>
+  <label for="baseUrl">API Base URL</label>
+  <input id="baseUrl" type="text" value="http://localhost:3000" />
+  <small>Requests hit <code>&lt;baseUrl&gt;/api/...</code></small>
+</section>
+<section>
+  <h2>Login</h2>
+  <div class="row">
+    <div>
+      <label for="loginUser">User ID / Email / Phone</label>
+      <input id="loginUser" type="text" value="admin" />
+    </div>
+    <div>
+      <label for="loginPass">Password</label>
+      <input id="loginPass" type="password" value="admin123" />
+    </div>
+    <div>
+      <label for="loginDeviceId">Device ID (students)</label>
+      <input id="loginDeviceId" type="text" placeholder="device-123" />
+    </div>
+  </div>
+  <small>Enter your user ID, email, or 10-digit phone number. Leave device empty on first login; the server issues one and this page stores it.</small>
+  <div class="inline">
+    <button id="loginBtn">Login</button>
+    <button id="logoutBtn" class="hidden">Logout</button>
+  </div>
+  <p id="loginStatus"></p>
+  <div id="tokenWrapper" class="hidden">
+    <strong>Active token</strong>
+    <div id="activeToken" class="token"></div>
+    <small>Expires: <span id="tokenExpiry"></span></small><br />
+    <small>User: <span id="activeUser"></span></small><br />
+    <small id="tokenDisplayNameRow" class="hidden">Name: <span id="activeDisplayName"></span></small><br />
+    <small id="tokenDeviceRow" class="hidden">Device: <span id="activeDevice"></span></small>
+  </div>
+</section>
+<section>
+  <h2>Session Profile</h2>
+  <small>Requires an active session token.</small>
+  <div class="inline">
+    <button id="sessionInfoBtn" disabled>Fetch /auth/me</button>
+    <span id="sessionInfoStatus"></span>
+  </div>
+  <textarea id="sessionInfoResult" readonly rows="6" placeholder="Profile details will appear here..."></textarea>
+</section>
+<section>
+  <h2>Change Password</h2>
+  <small>Requires an active session token.</small>
+  <label for="changePasswordCurrent">Current password</label>
+  <input id="changePasswordCurrent" type="password" placeholder="Current password" />
+  <label for="changePasswordNew">New password</label>
+  <input id="changePasswordNew" type="password" placeholder="Minimum 8 characters" />
+  <button id="changePasswordBtn" disabled>Change Password</button>
+  <p id="changePasswordStatus"></p>
+</section>
+<section>
+  <h2>Purchase Service</h2>
+  <small>Requires a teacher or student session.</small>
+  <label for="purchaseServiceCode">Service code *</label>
+  <input id="purchaseServiceCode" type="text" placeholder="DV001" />
+  <label for="purchaseNotes">Notes (optional)</label>
+  <input id="purchaseNotes" type="text" placeholder="Optional note for this purchase" />
+  <button id="purchaseServiceBtn" disabled>Purchase</button>
+  <p id="purchaseServiceStatus"></p>
+  <textarea id="purchaseServiceResult" readonly rows="4" placeholder="Payment code and details will appear here..."></textarea>
+</section>
+<section>
+  <h2>Admin Token</h2>
+  <label for="adminToken">Admin token</label>
+  <input id="adminToken" type="text" placeholder="Paste admin token" />
+  <small>Filled automatically after an admin login.</small>
+</section>
+<section>
+  <h2>Create Account (Admin only)</h2>
+  <label for="roleSelect">Role</label>
+  <select id="roleSelect">
+    <option value="student">student</option>
+    <option value="teacher">teacher</option>
+    <option value="admin">admin</option>
+  </select>
+  <div id="studentFields">
+    <h3>Student Details</h3>
+    <div class="row">
+      <div>
+        <label for="studentFullName">Full name *</label>
+        <input id="studentFullName" type="text" placeholder="Nguyen Van A" />
+      </div>
+      <div>
+        <label for="studentGender">Gender</label>
+        <select id="studentGender">
+          <option value="other">other</option>
+          <option value="male">male</option>
+          <option value="female">female</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="studentBirthDate">Birth date (YYYY-MM-DD)</label>
+        <input id="studentBirthDate" type="text" placeholder="2004-09-01" />
+      </div>
+      <div>
+        <label for="studentClassCode">Class code</label>
+        <input id="studentClassCode" type="text" placeholder="CTK44" />
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="studentDepartment">Department</label>
+        <input id="studentDepartment" type="text" placeholder="Information Technology" />
+      </div>
+      <div>
+        <label for="studentPhone">Phone</label>
+        <input id="studentPhone" type="text" placeholder="0901234567" />
+      </div>
+    </div>
+    <label for="studentEmail">Email</label>
+    <input id="studentEmail" type="email" placeholder="student@example.com" />
+  </div>
+  <div id="teacherFields" class="hidden">
+    <h3>Teacher Details</h3>
+    <div class="row">
+      <div>
+        <label for="teacherFullName">Full name *</label>
+        <input id="teacherFullName" type="text" placeholder="Tran Thi B" />
+      </div>
+      <div>
+        <label for="teacherGender">Gender</label>
+        <select id="teacherGender">
+          <option value="other">other</option>
+          <option value="male">male</option>
+          <option value="female">female</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="teacherBirthDate">Birth date (YYYY-MM-DD)</label>
+        <input id="teacherBirthDate" type="text" placeholder="1985-02-10" />
+      </div>
+      <div>
+        <label for="teacherDepartment">Department</label>
+        <input id="teacherDepartment" type="text" placeholder="Computer Science" />
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="teacherPosition">Position</label>
+        <input id="teacherPosition" type="text" placeholder="Lecturer" />
+      </div>
+      <div>
+        <label for="teacherPhone">Phone</label>
+        <input id="teacherPhone" type="text" placeholder="0912345678" />
+      </div>
+    </div>
+    <label for="teacherEmail">Email</label>
+    <input id="teacherEmail" type="email" placeholder="teacher@example.com" />
+  </div>
+  <div id="adminFields" class="hidden">
+    <h3>Admin Details</h3>
+    <div class="row">
+      <div>
+        <label for="adminFullName">Full name *</label>
+        <input id="adminFullName" type="text" placeholder="Admin Nguyen" />
+      </div>
+      <div>
+        <label for="adminDepartment">Department</label>
+        <input id="adminDepartment" type="text" placeholder="IT Services" />
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="adminEmail">Email</label>
+        <input id="adminEmail" type="email" placeholder="admin@example.com" />
+      </div>
+      <div>
+        <label for="adminPhone">Phone</label>
+        <input id="adminPhone" type="text" placeholder="0987654321" />
+      </div>
+    </div>
+  </div>
+  <button id="createBtn" disabled>Create Account</button>
+  <p id="createStatus"></p>
+  <textarea id="createResult" readonly rows="6" placeholder="Response will appear here..."></textarea>
+</section>
+<section>
+  <h2>Reset User Password (Admin only)</h2>
+  <small>Supports teacher or student accounts. Leave new password blank to auto-generate.</small>
+  <label for="resetPasswordUserId">User ID *</label>
+  <input id="resetPasswordUserId" type="text" placeholder="SV001" />
+  <label for="resetPasswordNewPassword">New password (optional)</label>
+  <input id="resetPasswordNewPassword" type="text" placeholder="Leave blank to auto-generate" />
+  <button id="resetPasswordBtn" disabled>Reset Password</button>
+  <p id="resetPasswordStatus"></p>
+  <textarea id="resetPasswordResult" readonly rows="4" placeholder="Response will appear here..."></textarea>
+</section>
+<section>
+  <h2>Create Service (Admin only)</h2>
+  <div class="row">
+    <div>
+      <label for="serviceName">Service name *</label>
+      <input id="serviceName" type="text" placeholder="Library membership" />
+    </div>
+    <div>
+      <label for="servicePrice">Price *</label>
+      <input id="servicePrice" type="number" step="0.01" min="0" placeholder="0" />
+    </div>
+    <div>
+      <label for="serviceActive">Status</label>
+      <select id="serviceActive">
+        <option value="1">active</option>
+        <option value="0">inactive</option>
+      </select>
+    </div>
+  </div>
+  <label for="serviceDescription">Description</label>
+  <textarea id="serviceDescription" rows="3" placeholder="Short description"></textarea>
+  <button id="serviceCreateBtn" disabled>Create Service</button>
+  <p id="serviceCreateStatus"></p>
+  <textarea id="serviceCreateResult" readonly rows="4" placeholder="Response will appear here..."></textarea>
+</section>
+<section>
+  <h2>Manage Service (Admin only)</h2>
+  <label for="serviceManageCode">Service code *</label>
+  <input id="serviceManageCode" type="text" placeholder="DV001" />
+  <div class="row">
+    <div>
+      <label for="serviceManageName">Name</label>
+      <input id="serviceManageName" type="text" placeholder="New name" />
+    </div>
+    <div>
+      <label for="serviceManagePrice">Price</label>
+      <input id="serviceManagePrice" type="number" step="0.01" min="0" placeholder="" />
+    </div>
+    <div>
+      <label for="serviceManageActive">Status</label>
+      <select id="serviceManageActive">
+        <option value="">--</option>
+        <option value="1">active</option>
+        <option value="0">inactive</option>
+      </select>
+    </div>
+  </div>
+  <label for="serviceManageDescription">Description</label>
+  <textarea id="serviceManageDescription" rows="3" placeholder="Leave blank to keep current"></textarea>
+  <button id="serviceManageClearDescription" type="button">Clear description</button>
+  <div class="row">
+    <button id="serviceUpdateBtn" disabled>Update Service</button>
+    <button id="serviceDeleteBtn" disabled>Delete Service</button>
+  </div>
+  <p id="serviceManageStatus"></p>
+  <textarea id="serviceManageResult" readonly rows="4" placeholder="Response will appear here..."></textarea>
+</section>
+<section>
+  <h2>Query Services</h2>
+  <label for="serviceQueryCode">Service code (exact)</label>
+  <input id="serviceQueryCode" type="text" placeholder="DV001" />
+  <label for="serviceQueryText">Search text</label>
+  <input id="serviceQueryText" type="text" placeholder="keyword" />
+  <label for="serviceQueryActive">Active filter</label>
+  <select id="serviceQueryActive">
+    <option value="">-- any --</option>
+    <option value="1">active</option>
+    <option value="0">inactive</option>
+  </select>
+  <button id="serviceQueryBtn">Fetch Services</button>
+  <p id="serviceQueryStatus"></p>
+  <textarea id="serviceQueryResult" readonly rows="6" placeholder="Results will appear here..."></textarea>
+</section>
+<section>
+  <h2>Chatbot (Public)</h2>
+  <small>Sends requests to POST /api/chatbot/chat using your base URL.</small>
+  <div id="chatLog" class="chat-log" aria-live="polite"></div>
+  <label for="chatMessage">Your message</label>
+  <textarea id="chatMessage" rows="3" placeholder="Type a message for the assistant..."></textarea>
+  <div class="inline">
+    <button id="chatSendBtn">Send</button>
+    <button id="chatResetBtn" type="button">Clear Chat</button>
+  </div>
+  <p id="chatStatus"></p>
+</section>
+<section>
+  <h2>Log</h2>
+  <div id="log"></div>
+</section>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const baseUrl = $('baseUrl');
+  const loginBtn = $('loginBtn');
+  const logoutBtn = $('logoutBtn');
+  const loginStatus = $('loginStatus');
+  const loginUser = $('loginUser');
+  const loginPass = $('loginPass');
+  const loginDeviceId = $('loginDeviceId');
+  const tokenWrapper = $('tokenWrapper');
+  const activeToken = $('activeToken');
+  const tokenExpiry = $('tokenExpiry');
+  const activeUser = $('activeUser');
+  const tokenDisplayNameRow = $('tokenDisplayNameRow');
+  const activeDisplayName = $('activeDisplayName');
+  const tokenDeviceRow = $('tokenDeviceRow');
+  const activeDevice = $('activeDevice');
+  const changeCurrent = $('changePasswordCurrent');
+  const changeNew = $('changePasswordNew');
+  const changeBtn = $('changePasswordBtn');
+  const changeStatus = $('changePasswordStatus');
+  const purchaseServiceCode = $('purchaseServiceCode');
+  const purchaseNotes = $('purchaseNotes');
+  const purchaseServiceBtn = $('purchaseServiceBtn');
+  const purchaseServiceStatus = $('purchaseServiceStatus');
+  const purchaseServiceResult = $('purchaseServiceResult');
+  const adminTokenInput = $('adminToken');
+  const createBtn = $('createBtn');
+  const createStatus = $('createStatus');
+  const createResult = $('createResult');
+  const resetBtn = $('resetPasswordBtn');
+  const resetStatus = $('resetPasswordStatus');
+  const resetResult = $('resetPasswordResult');
+  const resetUserId = $('resetPasswordUserId');
+  const resetNewPassword = $('resetPasswordNewPassword');
+  const serviceCreateBtn = $('serviceCreateBtn');
+  const serviceCreateStatus = $('serviceCreateStatus');
+  const serviceCreateResult = $('serviceCreateResult');
+  const serviceName = $('serviceName');
+  const servicePrice = $('servicePrice');
+  const serviceActive = $('serviceActive');
+  const serviceDescription = $('serviceDescription');
+  const serviceUpdateBtn = $('serviceUpdateBtn');
+  const serviceDeleteBtn = $('serviceDeleteBtn');
+  const serviceManageStatus = $('serviceManageStatus');
+  const serviceManageResult = $('serviceManageResult');
+  const serviceManageCode = $('serviceManageCode');
+  const serviceManageName = $('serviceManageName');
+  const serviceManagePrice = $('serviceManagePrice');
+  const serviceManageActive = $('serviceManageActive');
+  const serviceManageDescription = $('serviceManageDescription');
+  const serviceManageClear = $('serviceManageClearDescription');
+  const serviceQueryBtn = $('serviceQueryBtn');
+  const serviceQueryStatus = $('serviceQueryStatus');
+  const serviceQueryResult = $('serviceQueryResult');
+  const serviceQueryCode = $('serviceQueryCode');
+  const serviceQueryText = $('serviceQueryText');
+  const serviceQueryActive = $('serviceQueryActive');
+  const chatMessageInput = $('chatMessage');
+  const chatSendBtn = $('chatSendBtn');
+  const chatResetBtn = $('chatResetBtn');
+  const chatStatus = $('chatStatus');
+  const chatLog = $('chatLog');
+  const logArea = $('log');
+  const sessionInfoBtn = $('sessionInfoBtn');
+  const sessionInfoStatus = $('sessionInfoStatus');
+  const sessionInfoResult = $('sessionInfoResult');
+  const studentInputs = {
+    fullName: $('studentFullName'),
+    gender: $('studentGender'),
+    birthDate: $('studentBirthDate'),
+    classCode: $('studentClassCode'),
+    department: $('studentDepartment'),
+    phoneNumber: $('studentPhone'),
+    email: $('studentEmail'),
+  };
+  const teacherInputs = {
+    fullName: $('teacherFullName'),
+    gender: $('teacherGender'),
+    birthDate: $('teacherBirthDate'),
+    department: $('teacherDepartment'),
+    position: $('teacherPosition'),
+    phoneNumber: $('teacherPhone'),
+    email: $('teacherEmail'),
+  };
+  const adminInputs = {
+    fullName: $('adminFullName'),
+    department: $('adminDepartment'),
+    email: $('adminEmail'),
+    phoneNumber: $('adminPhone'),
+  };
+  let tokenInfo = null;
+  const chatHistory = [];
+  const DEVICE_STORAGE_KEY = 'authTester.deviceId';
+  function log(message, data) {
+    const ts = new Date().toISOString();
+    const body = data === undefined ? '' : `\n${JSON.stringify(data, null, 2)}`;
+    logArea.textContent = `${ts} - ${message}${body}\n\n${logArea.textContent}`;
+  }
+  function loadStoredDevice() {
+    try {
+      return window.localStorage ? window.localStorage.getItem(DEVICE_STORAGE_KEY) : null;
+    } catch (err) {
+      console.warn('Unable to load device id', err);
+      return null;
+    }
+  }
+  const storedDevice = loadStoredDevice();
+  if (storedDevice) {
+    loginDeviceId.value = storedDevice;
+  }
+  function storeDevice(value) {
+    if (!value) return;
+    try {
+      if (window.localStorage) {
+        window.localStorage.setItem(DEVICE_STORAGE_KEY, value);
+      }
+    } catch (err) {
+      console.warn('Unable to store device id', err);
+    }
+  }
+  function appendChatMessage(role, content) {
+    if (!chatLog) return;
+    const entry = document.createElement('div');
+    entry.className = `chat-entry ${role}`;
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = role === 'assistant' ? 'Assistant' : 'You';
+    const body = document.createElement('div');
+    body.className = 'content';
+    body.textContent = content;
+    entry.appendChild(meta);
+    entry.appendChild(body);
+    chatLog.appendChild(entry);
+    chatLog.scrollTop = chatLog.scrollHeight;
+  }
+  function clearChat() {
+    chatHistory.length = 0;
+    if (chatLog) {
+      chatLog.textContent = '';
+    }
+    if (chatStatus) {
+      chatStatus.textContent = '';
+      chatStatus.className = '';
+    }
+  }
+  function updateRoleVisibility() {
+    const role = roleSelect.value;
+    studentFields.classList.toggle('hidden', role !== 'student');
+    teacherFields.classList.toggle('hidden', role !== 'teacher');
+    adminFields.classList.toggle('hidden', role !== 'admin');
+  }
+  function hasSession() {
+    return Boolean(tokenInfo && tokenInfo.token);
+  }
+  function hasAdminSession() {
+    return Boolean(tokenInfo && tokenInfo.user && tokenInfo.user.role === 'admin');
+  }
+  function refreshUserButtons() {
+    const active = hasSession();
+    changeBtn.disabled = !active;
+    if (sessionInfoBtn) {
+      sessionInfoBtn.disabled = !active;
+    }
+
+    if (logoutBtn) {
+      if (active) {
+        logoutBtn.classList.remove('hidden');
+        logoutBtn.disabled = false;
+      } else {
+        logoutBtn.classList.add('hidden');
+        logoutBtn.disabled = false;
+      }
+    }
+
+    if (purchaseServiceBtn) {
+      const role = tokenInfo && tokenInfo.user ? tokenInfo.user.role : null;
+      const allowed = active && (role === 'student' || role === 'teacher');
+      purchaseServiceBtn.disabled = !allowed;
+
+      if (!active) {
+        purchaseServiceStatus.textContent = '';
+        purchaseServiceStatus.className = '';
+        purchaseServiceResult.value = '';
+        delete purchaseServiceStatus.dataset.roleWarning;
+      } else if (!allowed) {
+        purchaseServiceStatus.textContent = 'Only teacher or student accounts can purchase services.';
+        purchaseServiceStatus.className = 'status-error';
+        purchaseServiceResult.value = '';
+        purchaseServiceStatus.dataset.roleWarning = 'true';
+      } else if (purchaseServiceStatus.dataset.roleWarning === 'true') {
+        purchaseServiceStatus.textContent = '';
+        purchaseServiceStatus.className = '';
+        delete purchaseServiceStatus.dataset.roleWarning;
+      }
+    }
+  }
+  function refreshAdminButtons() {
+    const token = adminTokenInput.value.trim();
+    const allow = token.length > 0;
+    createBtn.disabled = !allow;
+    resetBtn.disabled = !allow;
+    serviceCreateBtn.disabled = !allow;
+    serviceUpdateBtn.disabled = !allow;
+    serviceDeleteBtn.disabled = !allow;
+  }
+  function getAdminToken(statusEl) {
+    const token = adminTokenInput.value.trim();
+    if (!token) {
+      statusEl.textContent = 'Enter a valid admin token.';
+      statusEl.className = 'status-error';
+      return null;
+    }
+    return token;
+  }
+  async function apiRequest(path, options = {}) {
+    const base = baseUrl.value.replace(/\/$/, '');
+    const url = `${base}${path}`;
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+    const init = Object.assign({}, options, { headers });
+    let bodyPreview;
+    if (typeof options.body === 'string') {
+      try { bodyPreview = JSON.parse(options.body); } catch (_) { bodyPreview = options.body; }
+    }
+    log(`Request: ${options.method || 'GET'} ${url}`, bodyPreview);
+    const res = await fetch(url, init);
+    const text = await res.text();
+    let payload;
+    try { payload = text ? JSON.parse(text) : null; } catch (_) { payload = text; }
+    log(`Response (${res.status}) ${url}`, payload);
+    if (!res.ok) {
+      const err = new Error('Request failed');
+      err.status = res.status;
+      err.payload = payload;
+      throw err;
+    }
+    return payload;
+  }
+  adminTokenInput.addEventListener('input', refreshAdminButtons);
+  adminTokenInput.addEventListener('change', refreshAdminButtons);
+  roleSelect.addEventListener('change', updateRoleVisibility);
+  serviceManageDescription.addEventListener('input', () => {
+    delete serviceManageDescription.dataset.forceNull;
+  });
+  serviceManageClear.addEventListener('click', () => {
+    serviceManageDescription.value = '';
+    serviceManageDescription.dataset.forceNull = 'true';
+  });
+  loginBtn.addEventListener('click', async () => {
+    loginStatus.textContent = '';
+    loginStatus.className = '';
+    tokenWrapper.classList.add('hidden');
+    tokenDisplayNameRow.classList.add('hidden');
+    activeDisplayName.textContent = '';
+    tokenDeviceRow.classList.add('hidden');
+    activeDevice.textContent = '';
+    if (sessionInfoStatus) {
+      sessionInfoStatus.textContent = '';
+      sessionInfoStatus.className = '';
+    }
+    if (sessionInfoResult) {
+      sessionInfoResult.value = '';
+    }
+    tokenInfo = null;
+    adminTokenInput.value = '';
+    refreshUserButtons();
+    refreshAdminButtons();
+    const username = loginUser.value.trim();
+    const password = loginPass.value;
+    if (!username || !password) {
+      loginStatus.textContent = 'Username and password are required.';
+      loginStatus.className = 'status-error';
+      return;
+    }
+    const body = { username, password };
+    const deviceCandidate = loginDeviceId.value.trim();
+    if (deviceCandidate) {
+      body.deviceId = deviceCandidate;
+    }
+    loginBtn.disabled = true;
+    try {
+      const response = await apiRequest('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify(body),
+      });
+      tokenInfo = response;
+      activeToken.textContent = response.token;
+      tokenExpiry.textContent = response.expiresAt || 'unknown';
+      activeUser.textContent = `${response.user.userId} (${response.user.role})`;
+      if (response.user && response.user.displayName) {
+        activeDisplayName.textContent = response.user.displayName;
+        tokenDisplayNameRow.classList.remove('hidden');
+      } else {
+        activeDisplayName.textContent = '';
+        tokenDisplayNameRow.classList.add('hidden');
+      }
+      if (response.deviceId) {
+        activeDevice.textContent = response.deviceId;
+        tokenDeviceRow.classList.remove('hidden');
+        loginDeviceId.value = response.deviceId;
+        storeDevice(response.deviceId);
+      }
+      tokenWrapper.classList.remove('hidden');
+      if (response.user && response.user.role === 'admin') {
+        adminTokenInput.value = response.token;
+      }
+      loginStatus.textContent = response.deviceIdIssued ? 'Login successful (new device ID issued)' : 'Login successful';
+      loginStatus.className = 'status-ok';
+    } catch (error) {
+      loginStatus.textContent = `Login failed (${error.status || 'n/a'})`;
+      loginStatus.className = 'status-error';
+    } finally {
+      loginBtn.disabled = false;
+      refreshUserButtons();
+      refreshAdminButtons();
+    }
+  });
+
+  logoutBtn.addEventListener('click', async () => {
+    loginStatus.textContent = '';
+    loginStatus.className = '';
+
+    if (!hasSession()) {
+      logoutBtn.classList.add('hidden');
+      return;
+    }
+
+    const token = tokenInfo && tokenInfo.token;
+    if (!token) {
+      logoutBtn.classList.add('hidden');
+      loginStatus.textContent = 'No active session token.';
+      loginStatus.className = 'status-error';
+      return;
+    }
+
+    logoutBtn.disabled = true;
+
+    try {
+      await apiRequest('/api/auth/logout', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      tokenInfo = null;
+      tokenWrapper.classList.add('hidden');
+      tokenDisplayNameRow.classList.add('hidden');
+      activeDisplayName.textContent = '';
+      tokenDeviceRow.classList.add('hidden');
+      activeDevice.textContent = '';
+      adminTokenInput.value = '';
+      loginStatus.textContent = 'Logged out successfully.';
+      loginStatus.className = 'status-ok';
+      if (sessionInfoStatus) {
+        sessionInfoStatus.textContent = '';
+        sessionInfoStatus.className = '';
+      }
+      if (sessionInfoResult) {
+        sessionInfoResult.value = '';
+      }
+    } catch (error) {
+      loginStatus.textContent = `Logout failed (${error.status || 'n/a'})`;
+      loginStatus.className = 'status-error';
+    } finally {
+      logoutBtn.disabled = false;
+      refreshUserButtons();
+      refreshAdminButtons();
+    }
+  });
+
+  if (sessionInfoBtn) {
+    sessionInfoBtn.addEventListener('click', async () => {
+      if (sessionInfoStatus) {
+        sessionInfoStatus.textContent = '';
+        sessionInfoStatus.className = '';
+      }
+      if (sessionInfoResult) {
+        sessionInfoResult.value = '';
+      }
+      const token = tokenInfo && tokenInfo.token;
+      if (!token) {
+        if (sessionInfoStatus) {
+          sessionInfoStatus.textContent = 'Login first to obtain a token.';
+          sessionInfoStatus.className = 'status-error';
+        }
+        return;
+      }
+      sessionInfoBtn.disabled = true;
+      try {
+        const response = await apiRequest('/api/auth/me', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!tokenInfo) {
+          tokenInfo = {};
+        }
+        tokenInfo.token = tokenInfo.token || response.token || token;
+        tokenInfo.expiresAt = response.expiresAt || tokenInfo.expiresAt;
+        if (response.user) {
+          tokenInfo.user = Object.assign({}, tokenInfo.user || {}, response.user);
+        }
+        if (sessionInfoResult) {
+          sessionInfoResult.value = JSON.stringify(response, null, 2);
+        }
+        if (sessionInfoStatus) {
+          sessionInfoStatus.textContent = 'Session fetched successfully.';
+          sessionInfoStatus.className = 'status-ok';
+        }
+        tokenWrapper.classList.remove('hidden');
+        activeToken.textContent = tokenInfo.token;
+        if (tokenInfo.expiresAt) {
+          tokenExpiry.textContent = tokenInfo.expiresAt;
+        }
+        if (tokenInfo.user) {
+          activeUser.textContent = `${tokenInfo.user.userId} (${tokenInfo.user.role})`;
+          if (tokenInfo.user.displayName) {
+            activeDisplayName.textContent = tokenInfo.user.displayName;
+            tokenDisplayNameRow.classList.remove('hidden');
+          } else {
+            activeDisplayName.textContent = '';
+            tokenDisplayNameRow.classList.add('hidden');
+          }
+        }
+        if (tokenInfo.user && tokenInfo.user.role === 'admin' && adminTokenInput.value.trim() === '') {
+          adminTokenInput.value = tokenInfo.token;
+        }
+        if (response.device && response.device.deviceId) {
+          activeDevice.textContent = response.device.deviceId;
+          tokenDeviceRow.classList.remove('hidden');
+        }
+      } catch (error) {
+        if (sessionInfoStatus) {
+          sessionInfoStatus.textContent = `Fetch failed (${error.status || 'n/a'})`;
+          sessionInfoStatus.className = 'status-error';
+        }
+      } finally {
+        sessionInfoBtn.disabled = !hasSession();
+        refreshUserButtons();
+        refreshAdminButtons();
+      }
+    });
+  }
+
+  if (purchaseServiceBtn) {
+    purchaseServiceBtn.addEventListener('click', async () => {
+      purchaseServiceStatus.textContent = '';
+      purchaseServiceStatus.className = '';
+      purchaseServiceResult.value = '';
+      delete purchaseServiceStatus.dataset.roleWarning;
+
+      const token = tokenInfo && tokenInfo.token;
+      if (!token) {
+        purchaseServiceStatus.textContent = 'Login first to obtain a token.';
+        purchaseServiceStatus.className = 'status-error';
+        return;
+      }
+
+      const codeInput = (purchaseServiceCode.value || '').trim();
+      if (!codeInput) {
+        purchaseServiceStatus.textContent = 'Service code is required.';
+        purchaseServiceStatus.className = 'status-error';
+        return;
+      }
+
+      const normalizedCode = codeInput.toUpperCase();
+      purchaseServiceCode.value = normalizedCode;
+      const notesValue = (purchaseNotes.value || '').trim();
+      const payload = {};
+      if (notesValue) {
+        payload.notes = notesValue;
+      }
+
+      purchaseServiceBtn.disabled = true;
+
+      try {
+        const response = await apiRequest(`/api/services/${encodeURIComponent(normalizedCode)}/purchase`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        purchaseServiceStatus.textContent = 'Purchase completed successfully.';
+        purchaseServiceStatus.className = 'status-ok';
+        purchaseServiceResult.value = JSON.stringify(response, null, 2);
+      } catch (error) {
+        purchaseServiceStatus.textContent = `Purchase failed (${error.status || 'n/a'})`;
+        purchaseServiceStatus.className = 'status-error';
+        purchaseServiceResult.value = error.payload ? JSON.stringify(error.payload, null, 2) : '';
+      } finally {
+        purchaseServiceBtn.disabled = false;
+        refreshUserButtons();
+      }
+    });
+  }
+
+  changeBtn.addEventListener('click', async () => {
+    changeStatus.textContent = '';
+    changeStatus.className = '';
+    const token = tokenInfo && tokenInfo.token;
+    if (!token) {
+      changeStatus.textContent = 'Login first to obtain a token.';
+      changeStatus.className = 'status-error';
+      return;
+    }
+    const current = changeCurrent.value;
+    const next = changeNew.value;
+    if (!current) {
+      changeStatus.textContent = 'Current password is required.';
+      changeStatus.className = 'status-error';
+      return;
+    }
+    if (!next) {
+      changeStatus.textContent = 'New password is required.';
+      changeStatus.className = 'status-error';
+      return;
+    }
+    if (current === next) {
+      changeStatus.textContent = 'New password must differ from current password.';
+      changeStatus.className = 'status-error';
+      return;
+    }
+    changeBtn.disabled = true;
+    try {
+      await apiRequest('/api/auth/change-password', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ currentPassword: current, newPassword: next }),
+      });
+      changeStatus.textContent = 'Password updated successfully.';
+      changeStatus.className = 'status-ok';
+      changeCurrent.value = '';
+      changeNew.value = '';
+    } catch (error) {
+      changeStatus.textContent = `Password change failed (${error.status || 'n/a'})`;
+      changeStatus.className = 'status-error';
+    } finally {
+      changeBtn.disabled = false;
+      refreshUserButtons();
+    }
+  });
+  createBtn.addEventListener('click', async () => {
+    createStatus.textContent = '';
+    createStatus.className = '';
+    createResult.value = '';
+    const token = getAdminToken(createStatus);
+    if (!token) return;
+    const role = roleSelect.value;
+    const body = { role };
+    if (role === 'student') {
+      body.student = {
+        fullName: studentInputs.fullName.value,
+        gender: studentInputs.gender.value,
+        birthDate: studentInputs.birthDate.value,
+        classCode: studentInputs.classCode.value,
+        department: studentInputs.department.value,
+        phoneNumber: studentInputs.phoneNumber.value,
+        email: studentInputs.email.value,
+      };
+    } else if (role === 'teacher') {
+      body.teacher = {
+        fullName: teacherInputs.fullName.value,
+        gender: teacherInputs.gender.value,
+        birthDate: teacherInputs.birthDate.value,
+        department: teacherInputs.department.value,
+        position: teacherInputs.position.value,
+        phoneNumber: teacherInputs.phoneNumber.value,
+        email: teacherInputs.email.value,
+      };
+    } else {
+      body.admin = {
+        fullName: adminInputs.fullName.value,
+        department: adminInputs.department.value,
+        phoneNumber: adminInputs.phoneNumber.value,
+        email: adminInputs.email.value,
+      };
+    }
+    createBtn.disabled = true;
+    try {
+      const response = await apiRequest('/api/admin/accounts', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      });
+      createStatus.textContent = 'Account created successfully';
+      createStatus.className = 'status-ok';
+      createResult.value = JSON.stringify(response, null, 2);
+    } catch (error) {
+      createStatus.textContent = `Account creation failed (${error.status || 'n/a'})`;
+      createStatus.className = 'status-error';
+      createResult.value = error.payload ? JSON.stringify(error.payload, null, 2) : '';
+    } finally {
+      createBtn.disabled = false;
+      refreshAdminButtons();
+    }
+  });
+  resetBtn.addEventListener('click', async () => {
+    resetStatus.textContent = '';
+    resetStatus.className = '';
+    resetResult.value = '';
+    const token = getAdminToken(resetStatus);
+    if (!token) return;
+    const userId = resetUserId.value.trim();
+    if (!userId) {
+      resetStatus.textContent = 'User ID is required.';
+      resetStatus.className = 'status-error';
+      return;
+    }
+    const body = {};
+    if (resetNewPassword.value.trim()) {
+      body.newPassword = resetNewPassword.value;
+    }
+    resetBtn.disabled = true;
+    try {
+      const response = await apiRequest(`/api/admin/accounts/${encodeURIComponent(userId)}/reset-password`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      });
+      resetStatus.textContent = 'Password reset successfully';
+      resetStatus.className = 'status-ok';
+      resetResult.value = JSON.stringify(response, null, 2);
+      if (!body.newPassword && response.password) {
+        resetNewPassword.value = response.password;
+      }
+    } catch (error) {
+      resetStatus.textContent = `Password reset failed (${error.status || 'n/a'})`;
+      resetStatus.className = 'status-error';
+      resetResult.value = error.payload ? JSON.stringify(error.payload, null, 2) : '';
+    } finally {
+      resetBtn.disabled = false;
+      refreshAdminButtons();
+    }
+  });
+  serviceCreateBtn.addEventListener('click', async () => {
+    serviceCreateStatus.textContent = '';
+    serviceCreateStatus.className = '';
+    serviceCreateResult.value = '';
+    const token = getAdminToken(serviceCreateStatus);
+    if (!token) return;
+    const name = serviceName.value.trim();
+    const priceValue = Number(servicePrice.value);
+    if (!name) {
+      serviceCreateStatus.textContent = 'Service name is required.';
+      serviceCreateStatus.className = 'status-error';
+      return;
+    }
+    if (!Number.isFinite(priceValue) || priceValue < 0) {
+      serviceCreateStatus.textContent = 'Price must be a non-negative number.';
+      serviceCreateStatus.className = 'status-error';
+      return;
+    }
+    const body = {
+      name,
+      price: priceValue,
+      isActive: serviceActive.value,
+      description: serviceDescription.value.trim() || null,
+    };
+    serviceCreateBtn.disabled = true;
+    try {
+      const response = await apiRequest('/api/admin/services', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      });
+      serviceCreateStatus.textContent = 'Service created successfully';
+      serviceCreateStatus.className = 'status-ok';
+      serviceCreateResult.value = JSON.stringify(response, null, 2);
+    } catch (error) {
+      serviceCreateStatus.textContent = `Service creation failed (${error.status || 'n/a'})`;
+      serviceCreateStatus.className = 'status-error';
+      serviceCreateResult.value = error.payload ? JSON.stringify(error.payload, null, 2) : '';
+    } finally {
+      serviceCreateBtn.disabled = false;
+      refreshAdminButtons();
+    }
+  });
+  serviceUpdateBtn.addEventListener('click', async () => {
+    serviceManageStatus.textContent = '';
+    serviceManageStatus.className = '';
+    serviceManageResult.value = '';
+    const token = getAdminToken(serviceManageStatus);
+    if (!token) return;
+    const code = serviceManageCode.value.trim();
+    if (!code) {
+      serviceManageStatus.textContent = 'Service code is required.';
+      serviceManageStatus.className = 'status-error';
+      return;
+    }
+    const body = {};
+    if (serviceManageName.value.trim()) {
+      body.name = serviceManageName.value.trim();
+    }
+    if (serviceManagePrice.value.trim()) {
+      const priceValue = Number(serviceManagePrice.value);
+      if (!Number.isFinite(priceValue) || priceValue < 0) {
+        serviceManageStatus.textContent = 'Price must be a non-negative number.';
+        serviceManageStatus.className = 'status-error';
+        return;
+      }
+      body.price = priceValue;
+    }
+    if (serviceManageActive.value !== '') {
+      body.isActive = serviceManageActive.value;
+    }
+    if (serviceManageDescription.dataset.forceNull === 'true') {
+      body.description = null;
+    } else if (serviceManageDescription.value.trim()) {
+      body.description = serviceManageDescription.value.trim();
+    }
+    if (Object.keys(body).length === 0) {
+      serviceManageStatus.textContent = 'Provide at least one field to update.';
+      serviceManageStatus.className = 'status-error';
+      return;
+    }
+    serviceUpdateBtn.disabled = true;
+    try {
+      const response = await apiRequest(`/api/admin/services/${encodeURIComponent(code)}`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body),
+      });
+      serviceManageStatus.textContent = 'Service updated successfully';
+      serviceManageStatus.className = 'status-ok';
+      serviceManageResult.value = JSON.stringify(response, null, 2);
+    } catch (error) {
+      serviceManageStatus.textContent = `Service update failed (${error.status || 'n/a'})`;
+      serviceManageStatus.className = 'status-error';
+      serviceManageResult.value = error.payload ? JSON.stringify(error.payload, null, 2) : '';
+    } finally {
+      serviceUpdateBtn.disabled = false;
+      refreshAdminButtons();
+    }
+  });
+  serviceDeleteBtn.addEventListener('click', async () => {
+    serviceManageStatus.textContent = '';
+    serviceManageStatus.className = '';
+    serviceManageResult.value = '';
+    const token = getAdminToken(serviceManageStatus);
+    if (!token) return;
+    const code = serviceManageCode.value.trim();
+    if (!code) {
+      serviceManageStatus.textContent = 'Service code is required.';
+      serviceManageStatus.className = 'status-error';
+      return;
+    }
+    serviceDeleteBtn.disabled = true;
+    try {
+      await apiRequest(`/api/admin/services/${encodeURIComponent(code)}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      serviceManageStatus.textContent = 'Service deleted successfully';
+      serviceManageStatus.className = 'status-ok';
+      serviceManageResult.value = '';
+    } catch (error) {
+      serviceManageStatus.textContent = `Service deletion failed (${error.status || 'n/a'})`;
+      serviceManageStatus.className = 'status-error';
+      serviceManageResult.value = error.payload ? JSON.stringify(error.payload, null, 2) : '';
+    } finally {
+      serviceDeleteBtn.disabled = false;
+      refreshAdminButtons();
+    }
+  });
+  serviceQueryBtn.addEventListener('click', async () => {
+    serviceQueryStatus.textContent = '';
+    serviceQueryStatus.className = '';
+    serviceQueryResult.value = '';
+    const code = serviceQueryCode.value.trim();
+    const text = serviceQueryText.value.trim();
+    const active = serviceQueryActive.value;
+    try {
+      if (code) {
+        const response = await apiRequest(`/api/services/${encodeURIComponent(code)}`, { method: 'GET' });
+        serviceQueryStatus.textContent = 'Service fetched successfully';
+        serviceQueryStatus.className = 'status-ok';
+        serviceQueryResult.value = JSON.stringify(response, null, 2);
+      } else {
+        const params = new URLSearchParams();
+        if (text) params.append('q', text);
+        if (active !== '') params.append('active', active);
+        const path = `/api/services${params.toString() ? `?${params.toString()}` : ''}`;
+        const response = await apiRequest(path, { method: 'GET' });
+        serviceQueryStatus.textContent = 'Services fetched successfully';
+        serviceQueryStatus.className = 'status-ok';
+        serviceQueryResult.value = JSON.stringify(response, null, 2);
+      }
+    } catch (error) {
+      serviceQueryStatus.textContent = `Fetch failed (${error.status || 'n/a'})`;
+      serviceQueryStatus.className = 'status-error';
+      serviceQueryResult.value = error.payload ? JSON.stringify(error.payload, null, 2) : '';
+    }
+  });
+  if (chatSendBtn && chatMessageInput) {
+    chatSendBtn.addEventListener('click', async () => {
+      const statusEl = chatStatus || null;
+      if (statusEl) {
+        statusEl.textContent = '';
+        statusEl.className = '';
+      }
+      const message = chatMessageInput.value.trim();
+      if (!message) {
+        if (statusEl) {
+          statusEl.textContent = 'Enter a message before sending.';
+          statusEl.className = 'status-error';
+        }
+        chatMessageInput.focus();
+        return;
+      }
+      const historyPayload = chatHistory.slice(-10);
+      chatMessageInput.value = '';
+      appendChatMessage('user', message);
+      chatHistory.push({ role: 'user', content: message });
+      if (chatHistory.length > 20) {
+        chatHistory.splice(0, chatHistory.length - 20);
+      }
+      chatSendBtn.disabled = true;
+      try {
+        const response = await apiRequest('/api/chatbot/chat', {
+          method: 'POST',
+          body: JSON.stringify({
+            message,
+            history: historyPayload,
+          }),
+        });
+        if (response && response.reply) {
+          chatHistory.push({ role: 'assistant', content: response.reply });
+          if (chatHistory.length > 20) {
+            chatHistory.splice(0, chatHistory.length - 20);
+          }
+          appendChatMessage('assistant', response.reply);
+          if (statusEl) {
+            const modelLabel = response.model || 'assistant';
+            statusEl.textContent = `Reply received from ${modelLabel}.`;
+            statusEl.className = 'status-ok';
+          }
+        } else if (statusEl) {
+          statusEl.textContent = 'Chat service returned no reply.';
+          statusEl.className = 'status-error';
+        }
+      } catch (error) {
+        if (statusEl) {
+          let detail = '';
+          if (error.payload && typeof error.payload === 'object' && error.payload.error) {
+            detail = `: ${error.payload.error}`;
+          }
+          statusEl.textContent = `Chat request failed (${error.status || 'n/a'})${detail}`;
+          statusEl.className = 'status-error';
+        }
+      } finally {
+        chatSendBtn.disabled = false;
+        chatMessageInput.focus();
+      }
+    });
+  }
+  if (chatResetBtn) {
+    chatResetBtn.addEventListener('click', () => {
+      clearChat();
+      if (chatMessageInput) {
+        chatMessageInput.value = '';
+        chatMessageInput.focus();
+      }
+    });
+  }
+  if (chatMessageInput && chatSendBtn) {
+    chatMessageInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+        event.preventDefault();
+        chatSendBtn.click();
+      }
+    });
+  }
+  updateRoleVisibility();
+  refreshUserButtons();
+  refreshAdminButtons();
+})();
+</script>
+</body>
+</html>
