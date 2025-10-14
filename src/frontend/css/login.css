@@ -1,6 +1,4 @@
 :root {
-  color-scheme: light;
-  font-family: 'Be Vietnam Pro', 'Segoe UI', Tahoma, sans-serif;
   --surface: #ffffff;
   --surface-alt: rgba(255, 255, 255, 0.85);
   --primary: #0ea5e9;
@@ -10,10 +8,48 @@
   --text-muted: #475569;
   --line: rgba(148, 163, 184, 0.28);
   --ring: rgba(14, 165, 233, 0.22);
-  background: radial-gradient(circle at top left, rgba(14, 165, 233, 0.16), transparent 55%),
+  --auth-bg: radial-gradient(circle at top left, rgba(14, 165, 233, 0.16), transparent 55%),
     radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.18), transparent 50%),
     linear-gradient(165deg, #e0f2fe, #ecfdf5);
-  --input-font-size: 0.9rem;
+  --auth-shell-bg: rgba(248, 250, 252, 0.65);
+  --auth-hero-bg: #082f49;
+  --auth-hero-overlay: linear-gradient(200deg, rgba(8, 47, 73, 0.75), rgba(8, 82, 70, 0.82));
+}
+
+[data-theme="dark"] {
+  --surface: #1e293b;
+  --surface-alt: rgba(30, 41, 59, 0.85);
+  --primary: #38bdf8;
+  --primary-dark: #0ea5e9;
+  --accent: #4ade80;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --line: rgba(148, 163, 184, 0.16);
+  --ring: rgba(56, 189, 248, 0.25);
+  --auth-bg: radial-gradient(circle at top left, rgba(56, 189, 248, 0.12), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(74, 222, 128, 0.14), transparent 50%),
+    linear-gradient(165deg, #0f172a, #0f1a17);
+  --auth-shell-bg: rgba(15, 23, 42, 0.75);
+  --auth-hero-bg: #0f172a;
+  --auth-hero-overlay: linear-gradient(200deg, rgba(15, 23, 42, 0.82), rgba(17, 38, 34, 0.85));
+}
+
+[data-theme="presentation"] {
+  --surface: #ffffff;
+  --surface-alt: rgba(255, 255, 255, 0.92);
+  --primary: #0284c7;
+  --primary-dark: #0369a1;
+  --accent: #16a34a;
+  --text-main: #0f172a;
+  --text-muted: #334155;
+  --line: rgba(15, 23, 42, 0.16);
+  --ring: rgba(2, 132, 199, 0.25);
+  --auth-bg: radial-gradient(circle at top left, rgba(2, 132, 199, 0.18), transparent 55%),
+    radial-gradient(circle at bottom right, rgba(22, 163, 74, 0.2), transparent 50%),
+    linear-gradient(165deg, #f0f9ff, #f0fdf4);
+  --auth-shell-bg: rgba(255, 255, 255, 0.85);
+  --auth-hero-bg: #0c4a6e;
+  --auth-hero-overlay: linear-gradient(200deg, rgba(12, 74, 110, 0.82), rgba(12, 89, 64, 0.88));
 }
 
 *,
@@ -30,6 +66,7 @@ body {
   align-items: center;
   padding: clamp(16px, 5vw, 48px);
   color: var(--text-main);
+  background: var(--auth-bg);
 }
 
 [hidden] {
@@ -41,11 +78,11 @@ body {
   min-height: clamp(640px, 80vh, 760px);
   display: grid;
   grid-template-columns: 1fr;
-  background: rgba(248, 250, 252, 0.65);
+  background: var(--auth-shell-bg);
   border-radius: 28px;
   overflow: hidden;
   position: relative;
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  border: 1px solid var(--line);
   box-shadow: 0 40px 80px rgba(15, 23, 42, 0.22);
   backdrop-filter: blur(24px);
 }
@@ -63,7 +100,7 @@ body {
   display: none;
   position: relative;
   overflow: hidden;
-  background: #082f49;
+  background: var(--auth-hero-bg);
 }
 
 .auth-hero__image {
@@ -79,7 +116,7 @@ body {
 .auth-hero__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(200deg, rgba(8, 47, 73, 0.75), rgba(8, 82, 70, 0.82));
+  background: var(--auth-hero-overlay);
   backdrop-filter: blur(6px);
 }
 
