@@ -349,13 +349,16 @@ img {
 
 
 .container {
-
-  width: min(1180px, 100%);
-
+  width: min(1280px, 100%);
   margin: 0 auto;
+  padding: 0 clamp(16px, 4vw, 48px);
+}
 
-  padding: 0 clamp(20px, 5vw, 48px);
-
+@media (min-width: 1440px) {
+  .container {
+    width: min(1400px, 95%);
+    padding: 0 clamp(24px, 3vw, 64px);
+  }
 }
 
 
@@ -1941,19 +1944,45 @@ img {
   }
 
   .chat-widget__header {
-    padding: 16px;
+    padding: 14px 16px;
     border-radius: 0;
+  }
+
+  .chat-widget__identity h2 {
+    font-size: 0.9rem;
+  }
+
+  .chat-widget__presence {
+    font-size: 0.7rem;
+  }
+
+  .chat-widget__theme-toggle,
+  .chat-widget__expand,
+  .chat-widget__close {
+    width: 34px;
+    height: 34px;
   }
 
   .chat-widget__messages {
     flex: 1 1 auto;
     min-height: 0;
     padding: 16px;
-    gap: 16px;
+    gap: 14px;
   }
 
   .chat-widget__message {
-    max-width: 90%;
+    max-width: 92%;
+  }
+
+  .chat-widget__bubble {
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+
+  .chat-widget__bubble pre {
+    font-size: 0.82em;
+    padding: 12px 14px;
+    padding-top: 38px;
   }
 
   .chat-widget__form {
@@ -1962,85 +1991,299 @@ img {
 
   .chat-widget__composer {
     padding: 8px 12px;
+    border-radius: 24px;
+  }
+
+  .chat-widget__input {
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
+  .chat-widget__send {
+    width: 36px;
+    height: 36px;
   }
 
   .chat-widget__scroll-bottom {
     bottom: 90px;
-    right: 20px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .chat-widget__suggestion {
+    font-size: 0.75rem;
+    padding: 5px 10px;
   }
 
   .help-floating {
     bottom: 20px;
     right: 20px;
     padding: 12px 16px;
+    font-size: 0.9rem;
   }
 
   .help-floating span:not(.material-icons) {
     display: none;
   }
+
+  .help-floating .material-icons {
+    font-size: 22px;
+  }
 }
-@media (max-width: 900px) {
 
-  .nav-links {
-
-    display: none;
-
+@media (max-width: 480px) {
+  .chat-widget__header {
+    padding: 12px 14px;
   }
 
+  .chat-widget__avatar {
+    width: 32px;
+    height: 32px;
+  }
 
+  .chat-widget__identity h2 {
+    font-size: 0.85rem;
+  }
+
+  .chat-widget__theme-toggle,
+  .chat-widget__expand,
+  .chat-widget__close {
+    width: 32px;
+    height: 32px;
+  }
+
+  .chat-widget__actions {
+    gap: 8px;
+  }
+
+  .chat-widget__messages {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .chat-widget__bubble {
+    padding: 9px 12px;
+    font-size: 0.9rem;
+  }
+
+  .chat-widget__form {
+    padding: 10px 14px 18px;
+  }
+
+  .chat-widget__composer {
+    padding: 6px 10px;
+  }
+
+  .chat-widget__send {
+    width: 34px;
+    height: 34px;
+  }
+
+  .help-floating {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 12px;
+  }
+
+  .help-floating .material-icons {
+    font-size: 20px;
+  }
+}
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .container {
+    padding: 0 clamp(20px, 4vw, 40px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .nav-links {
+    gap: clamp(12px, 2vw, 20px);
+    font-size: 0.9rem;
+  }
 
   .header-actions {
+    gap: clamp(12px, 2.5vw, 20px);
+  }
+}
 
-    margin-left: auto;
-
+@media (max-width: 900px) {
+  .nav-links {
+    display: none;
   }
 
+  .header-actions {
+    margin-left: auto;
+  }
+
+  .brand img {
+    width: 52px;
+  }
+
+  .theme-toggle {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .user-link {
+    height: 40px;
+    padding: 0 14px;
+    font-size: 0.9rem;
+  }
 }
 
 
 
-@media (max-width: 600px) {
-
-  .site-main {
-
-    gap: 48px;
-
-    padding-bottom: 56px;
-
+@media (max-width: 768px) {
+  .hero-content {
+    grid-template-columns: 1fr;
+    gap: clamp(24px, 6vw, 40px);
   }
 
+  .program-grid,
+  .campus-grid,
+  .services-grid,
+  .news-grid {
+    grid-template-columns: 1fr;
+    gap: clamp(16px, 4vw, 20px);
+  }
 
+  .section {
+    padding: clamp(32px, 5vw, 56px) 0;
+  }
+
+  .section-heading {
+    text-align: center;
+  }
+
+  .section-subtitle {
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .site-main {
+    gap: clamp(32px, 8vw, 48px);
+    padding-bottom: clamp(40px, 8vw, 56px);
+  }
 
   .hero {
-
-    padding: 42px 0;
-
+    padding: clamp(32px, 8vw, 48px) 0;
+    min-height: clamp(420px, 75vh, 720px);
   }
-
-
 
   .hero-content.container {
-
-    padding: 0 24px;
-
+    padding: 0 clamp(16px, 4vw, 24px);
   }
-
-
 
   .highlight-card {
-
     flex-wrap: wrap;
-
+    padding: 18px 20px;
+    gap: 16px;
   }
-
-
 
   .highlight-metric {
-
     width: 100%;
-
+    font-size: clamp(2rem, 10vw, 3rem);
   }
 
+  .highlight-content strong {
+    font-size: 1rem;
+  }
+
+  .highlight-content p {
+    font-size: 0.9rem;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .card h3 {
+    font-size: 1.05rem;
+  }
+
+  .card p {
+    font-size: 0.95rem;
+  }
+
+  .footer-columns {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .footer-columns h4 {
+    font-size: 0.95rem;
+  }
+
+  .footer-columns p {
+    font-size: 0.9rem;
+  }
+
+  .brand img {
+    width: 48px;
+  }
+
+  .header-inner {
+    padding: clamp(10px, 2vw, 14px) 0;
+  }
+
+  .theme-toggle {
+    padding: 6px 10px;
+  }
+
+  .user-link,
+  .user-pill,
+  .user-logout {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .hero {
+    min-height: clamp(380px, 85vh, 640px);
+  }
+
+  .hero-intro h1 {
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
+  }
+
+  .hero-intro p {
+    font-size: 0.95rem;
+  }
+
+  .highlight-card {
+    padding: 16px;
+  }
+
+  .btn-secondary {
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .help-floating {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 14px;
+  }
+
+  .brand img {
+    width: 44px;
+  }
+
+  .header-actions {
+    gap: 10px;
+  }
+
+  .theme-toggle__dropdown {
+    min-width: 200px;
+    right: -10px;
+  }
 }
 
 
