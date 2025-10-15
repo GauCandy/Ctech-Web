@@ -6,6 +6,7 @@ const { authRouter } = require('../api/features/auth/router');
 const { adminRouter } = require('../api/features/admin/router');
 const { servicesRouter } = require('../api/features/services/router');
 const { chatbotRouter } = require('../api/features/chatbot/router');
+const { timetableRouter } = require('../api/features/timetable/router');
 
 function createApp() {
   const app = express();
@@ -80,6 +81,7 @@ function createApp() {
   app.use('/api/admin', adminRouter);
   app.use('/api/services', servicesRouter);
   app.use('/api/chatbot', chatbotRouter);
+  app.use('/api/timetable', timetableRouter);
 
   // Mac dinh tra ve giao dien frontend cho cac GET path (tru /api) neu chua duoc khai bao.
   app.get(/^\/(?!api).*/, (req, res, next) => {

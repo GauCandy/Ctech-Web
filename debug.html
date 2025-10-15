@@ -301,6 +301,17 @@ textarea{min-height:120px;}
   <textarea id="serviceQueryResult" readonly rows="6" placeholder="Results will appear here..."></textarea>
 </section>
 <section>
+  <h2>Timetable Parser</h2>
+  <small>Uploads a timetable PDF to <code>/api/timetable/parse</code> and shows the parsed JSON.</small>
+  <label for="timetableFile">Timetable PDF</label>
+  <input id="timetableFile" type="file" accept="application/pdf" />
+  <div class="inline">
+    <button id="timetableParseBtn" type="button">Parse Timetable</button>
+    <span id="timetableStatus"></span>
+  </div>
+  <textarea id="timetableResult" readonly rows="10" placeholder="Parsed timetable data will appear here..."></textarea>
+</section>
+<section>
   <h2>Chatbot (Public)</h2>
   <small>Sends requests to POST /api/chatbot/chat using your base URL.</small>
   <div id="chatLog" class="chat-log" aria-live="polite"></div>
@@ -375,6 +386,10 @@ textarea{min-height:120px;}
   const serviceQueryCode = $('serviceQueryCode');
   const serviceQueryText = $('serviceQueryText');
   const serviceQueryActive = $('serviceQueryActive');
+  const timetableFile = $('timetableFile');
+  const timetableParseBtn = $('timetableParseBtn');
+  const timetableStatus = $('timetableStatus');
+  const timetableResult = $('timetableResult');
   const chatMessageInput = $('chatMessage');
   const chatSendBtn = $('chatSendBtn');
   const chatResetBtn = $('chatResetBtn');
@@ -535,10 +550,21 @@ textarea{min-height:120px;}
   async function apiRequest(path, options = {}) {
     const base = baseUrl.value.replace(/\/$/, '');
     const url = `${base}${path}`;
-    const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+    const headers = Object.assign({}, options.headers || {});
+    const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
+    if (!isFormData) {
+      const hasContentType = Object.keys(headers).some(
+        (key) => key.toLowerCase() === 'content-type'
+      );
+      if (!hasContentType) {
+        headers['Content-Type'] = 'application/json';
+      }
+    }
     const init = Object.assign({}, options, { headers });
     let bodyPreview;
-    if (typeof options.body === 'string') {
+    if (isFormData) {
+      bodyPreview = '[FormData]';
+    } else if (typeof options.body === 'string') {
       try { bodyPreview = JSON.parse(options.body); } catch (_) { bodyPreview = options.body; }
     }
     log(`Request: ${options.method || 'GET'} ${url}`, bodyPreview);
@@ -1114,6 +1140,47 @@ textarea{min-height:120px;}
       serviceQueryResult.value = error.payload ? JSON.stringify(error.payload, null, 2) : '';
     }
   });
+  if (timetableParseBtn && timetableFile && timetableStatus && timetableResult) {
+    timetableParseBtn.addEventListener('click', async () => {
+      timetableStatus.textContent = '';
+      timetableStatus.className = '';
+      timetableResult.value = '';
+      const file = timetableFile.files && timetableFile.files[0];
+      if (!file) {
+        timetableStatus.textContent = 'Chọn file PDF trước khi gửi.';
+        timetableStatus.className = 'status-error';
+        timetableFile.focus();
+        return;
+      }
+      timetableParseBtn.disabled = true;
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await apiRequest('/api/timetable/parse', {
+          method: 'POST',
+          body: formData,
+        });
+        timetableStatus.textContent = 'Đã xử lý file thời khóa biểu.';
+        timetableStatus.className = 'status-ok';
+        timetableResult.value = JSON.stringify(response, null, 2);
+      } catch (error) {
+        let detail = '';
+        if (error.payload && typeof error.payload === 'object' && error.payload.error) {
+          detail = `: ${error.payload.error}`;
+        }
+        timetableStatus.textContent = `Xử lý thất bại (${error.status || 'n/a'})${detail}`;
+        timetableStatus.className = 'status-error';
+        timetableResult.value = error.payload ? JSON.stringify(error.payload, null, 2) : '';
+      } finally {
+        timetableParseBtn.disabled = false;
+      }
+    });
+    timetableFile.addEventListener('change', () => {
+      timetableStatus.textContent = '';
+      timetableStatus.className = '';
+      timetableResult.value = '';
+    });
+  }
   if (chatSendBtn && chatMessageInput) {
     chatSendBtn.addEventListener('click', async () => {
       const statusEl = chatStatus || null;
