@@ -56,26 +56,26 @@
 
 /* Presentation mode - High contrast for projectors */
 [data-theme="presentation"] {
-  --bg-primary: linear-gradient(180deg, #ffffff, #f8fafc);
+  --bg-primary: #ffffff;
   --surface: #ffffff;
   --surface-elevated: #ffffff;
-  --border-soft: rgba(15, 23, 42, 0.3);
-  --primary: #059669;
-  --primary-dark: #047857;
-  --primary-light: #10b981;
-  --accent: #0284c7;
-  --accent-light: #0ea5e9;
+  --border-soft: rgba(0, 0, 0, 0.4);
+  --primary: #047857;
+  --primary-dark: #065f46;
+  --primary-light: #059669;
+  --accent: #0369a1;
+  --accent-light: #0284c7;
   --text-main: #000000;
-  --text-muted: #1e293b;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --text-muted: #0f172a;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
 
-  --chat-glass-bg: rgba(255, 255, 255, 0.98);
-  --chat-glass-border: rgba(15, 23, 42, 0.2);
-  --chat-backdrop-blur: 10px;
-  --chat-message-user: linear-gradient(135deg, #0891b2, #0284c7);
-  --chat-message-bot: rgba(248, 250, 252, 0.95);
+  --chat-glass-bg: #ffffff;
+  --chat-glass-border: rgba(0, 0, 0, 0.3);
+  --chat-backdrop-blur: 5px;
+  --chat-message-user: linear-gradient(135deg, #0369a1, #0284c7);
+  --chat-message-bot: #f1f5f9;
 }
 
 body {
@@ -98,25 +98,40 @@ body {
 
 /* Presentation mode enhancements */
 [data-theme="presentation"] .site-header {
-  background: rgba(255, 255, 255, 0.98);
-  border-bottom: 2px solid rgba(15, 23, 42, 0.2);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #ffffff;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 [data-theme="presentation"] .card,
 [data-theme="presentation"] .highlight-card {
-  border: 2px solid rgba(15, 23, 42, 0.15);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 3px solid rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 [data-theme="presentation"] .hero::after {
-  background: linear-gradient(135deg, rgba(5, 150, 105, 0.95), rgba(4, 120, 87, 0.9));
+  background: linear-gradient(135deg, rgba(4, 120, 87, 0.92), rgba(6, 95, 70, 0.88));
 }
 
 [data-theme="presentation"] .btn-secondary {
-  border: 2px solid rgba(0, 0, 0, 0.8);
+  border: 3px solid rgba(0, 0, 0, 0.9);
   color: #000000;
+  font-weight: 800;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="presentation"] .hero-intro h1,
+[data-theme="presentation"] .hero-intro p {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="presentation"] .nav-links a {
   font-weight: 700;
+}
+
+[data-theme="presentation"] .card h3 {
+  font-weight: 800;
+  color: var(--primary-dark);
 }
 
 /* Theme toggle button styles */

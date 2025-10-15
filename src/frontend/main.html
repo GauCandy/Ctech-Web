@@ -13,6 +13,7 @@
     />
     <link rel="stylesheet" href="/css/main.css" />
     <link rel="stylesheet" href="/css/enhancements.css" />
+    <link rel="stylesheet" href="/css/floating-buttons.css" />
     <link rel="stylesheet" href="/css/loader.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
@@ -32,7 +33,7 @@
         </a>
         <div class="header-actions">
           <nav class="nav-links" aria-label="Điều hướng chính">
-            <a href="#gioi-thieu">Giới thiệu</a>
+            <a href="#tai-sao-chon-ctech">Giới thiệu</a>
             <a href="#chuong-trinh">Chương trình</a>
             <a href="#doi-song">Đời sống</a>
             <a href="/services">Dịch vụ</a>
@@ -87,6 +88,81 @@
             </p>
             <div class="hero-actions">
               <a class="btn-secondary" href="#chuong-trinh">Khám phá chương trình</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-about" id="tai-sao-chon-ctech">
+        <div class="about-container">
+          <div class="about-header">
+            <div class="about-badge">CTECH</div>
+            <h2 class="about-main-title">Tại sao chọn CTECH</h2>
+            <div class="about-intro-box">
+              <h3>Trường Cao đẳng Kỹ thuật - Công nghệ Bách Khoa</h3>
+              <p class="about-meta">
+                <strong>Mã trường: CCG</strong> • Thành lập <strong>01/10/2008</strong>
+              </p>
+              <p class="about-description">
+                Được thành lập bởi các giáo sư và tiến sĩ của Đại học Bách Khoa Hà Nội, CTECH là cơ sở giáo dục nghề nghiệp
+                uy tín, hướng đến mục tiêu trang bị toàn diện cho sinh viên về kiến thức chuyên môn, kỹ năng nghề nghiệp và
+                hiểu biết xã hội, giúp họ tự tin hòa nhập thị trường lao động trong nước và quốc tế.
+              </p>
+            </div>
+          </div>
+
+          <div class="about-5c-section">
+            <div class="about-5c-title">
+              <span class="c5-badge">5C</span>
+              <h3>Mô hình trường thực nghiệm chuẩn 5C</h3>
+              <p>CTECH chú trọng đào tạo kiến thức, tay nghề và rèn luyện kỹ năng mềm, giúp sinh viên tự tin hội nhập và phát triển bền vững</p>
+            </div>
+
+            <div class="c5-grid">
+              <article class="c5-card c5-card--1">
+                <div class="c5-number">01</div>
+                <div class="c5-icon">
+                  <span class="material-icons">school</span>
+                </div>
+                <h4>Chất lượng giảng dạy</h4>
+                <p>Đội ngũ giảng viên giỏi chuyên môn từ các doanh nghiệp lớn, mang kinh nghiệm thực tế cho sinh viên</p>
+              </article>
+
+              <article class="c5-card c5-card--2">
+                <div class="c5-number">02</div>
+                <div class="c5-icon">
+                  <span class="material-icons">apartment</span>
+                </div>
+                <h4>Cơ sở vật chất hiện đại</h4>
+                <p>Phòng học, phòng thí nghiệm và xưởng thực hành đạt tiêu chuẩn quốc tế</p>
+              </article>
+
+              <article class="c5-card c5-card--3">
+                <div class="c5-number">03</div>
+                <div class="c5-icon">
+                  <span class="material-icons">work</span>
+                </div>
+                <h4>Chương trình thực tiễn</h4>
+                <p>Tiếp cận dự án thực tế, ứng dụng kiến thức ngay trong quá trình học</p>
+              </article>
+
+              <article class="c5-card c5-card--4">
+                <div class="c5-number">04</div>
+                <div class="c5-icon">
+                  <span class="material-icons">handshake</span>
+                </div>
+                <h4>Doanh nghiệp hợp tác</h4>
+                <p>Mạng lưới liên kết với các tập đoàn lớn, cơ hội thực tập và việc làm</p>
+              </article>
+
+              <article class="c5-card c5-card--5">
+                <div class="c5-number">05</div>
+                <div class="c5-icon">
+                  <span class="material-icons">public</span>
+                </div>
+                <h4>Hội nhập quốc tế</h4>
+                <p>Hợp tác với trường đại học, tổ chức quốc tế, chương trình liên thông và làm việc nước ngoài</p>
+              </article>
             </div>
           </div>
         </div>
@@ -238,6 +314,10 @@
     <button class="help-floating" type="button" data-chat-toggle aria-label="Cần trợ giúp?">
       <span class="material-icons" aria-hidden="true">contact_support</span>
       <span>Cần trợ giúp?</span>
+    </button>
+
+    <button class="back-to-top" type="button" data-back-to-top aria-label="Về đầu trang" hidden>
+      <span class="material-icons" aria-hidden="true">home</span>
     </button>
 
     <section class="chat-widget" data-chat-root aria-hidden="true" hidden>
@@ -1204,6 +1284,39 @@
 
         initIndicator();
       })();
+    </script>
+
+    <script>
+      // Back to top button
+      (() => {
+        const backToTopBtn = document.querySelector('[data-back-to-top]');
+        if (!backToTopBtn) return;
+
+        const toggleVisibility = () => {
+          if (window.scrollY > 400) {
+            backToTopBtn.hidden = false;
+            backToTopBtn.classList.add('visible');
+          } else {
+            backToTopBtn.classList.remove('visible');
+            setTimeout(() => {
+              if (!backToTopBtn.classList.contains('visible')) {
+                backToTopBtn.hidden = true;
+              }
+            }, 300);
+          }
+        };
+
+        window.addEventListener('scroll', toggleVisibility, { passive: true });
+        toggleVisibility();
+
+        backToTopBtn.addEventListener('click', () => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      })();
+
     </script>
   </body>
 </html>

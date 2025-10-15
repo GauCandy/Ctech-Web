@@ -36,20 +36,18 @@
 
 [data-theme="presentation"] {
   --surface: #ffffff;
-  --surface-alt: rgba(255, 255, 255, 0.92);
-  --primary: #0284c7;
-  --primary-dark: #0369a1;
-  --accent: #16a34a;
-  --text-main: #0f172a;
-  --text-muted: #334155;
-  --line: rgba(15, 23, 42, 0.16);
-  --ring: rgba(2, 132, 199, 0.25);
-  --auth-bg: radial-gradient(circle at top left, rgba(2, 132, 199, 0.18), transparent 55%),
-    radial-gradient(circle at bottom right, rgba(22, 163, 74, 0.2), transparent 50%),
-    linear-gradient(165deg, #f0f9ff, #f0fdf4);
-  --auth-shell-bg: rgba(255, 255, 255, 0.85);
+  --surface-alt: #ffffff;
+  --primary: #0369a1;
+  --primary-dark: #075985;
+  --accent: #047857;
+  --text-main: #000000;
+  --text-muted: #0f172a;
+  --line: rgba(0, 0, 0, 0.35);
+  --ring: rgba(3, 105, 161, 0.3);
+  --auth-bg: #f8fafc;
+  --auth-shell-bg: #ffffff;
   --auth-hero-bg: #0c4a6e;
-  --auth-hero-overlay: linear-gradient(200deg, rgba(12, 74, 110, 0.82), rgba(12, 89, 64, 0.88));
+  --auth-hero-overlay: linear-gradient(200deg, rgba(7, 89, 133, 0.9), rgba(4, 120, 87, 0.88));
 }
 
 *,
@@ -313,7 +311,7 @@ body {
   letter-spacing: var(--password-letter-spacing);
   line-height: 1.5;
   white-space: pre;
-  color: rgba(15, 23, 42, 0.92);
+  color: var(--text-main);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.12s ease;
