@@ -9,12 +9,45 @@ const DEBUG_MODE = process.env.DEBUG === 'true';
 const FALLBACK_LOG_DIR = path.join(__dirname, '../../../../../../debug/ai_fallback');
 
 let openaiClient = null;
+let currentApiKeyIndex = 0; // Track which API key we're using (0 = primary, 1 = backup)
+
+// Get available API keys
+function getAvailableApiKeys() {
+  const keys = [];
+  if (process.env.OPENAI_API_KEY) keys.push(process.env.OPENAI_API_KEY);
+  if (process.env.OPENAI_API_KEY_2) keys.push(process.env.OPENAI_API_KEY_2);
+  return keys;
+}
+
+// Initialize OpenAI client with current API key
+function initializeClient() {
+  const apiKeys = getAvailableApiKeys();
+
+  if (apiKeys.length === 0) {
+    return null;
+  }
+
+  const apiKey = apiKeys[currentApiKeyIndex];
+  return new OpenAI({ apiKey });
+}
+
+// Switch to backup API key
+function switchToBackupKey() {
+  const apiKeys = getAvailableApiKeys();
+
+  if (currentApiKeyIndex < apiKeys.length - 1) {
+    currentApiKeyIndex++;
+    openaiClient = null; // Force recreate client with new key
+    console.log(`[AI Parser] Switched to backup API key (index ${currentApiKeyIndex})`);
+    return true;
+  }
+
+  return false;
+}
 
 // Initialize OpenAI client if enabled
-if ((AI_ENABLED || AI_FALLBACK) && process.env.OPENAI_API_KEY) {
-  openaiClient = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
+if (AI_ENABLED || AI_FALLBACK) {
+  openaiClient = initializeClient();
 }
 
 /**
@@ -141,6 +174,18 @@ CHỈ TRẢ VỀ JSON, KHÔNG THÊM TEXT NÀO KHÁC.`;
     return parsed;
   } catch (error) {
     console.error('[AI Parser] Error:', error.message);
+
+    // Check if error is quota/rate limit related
+    if (error.status === 429 || error.code === 'insufficient_quota') {
+      if (switchToBackupKey()) {
+        console.log('[AI Parser] Retrying with backup API key...');
+        openaiClient = initializeClient();
+        if (openaiClient) {
+          return parseWithAI(text); // Retry with new key
+        }
+      }
+    }
+
     throw error;
   }
 }

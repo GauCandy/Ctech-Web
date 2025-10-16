@@ -59,6 +59,76 @@
             </p>
           </div>
 
+          <!-- Bảng giờ học cố định -->
+          <div class="time-table-section">
+            <h3 class="time-table-title">Bảng giờ học</h3>
+            <div class="time-table-wrapper">
+              <table class="time-table">
+                <thead>
+                  <tr>
+                    <th rowspan="2" class="time-table-header-main">Tiết</th>
+                    <th colspan="2" class="time-table-header-session morning">Buổi sáng</th>
+                    <th colspan="2" class="time-table-header-session afternoon">Buổi chiều</th>
+                    <th colspan="2" class="time-table-header-session evening">Buổi tối</th>
+                  </tr>
+                  <tr>
+                    <th class="time-table-subheader">Lý thuyết</th>
+                    <th class="time-table-subheader">Thực hành/Tích hợp</th>
+                    <th class="time-table-subheader">Lý thuyết</th>
+                    <th class="time-table-subheader">Thực hành/Tích hợp</th>
+                    <th class="time-table-subheader">Lý thuyết</th>
+                    <th class="time-table-subheader">Thực hành/Tích hợp</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="time-table-period">1</td>
+                    <td>7h00 - 7h45</td>
+                    <td>7h00 - 8h00</td>
+                    <td>12h25 - 13h10</td>
+                    <td>12h25 - 13h25</td>
+                    <td>18h00 - 18h45</td>
+                    <td>18h00 - 19h00</td>
+                  </tr>
+                  <tr>
+                    <td class="time-table-period">2</td>
+                    <td>7h50 - 8h35</td>
+                    <td>8h00 - 9h00</td>
+                    <td>13h15 - 14h00</td>
+                    <td>13h25 - 14h25</td>
+                    <td>18h45 - 19h30</td>
+                    <td>19h00 - 20h00</td>
+                  </tr>
+                  <tr>
+                    <td class="time-table-period">3</td>
+                    <td>8h45 - 9h30</td>
+                    <td>9h10 - 10h10</td>
+                    <td>14h10 - 14h55</td>
+                    <td>14h35 - 15h35</td>
+                    <td>19h30 - 20h15</td>
+                    <td>20h00 - 21h00</td>
+                  </tr>
+                  <tr>
+                    <td class="time-table-period">4</td>
+                    <td>9h35 - 10h20</td>
+                    <td>10h10 - 11h10</td>
+                    <td>15h00 - 15h45</td>
+                    <td>15h35 - 16h35</td>
+                    <td colspan="2" class="time-table-empty"></td>
+                  </tr>
+                  <tr>
+                    <td class="time-table-period">5</td>
+                    <td>10h25 - 11h10</td>
+                    <td>11h10 - 12h10</td>
+                    <td>15h50 - 16h35</td>
+                    <td>16h35 - 17h35</td>
+                    <td colspan="2" class="time-table-empty"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <div class="upload-section">
             <div class="upload-card">
               <div class="upload-icon">
@@ -97,19 +167,7 @@
 
           <div id="schedule-container" class="schedule-container" hidden>
             <div class="schedule-header">
-              <div class="schedule-header-left">
-                <h2 id="schedule-class-name">Thời khóa biểu</h2>
-                <div id="schedule-stats" class="schedule-stats" hidden>
-                  <div class="stat-item">
-                    <span class="material-icons">event</span>
-                    <span id="total-classes">0</span> lớp
-                  </div>
-                  <div class="stat-item">
-                    <span class="material-icons">schedule</span>
-                    <span id="total-periods">0</span> tiết
-                  </div>
-                </div>
-              </div>
+              <h2 id="schedule-class-name">Thời khóa biểu</h2>
               <div class="schedule-controls">
                 <select id="week-select" class="week-select">
                   <option value="">Chọn tuần...</option>
@@ -226,9 +284,6 @@
         const weekSelect = document.getElementById('week-select');
         const scheduleView = document.getElementById('schedule-view');
         const scheduleClassName = document.getElementById('schedule-class-name');
-        const scheduleStats = document.getElementById('schedule-stats');
-        const totalClasses = document.getElementById('total-classes');
-        const totalPeriods = document.getElementById('total-periods');
 
         let scheduleData = null;
         let selectedClassName = null;
@@ -336,31 +391,16 @@
           }
         }
 
-        function calculatePeriods(subject, selectedWeek) {
-          // Tính số tiết cho môn học trong tuần cụ thể
+        function getPeriodsForDay(subject, selectedWeek) {
+          // Kiểm tra nếu tuần này có weekPeriods đặc biệt
           if (subject.weekPeriods) {
             const weekPeriod = subject.weekPeriods.find(wp => wp.week === selectedWeek);
-            if (weekPeriod) {
-              return weekPeriod.periods || 5;
+            if (weekPeriod && weekPeriod.periods) {
+              return weekPeriod.periods;
             }
           }
-          return 5; // Mặc định 5 tiết/buổi
-        }
-
-        function updateStats(weekSubjects, selectedWeek) {
-          if (!scheduleStats || !totalClasses || !totalPeriods) return;
-
-          const uniqueSubjects = new Set();
-          let totalPeriodsCount = 0;
-
-          weekSubjects.forEach(subject => {
-            uniqueSubjects.add(subject.subjectCode);
-            totalPeriodsCount += calculatePeriods(subject, selectedWeek);
-          });
-
-          totalClasses.textContent = uniqueSubjects.size;
-          totalPeriods.textContent = totalPeriodsCount;
-          scheduleStats.hidden = false;
+          // Mặc định 5 tiết/buổi
+          return 5;
         }
 
         function renderSchedule() {
@@ -373,7 +413,6 @@
                 <p>Chọn tuần để xem thời khóa biểu</p>
               </div>
             `;
-            if (scheduleStats) scheduleStats.hidden = true;
             return;
           }
 
@@ -410,12 +449,8 @@
                 <p>Không có lịch học trong tuần này</p>
               </div>
             `;
-            if (scheduleStats) scheduleStats.hidden = true;
             return;
           }
-
-          // Update statistics
-          updateStats(weekSubjects, selectedWeek);
 
           // Group by day and session
           const scheduleGrid = {};
@@ -461,15 +496,23 @@
                       selectedWeek >= r.weekStart && selectedWeek <= r.weekEnd
                     )?.room) || 'Chưa xác định';
 
+                  // Lấy số tiết của ngày hôm đó
+                  const periodsToday = getPeriodsForDay(subject, selectedWeek);
+
+                  // Tổng số tiết của môn học
+                  const totalHours = subject.hours || 0;
+
                   html += `
                     <div class="subject-block">
                       <div class="subject-block-header">
                         <span class="subject-code-small">${subject.subjectCode || ''}</span>
+                        <span class="subject-periods-badge">${periodsToday} tiết</span>
                       </div>
                       <div class="subject-name-small">${subject.subjectName || 'Không rõ'}</div>
                       <div class="subject-info-small">
                         <div><span class="material-icons icon-tiny">person</span>${subject.teacher || 'N/A'}</div>
                         <div><span class="material-icons icon-tiny">room</span>${room}</div>
+                        <div><span class="material-icons icon-tiny">schedule</span>Tổng: ${totalHours} tiết</div>
                       </div>
                     </div>
                   `;

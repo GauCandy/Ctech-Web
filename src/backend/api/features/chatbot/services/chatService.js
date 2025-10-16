@@ -6,6 +6,7 @@ const SYSTEM_PROMPT = process.env.CHATBOT_SYSTEM_PROMPT || 'You are a helpful as
 const RESPONSES_ONLY_MODEL_PATTERN = /^(gpt-4\.1|gpt-4o|o1|o3|omni)/i;
 
 let client;
+let currentApiKeyIndex = 0; // Track which API key we're using (0 = primary, 1 = backup)
 const MAX_CONVERSATION_MESSAGES = 10;
 const MAX_SYSTEM_MESSAGES = 3;
 const MAX_USER_MESSAGE_LENGTH = 1500;
@@ -18,22 +19,40 @@ class ChatInputError extends Error {
   }
 }
 
-function resolveApiKey() {
-  return process.env.OPENAI_API_KEY || process.env.API_KEY || process.env.TOKEN;
+function getAvailableApiKeys() {
+  const keys = [];
+  if (process.env.OPENAI_API_KEY) keys.push(process.env.OPENAI_API_KEY);
+  if (process.env.OPENAI_API_KEY_2) keys.push(process.env.OPENAI_API_KEY_2);
+  return keys;
 }
 
 function getClient() {
-  const apiKey = resolveApiKey();
+  const apiKeys = getAvailableApiKeys();
 
-  if (!apiKey) {
-    throw new Error('OpenAI API key is not configured. Set OPENAI_API_KEY (preferred) or API_KEY/TOKEN.');
+  if (apiKeys.length === 0) {
+    throw new Error('OpenAI API key is not configured. Set OPENAI_API_KEY or OPENAI_API_KEY_2.');
   }
+
+  const apiKey = apiKeys[currentApiKeyIndex];
 
   if (!client) {
     client = new OpenAI({ apiKey });
   }
 
   return client;
+}
+
+function switchToBackupKey() {
+  const apiKeys = getAvailableApiKeys();
+
+  if (currentApiKeyIndex < apiKeys.length - 1) {
+    currentApiKeyIndex++;
+    client = null; // Force recreate client with new key
+    console.log(`[OpenAI] Switched to backup API key (index ${currentApiKeyIndex})`);
+    return true;
+  }
+
+  return false;
 }
 
 function extractTextContent(content) {
@@ -199,46 +218,70 @@ function toResponsesMessage(role, content) {
 }
 
 async function createViaResponsesApi(client, { messages, model }) {
-  const response = await client.responses.create({
-    model,
-    input: messages.map((msg) => toResponsesMessage(msg.role, msg.content)),
-  });
+  try {
+    const response = await client.responses.create({
+      model,
+      input: messages.map((msg) => toResponsesMessage(msg.role, msg.content)),
+    });
 
-  const text = (response.output_text || '').trim();
+    const text = (response.output_text || '').trim();
 
-  if (!text) {
-    throw new Error('Chatbot did not return a response.');
+    if (!text) {
+      throw new Error('Chatbot did not return a response.');
+    }
+
+    return {
+      model: response.model,
+      message: {
+        role: 'assistant',
+        content: text,
+      },
+      usage: response.usage || null,
+    };
+  } catch (error) {
+    // Check if error is quota/rate limit related
+    if (error.status === 429 || error.code === 'insufficient_quota') {
+      if (switchToBackupKey()) {
+        console.log('[OpenAI] Retrying with backup API key...');
+        const newClient = getClient();
+        return createViaResponsesApi(newClient, { messages, model });
+      }
+    }
+    throw error;
   }
-
-  return {
-    model: response.model,
-    message: {
-      role: 'assistant',
-      content: text,
-    },
-    usage: response.usage || null,
-  };
 }
 
 async function createViaChatCompletions(client, { messages, model }) {
-  const completion = await client.chat.completions.create({
-    model,
-    messages,
-    temperature: 0.7,
-    max_tokens: 600,
-  });
+  try {
+    const completion = await client.chat.completions.create({
+      model,
+      messages,
+      temperature: 0.7,
+      max_tokens: 600,
+    });
 
-  const choice = completion.choices && completion.choices[0] ? completion.choices[0].message : null;
+    const choice = completion.choices && completion.choices[0] ? completion.choices[0].message : null;
 
-  if (!choice || !choice.content) {
-    throw new Error('Chatbot did not return a response.');
+    if (!choice || !choice.content) {
+      throw new Error('Chatbot did not return a response.');
+    }
+
+    return {
+      model: completion.model,
+      message: choice,
+      usage: completion.usage || null,
+    };
+  } catch (error) {
+    // Check if error is quota/rate limit related
+    if (error.status === 429 || error.code === 'insufficient_quota') {
+      if (switchToBackupKey()) {
+        console.log('[OpenAI] Retrying with backup API key...');
+        const newClient = getClient();
+        return createViaChatCompletions(newClient, { messages, model });
+      }
+    }
+    throw error;
   }
-
-  return {
-    model: completion.model,
-    message: choice,
-    usage: completion.usage || null,
-  };
 }
 
 async function createChatCompletion({ userMessage, history = [], model = DEFAULT_MODEL, messages, context }) {
