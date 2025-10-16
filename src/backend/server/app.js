@@ -44,6 +44,10 @@ function createApp() {
     res.sendFile(path.join(frontendDir, 'services.html'));
   });
 
+  app.get('/schedule', (req, res) => {
+    res.sendFile(path.join(frontendDir, 'schedule.html'));
+  });
+
   // Endpoint suc khoe he thong va database.
   app.get('/api/status', async (req, res) => {
     const uptimeSeconds = Number(process.uptime().toFixed(3));

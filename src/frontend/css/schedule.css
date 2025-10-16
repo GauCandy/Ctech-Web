@@ -1,0 +1,468 @@
+/* Schedule Page Styles */
+
+.schedule-page {
+  min-height: calc(100vh - 200px);
+  padding: 2rem 0;
+}
+
+/* Upload Section */
+.upload-section {
+  margin: 2rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.upload-card {
+  background: var(--card-bg, #ffffff);
+  border-radius: 1rem;
+  padding: 3rem 2rem;
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.upload-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.upload-icon {
+  margin-bottom: 1.5rem;
+}
+
+.upload-icon .material-icons {
+  font-size: 4rem;
+  color: var(--primary-color, #2563eb);
+  opacity: 0.8;
+}
+
+.upload-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-color, #1f2937);
+}
+
+.upload-card p {
+  color: var(--text-secondary, #6b7280);
+  margin-bottom: 1.5rem;
+}
+
+.btn-upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--primary-color, #2563eb);
+  color: white;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.btn-upload:hover {
+  background: var(--primary-hover, #1d4ed8);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.file-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-light, #f3f4f6);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  max-width: 100%;
+}
+
+.file-info .material-icons {
+  font-size: 1.25rem;
+  color: var(--primary-color, #2563eb);
+}
+
+.file-info span:not(.material-icons) {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  color: var(--text-color, #1f2937);
+}
+
+.btn-clear {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary, #6b7280);
+  transition: color 0.2s ease;
+}
+
+.btn-clear:hover {
+  color: var(--error-color, #dc2626);
+}
+
+.btn-clear .material-icons {
+  font-size: 1.25rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: var(--accent-color, #10b981);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover, #059669);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Upload Status */
+.upload-status {
+  margin-top: 1rem;
+  min-height: 2rem;
+}
+
+.status-loading,
+.status-success,
+.status-error {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+.status-loading {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.status-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+/* Schedule Container */
+.schedule-container {
+  margin-top: 3rem;
+  background: var(--card-bg, #ffffff);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.schedule-header h2 {
+  font-size: 1.75rem;
+  color: var(--text-color, #1f2937);
+  margin: 0;
+}
+
+.schedule-controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.week-select,
+.class-select {
+  padding: 0.625rem 1rem;
+  border: 2px solid var(--border-color, #e5e7eb);
+  border-radius: 0.5rem;
+  background: var(--input-bg, #ffffff);
+  color: var(--text-color, #1f2937);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+}
+
+.week-select:hover,
+.class-select:hover {
+  border-color: var(--primary-color, #2563eb);
+}
+
+.week-select:focus,
+.class-select:focus {
+  outline: none;
+  border-color: var(--primary-color, #2563eb);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Schedule View */
+.schedule-view {
+  min-height: 300px;
+}
+
+.schedule-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.schedule-empty .material-icons {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.schedule-empty p {
+  font-size: 1.1rem;
+}
+
+/* Schedule Table */
+.schedule-table {
+  display: grid;
+  gap: 2rem;
+}
+
+.day-schedule {
+  background: var(--bg-light, #f9fafb);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  border-left: 4px solid var(--primary-color, #2563eb);
+}
+
+.day-title {
+  font-size: 1.5rem;
+  color: var(--primary-color, #2563eb);
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+.session-group {
+  margin-bottom: 1.5rem;
+}
+
+.session-group:last-child {
+  margin-bottom: 0;
+}
+
+.session-title {
+  font-size: 1.1rem;
+  color: var(--text-secondary, #6b7280);
+  margin: 0 0 0.75rem 0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.session-title::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--accent-color, #10b981);
+  border-radius: 50%;
+}
+
+/* Subject Card */
+.subject-card {
+  background: var(--card-bg, #ffffff);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.subject-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.subject-card:last-child {
+  margin-bottom: 0;
+}
+
+.subject-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.subject-code {
+  font-weight: 600;
+  color: var(--primary-color, #2563eb);
+  background: rgba(37, 99, 235, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.subject-hours {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #6b7280);
+  font-weight: 500;
+}
+
+.subject-name {
+  font-size: 1.1rem;
+  color: var(--text-color, #1f2937);
+  margin: 0 0 1rem 0;
+  font-weight: 600;
+}
+
+.subject-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary, #6b7280);
+}
+
+.detail-row .material-icons {
+  font-size: 1.125rem;
+  color: var(--text-secondary, #9ca3af);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .schedule-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .schedule-controls {
+    width: 100%;
+  }
+
+  .week-select,
+  .class-select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .upload-card {
+    padding: 2rem 1rem;
+  }
+
+  .schedule-container {
+    padding: 1.5rem;
+  }
+
+  .day-schedule {
+    padding: 1rem;
+  }
+
+  .subject-card {
+    padding: 1rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-bg: #1f2937;
+    --text-color: #f9fafb;
+    --text-secondary: #9ca3af;
+    --bg-light: #111827;
+    --border-color: #374151;
+    --input-bg: #374151;
+  }
+
+  .upload-card,
+  .schedule-container {
+    background: var(--card-bg);
+  }
+
+  .subject-card {
+    background: var(--bg-light);
+  }
+
+  .day-schedule {
+    background: rgba(31, 41, 55, 0.5);
+  }
+
+  .file-info {
+    background: var(--input-bg);
+  }
+}
+
+/* Theme-specific overrides */
+[data-theme="dark"] {
+  --card-bg: #1f2937;
+  --text-color: #f9fafb;
+  --text-secondary: #9ca3af;
+  --bg-light: #111827;
+  --border-color: #374151;
+  --input-bg: #374151;
+}
+
+[data-theme="dark"] .upload-card,
+[data-theme="dark"] .schedule-container {
+  background: var(--card-bg);
+}
+
+[data-theme="dark"] .subject-card {
+  background: var(--bg-light);
+}
+
+[data-theme="dark"] .day-schedule {
+  background: rgba(31, 41, 55, 0.5);
+}
+
+[data-theme="dark"] .file-info {
+  background: var(--input-bg);
+}

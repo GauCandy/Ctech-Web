@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lịch trình | CTECH</title>
+    <link rel="icon" type="image/webp" href="/img/logo.webp" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/main.css" />
+    <link rel="stylesheet" href="/css/schedule.css" />
+    <link rel="stylesheet" href="/css/loader.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="/js/themeManager.js"></script>
+  </head>
+  <body>
+    <div id="app-loader" class="loader-backdrop" aria-hidden="true">
+      <div class="loader-logo">
+        <img src="/img/logo.webp" alt="Logo CTECH" />
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="header-inner container">
+        <a class="brand" href="/" aria-label="Trang chủ CTECH">
+          <img src="/img/logo.webp" alt="Logo CTECH" />
+        </a>
+        <div class="header-actions">
+          <nav class="nav-links" aria-label="Điều hướng chính">
+            <a href="/">Trang chủ</a>
+            <a href="/#tai-sao-chon-ctech">Giới thiệu</a>
+            <a href="/#chuong-trinh">Chương trình</a>
+            <a href="/#doi-song">Đời sống</a>
+            <a href="/services">Dịch vụ</a>
+            <a href="/schedule" class="active">Lịch trình</a>
+            <a href="/#tin-tuc">Tin tức</a>
+          </nav>
+          <div id="theme-toggle-container"></div>
+          <div class="user-indicator" data-user-indicator>
+            <a class="user-link" href="/login">Đăng nhập</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="site-main schedule-page">
+      <section class="section">
+        <div class="section-inner container">
+          <div class="section-heading">
+            <h1 class="section-title">Thời khóa biểu</h1>
+            <p class="section-subtitle">
+              Tải lên file PDF thời khóa biểu của bạn để xem lịch học chi tiết theo tuần
+            </p>
+          </div>
+
+          <div class="upload-section">
+            <div class="upload-card">
+              <div class="upload-icon">
+                <span class="material-icons">cloud_upload</span>
+              </div>
+              <h3>Tải lên thời khóa biểu</h3>
+              <p>Chọn file PDF thời khóa biểu từ thiết bị của bạn</p>
+              <form id="upload-form" enctype="multipart/form-data">
+                <input
+                  type="file"
+                  id="pdf-file"
+                  name="file"
+                  accept=".pdf"
+                  required
+                  hidden
+                />
+                <label for="pdf-file" class="btn-upload">
+                  <span class="material-icons">attach_file</span>
+                  Chọn file PDF
+                </label>
+                <div id="file-info" class="file-info" hidden>
+                  <span class="material-icons">description</span>
+                  <span id="file-name"></span>
+                  <button type="button" id="clear-file" class="btn-clear">
+                    <span class="material-icons">close</span>
+                  </button>
+                </div>
+                <button type="submit" class="btn-primary" id="upload-btn" disabled>
+                  <span class="material-icons">upload</span>
+                  Tải lên và xem lịch
+                </button>
+              </form>
+              <div id="upload-status" class="upload-status"></div>
+            </div>
+          </div>
+
+          <div id="schedule-container" class="schedule-container" hidden>
+            <div class="schedule-header">
+              <h2>Thời khóa biểu của bạn</h2>
+              <div class="schedule-controls">
+                <select id="week-select" class="week-select">
+                  <option value="">Chọn tuần...</option>
+                </select>
+                <select id="class-select" class="class-select">
+                  <option value="">Chọn lớp...</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="schedule-view" class="schedule-view">
+              <div class="schedule-empty">
+                <span class="material-icons">event_busy</span>
+                <p>Chọn tuần và lớp để xem thời khóa biểu</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner container">
+        <div class="footer-columns">
+          <div>
+            <h4>Trụ sở chính</h4>
+            <p>60 Quốc lộ 1A, xã Tân Phước Khánh, thành phố Hà Nội</p>
+          </div>
+          <div>
+            <h4>Liên hệ</h4>
+            <p>
+              Tổng đài: <a href="tel:18006770">1800 6770</a><br />
+              Email: <a href="mailto:contact@ctech.edu.vn">contact@ctech.edu.vn</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <button class="back-to-top" type="button" data-back-to-top aria-label="Về đầu trang" hidden>
+      <span class="material-icons" aria-hidden="true">arrow_upward</span>
+    </button>
+
+    <script>
+      (() => {
+        const loader = document.getElementById('app-loader');
+        if (loader) {
+          const hideLoader = () => {
+            requestAnimationFrame(() => {
+              loader.dataset.hidden = 'true';
+              setTimeout(() => {
+                loader.remove();
+              }, 600);
+            });
+          };
+          window.addEventListener('load', hideLoader, { once: true });
+          setTimeout(hideLoader, 2500);
+        }
+      })();
+    </script>
+
+    <script>
+      (() => {
+        const container = document.getElementById('theme-toggle-container');
+        if (container && window.ThemeManager) {
+          window.ThemeManager.createToggleButton(container, {
+            showLabel: false,
+            showDropdown: true
+          });
+        }
+      })();
+    </script>
+
+    <script>
+      // Back to top button
+      (() => {
+        const backToTopBtn = document.querySelector('[data-back-to-top]');
+        if (!backToTopBtn) return;
+
+        const toggleVisibility = () => {
+          if (window.scrollY > 400) {
+            backToTopBtn.hidden = false;
+            backToTopBtn.classList.add('visible');
+          } else {
+            backToTopBtn.classList.remove('visible');
+            setTimeout(() => {
+              if (!backToTopBtn.classList.contains('visible')) {
+                backToTopBtn.hidden = true;
+              }
+            }, 300);
+          }
+        };
+
+        window.addEventListener('scroll', toggleVisibility, { passive: true });
+        toggleVisibility();
+
+        backToTopBtn.addEventListener('click', () => {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      })();
+    </script>
+
+    <script>
+      // Schedule page logic
+      (() => {
+        const uploadForm = document.getElementById('upload-form');
+        const pdfFileInput = document.getElementById('pdf-file');
+        const fileInfo = document.getElementById('file-info');
+        const fileName = document.getElementById('file-name');
+        const clearFileBtn = document.getElementById('clear-file');
+        const uploadBtn = document.getElementById('upload-btn');
+        const uploadStatus = document.getElementById('upload-status');
+        const scheduleContainer = document.getElementById('schedule-container');
+        const weekSelect = document.getElementById('week-select');
+        const classSelect = document.getElementById('class-select');
+        const scheduleView = document.getElementById('schedule-view');
+
+        let scheduleData = null;
+        const daysMap = {
+          'Thu 2': 'Thứ 2',
+          'Thu 3': 'Thứ 3',
+          'Thu 4': 'Thứ 4',
+          'Thu 5': 'Thứ 5',
+          'Thu 6': 'Thứ 6',
+          'Thu 7': 'Thứ 7',
+          'CN': 'Chủ nhật'
+        };
+
+        const sessionsOrder = ['Sáng', 'Chiều', 'Tối'];
+
+        // File input change handler
+        pdfFileInput.addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (file) {
+            fileName.textContent = file.name;
+            fileInfo.hidden = false;
+            uploadBtn.disabled = false;
+          }
+        });
+
+        // Clear file button
+        clearFileBtn.addEventListener('click', () => {
+          pdfFileInput.value = '';
+          fileInfo.hidden = true;
+          uploadBtn.disabled = true;
+        });
+
+        // Upload form submit
+        uploadForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const file = pdfFileInput.files[0];
+          if (!file) return;
+
+          const formData = new FormData();
+          formData.append('file', file);
+
+          uploadBtn.disabled = true;
+          uploadStatus.innerHTML = '<div class="status-loading"><span class="material-icons spinning">sync</span> Đang xử lý file...</div>';
+
+          try {
+            const response = await fetch('/api/timetable/parse', {
+              method: 'POST',
+              body: formData
+            });
+
+            if (!response.ok) {
+              throw new Error('Upload failed');
+            }
+
+            scheduleData = await response.json();
+            uploadStatus.innerHTML = '<div class="status-success"><span class="material-icons">check_circle</span> Tải lên thành công!</div>';
+
+            // Populate dropdowns
+            populateDropdowns();
+            scheduleContainer.hidden = false;
+
+          } catch (error) {
+            console.error('Upload error:', error);
+            uploadStatus.innerHTML = '<div class="status-error"><span class="material-icons">error</span> Có lỗi xảy ra. Vui lòng thử lại.</div>';
+            uploadBtn.disabled = false;
+          }
+        });
+
+        function populateDropdowns() {
+          if (!scheduleData || !scheduleData.sheets) return;
+
+          // Get all classes
+          const classes = Object.keys(scheduleData.sheets).reduce((acc, sheetName) => {
+            const sheetClasses = Object.keys(scheduleData.sheets[sheetName]);
+            return [...acc, ...sheetClasses];
+          }, []);
+
+          // Populate class select
+          classSelect.innerHTML = '<option value="">Chọn lớp...</option>';
+          classes.forEach(className => {
+            const option = document.createElement('option');
+            option.value = className;
+            option.textContent = className;
+            classSelect.appendChild(option);
+          });
+
+          // Get week range
+          let minWeek = Infinity;
+          let maxWeek = -Infinity;
+
+          Object.values(scheduleData.sheets).forEach(sheet => {
+            Object.values(sheet).forEach(classList => {
+              classList.forEach(subject => {
+                if (subject.weekStart < minWeek) minWeek = subject.weekStart;
+                if (subject.weekEnd > maxWeek) maxWeek = subject.weekEnd;
+              });
+            });
+          });
+
+          // Populate week select
+          weekSelect.innerHTML = '<option value="">Chọn tuần...</option>';
+          for (let week = minWeek; week <= maxWeek; week++) {
+            const option = document.createElement('option');
+            option.value = week;
+            option.textContent = `Tuần ${week}`;
+            weekSelect.appendChild(option);
+          }
+        }
+
+        function renderSchedule() {
+          const selectedWeek = parseInt(weekSelect.value);
+          const selectedClass = classSelect.value;
+
+          if (!selectedWeek || !selectedClass || !scheduleData) {
+            scheduleView.innerHTML = `
+              <div class="schedule-empty">
+                <span class="material-icons">event_busy</span>
+                <p>Chọn tuần và lớp để xem thời khóa biểu</p>
+              </div>
+            `;
+            return;
+          }
+
+          // Find class data
+          let classSchedule = null;
+          for (const sheet of Object.values(scheduleData.sheets)) {
+            if (sheet[selectedClass]) {
+              classSchedule = sheet[selectedClass];
+              break;
+            }
+          }
+
+          if (!classSchedule) {
+            scheduleView.innerHTML = `
+              <div class="schedule-empty">
+                <span class="material-icons">error_outline</span>
+                <p>Không tìm thấy lịch học cho lớp này</p>
+              </div>
+            `;
+            return;
+          }
+
+          // Filter subjects for selected week
+          const weekSubjects = classSchedule.filter(subject => {
+            const inRange = selectedWeek >= subject.weekStart && selectedWeek <= subject.weekEnd;
+            const notOff = !subject.weeksOff || !subject.weeksOff.includes(selectedWeek);
+            return inRange && notOff;
+          });
+
+          if (weekSubjects.length === 0) {
+            scheduleView.innerHTML = `
+              <div class="schedule-empty">
+                <span class="material-icons">event_available</span>
+                <p>Không có lịch học trong tuần này</p>
+              </div>
+            `;
+            return;
+          }
+
+          // Group by day and session
+          const groupedSchedule = {};
+          weekSubjects.forEach(subject => {
+            const day = subject.day || 'Không rõ';
+            const session = subject.session || 'Không rõ';
+
+            if (!groupedSchedule[day]) {
+              groupedSchedule[day] = {};
+            }
+            if (!groupedSchedule[day][session]) {
+              groupedSchedule[day][session] = [];
+            }
+            groupedSchedule[day][session].push(subject);
+          });
+
+          // Render schedule table
+          let html = '<div class="schedule-table">';
+
+          // Days of week
+          const days = Object.keys(groupedSchedule).sort((a, b) => {
+            const daysOrder = ['Thu 2', 'Thu 3', 'Thu 4', 'Thu 5', 'Thu 6', 'Thu 7', 'CN'];
+            return daysOrder.indexOf(a) - daysOrder.indexOf(b);
+          });
+
+          days.forEach(day => {
+            html += `<div class="day-schedule">`;
+            html += `<h3 class="day-title">${daysMap[day] || day}</h3>`;
+
+            const sessions = groupedSchedule[day];
+            const sortedSessions = Object.keys(sessions).sort((a, b) =>
+              sessionsOrder.indexOf(a) - sessionsOrder.indexOf(b)
+            );
+
+            sortedSessions.forEach(session => {
+              html += `<div class="session-group">`;
+              html += `<h4 class="session-title">${session}</h4>`;
+
+              sessions[session].forEach(subject => {
+                const room = subject.room ||
+                  (subject.roomAssignments && subject.roomAssignments.find(r =>
+                    selectedWeek >= r.weekStart && selectedWeek <= r.weekEnd
+                  )?.room) || 'Chưa xác định';
+
+                html += `
+                  <div class="subject-card">
+                    <div class="subject-header">
+                      <span class="subject-code">${subject.subjectCode || ''}</span>
+                      <span class="subject-hours">${subject.hours || 0}h</span>
+                    </div>
+                    <h5 class="subject-name">${subject.subjectName || 'Không rõ'}</h5>
+                    <div class="subject-details">
+                      <div class="detail-row">
+                        <span class="material-icons">person</span>
+                        <span>${subject.teacher || 'Chưa có giảng viên'}</span>
+                      </div>
+                      <div class="detail-row">
+                        <span class="material-icons">room</span>
+                        <span>${room}</span>
+                      </div>
+                      <div class="detail-row">
+                        <span class="material-icons">date_range</span>
+                        <span>Tuần ${subject.weekStart} - ${subject.weekEnd}</span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              });
+
+              html += `</div>`;
+            });
+
+            html += `</div>`;
+          });
+
+          html += '</div>';
+          scheduleView.innerHTML = html;
+        }
+
+        weekSelect.addEventListener('change', renderSchedule);
+        classSelect.addEventListener('change', renderSchedule);
+      })();
+    </script>
+  </body>
+</html>
