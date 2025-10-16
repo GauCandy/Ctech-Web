@@ -39,6 +39,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  padding-top: 80px;
   padding-bottom: clamp(48px, 12vw, 96px);
 }
 
@@ -536,6 +537,10 @@
 }
 
 @media (max-width: 720px) {
+  .services-main {
+    padding-top: 70px;
+  }
+
   .services-shell {
     margin-top: clamp(-32px, -6vw, -48px);
   }
@@ -593,6 +598,10 @@
 }
 
 @media (max-width: 500px) {
+  .services-main {
+    padding-top: 65px;
+  }
+
   .services-hero {
     padding: clamp(32px, 8vw, 64px) 0 clamp(24px, 6vw, 48px);
   }
