@@ -96,13 +96,10 @@
 
           <div id="schedule-container" class="schedule-container" hidden>
             <div class="schedule-header">
-              <h2>Thời khóa biểu của bạn</h2>
+              <h2 id="schedule-class-name">Thời khóa biểu</h2>
               <div class="schedule-controls">
                 <select id="week-select" class="week-select">
                   <option value="">Chọn tuần...</option>
-                </select>
-                <select id="class-select" class="class-select">
-                  <option value="">Chọn lớp...</option>
                 </select>
               </div>
             </div>
@@ -110,7 +107,7 @@
             <div id="schedule-view" class="schedule-view">
               <div class="schedule-empty">
                 <span class="material-icons">event_busy</span>
-                <p>Chọn tuần và lớp để xem thời khóa biểu</p>
+                <p>Chọn tuần để xem thời khóa biểu</p>
               </div>
             </div>
           </div>
@@ -214,10 +211,12 @@
         const uploadStatus = document.getElementById('upload-status');
         const scheduleContainer = document.getElementById('schedule-container');
         const weekSelect = document.getElementById('week-select');
-        const classSelect = document.getElementById('class-select');
         const scheduleView = document.getElementById('schedule-view');
+        const scheduleClassName = document.getElementById('schedule-class-name');
 
         let scheduleData = null;
+        let selectedClassName = null;
+
         const daysMap = {
           'Thu 2': 'Thứ 2',
           'Thu 3': 'Thứ 3',
@@ -228,6 +227,7 @@
           'CN': 'Chủ nhật'
         };
 
+        const daysOrder = ['Thu 2', 'Thu 3', 'Thu 4', 'Thu 5', 'Thu 6', 'Thu 7', 'CN'];
         const sessionsOrder = ['Sáng', 'Chiều', 'Tối'];
 
         // File input change handler
@@ -287,20 +287,15 @@
         function populateDropdowns() {
           if (!scheduleData || !scheduleData.sheets) return;
 
-          // Get all classes
-          const classes = Object.keys(scheduleData.sheets).reduce((acc, sheetName) => {
-            const sheetClasses = Object.keys(scheduleData.sheets[sheetName]);
-            return [...acc, ...sheetClasses];
-          }, []);
+          // Get first class (assuming 1 PDF = 1 class)
+          const firstSheet = Object.values(scheduleData.sheets)[0];
+          if (!firstSheet) return;
 
-          // Populate class select
-          classSelect.innerHTML = '<option value="">Chọn lớp...</option>';
-          classes.forEach(className => {
-            const option = document.createElement('option');
-            option.value = className;
-            option.textContent = className;
-            classSelect.appendChild(option);
-          });
+          const classes = Object.keys(firstSheet);
+          if (classes.length > 0) {
+            selectedClassName = classes[0];
+            scheduleClassName.textContent = `Thời khóa biểu - ${selectedClassName}`;
+          }
 
           // Get week range
           let minWeek = Infinity;
@@ -327,13 +322,12 @@
 
         function renderSchedule() {
           const selectedWeek = parseInt(weekSelect.value);
-          const selectedClass = classSelect.value;
 
-          if (!selectedWeek || !selectedClass || !scheduleData) {
+          if (!selectedWeek || !selectedClassName || !scheduleData) {
             scheduleView.innerHTML = `
               <div class="schedule-empty">
                 <span class="material-icons">event_busy</span>
-                <p>Chọn tuần và lớp để xem thời khóa biểu</p>
+                <p>Chọn tuần để xem thời khóa biểu</p>
               </div>
             `;
             return;
@@ -342,8 +336,8 @@
           // Find class data
           let classSchedule = null;
           for (const sheet of Object.values(scheduleData.sheets)) {
-            if (sheet[selectedClass]) {
-              classSchedule = sheet[selectedClass];
+            if (sheet[selectedClassName]) {
+              classSchedule = sheet[selectedClassName];
               break;
             }
           }
@@ -376,77 +370,68 @@
           }
 
           // Group by day and session
-          const groupedSchedule = {};
+          const scheduleGrid = {};
+          daysOrder.forEach(day => {
+            scheduleGrid[day] = {};
+            sessionsOrder.forEach(session => {
+              scheduleGrid[day][session] = [];
+            });
+          });
+
           weekSubjects.forEach(subject => {
-            const day = subject.day || 'Không rõ';
-            const session = subject.session || 'Không rõ';
-
-            if (!groupedSchedule[day]) {
-              groupedSchedule[day] = {};
+            const day = subject.day || 'Thu 2';
+            const session = subject.session || 'Sáng';
+            if (scheduleGrid[day] && scheduleGrid[day][session]) {
+              scheduleGrid[day][session].push(subject);
             }
-            if (!groupedSchedule[day][session]) {
-              groupedSchedule[day][session] = [];
-            }
-            groupedSchedule[day][session].push(subject);
           });
 
-          // Render schedule table
-          let html = '<div class="schedule-table">';
+          // Render schedule table (horizontal layout)
+          let html = '<div class="schedule-table-horizontal">';
 
-          // Days of week
-          const days = Object.keys(groupedSchedule).sort((a, b) => {
-            const daysOrder = ['Thu 2', 'Thu 3', 'Thu 4', 'Thu 5', 'Thu 6', 'Thu 7', 'CN'];
-            return daysOrder.indexOf(a) - daysOrder.indexOf(b);
+          // Header row with days
+          html += '<div class="schedule-row schedule-header-row">';
+          html += '<div class="schedule-cell schedule-cell-header schedule-cell-session">Buổi</div>';
+          daysOrder.forEach(day => {
+            html += `<div class="schedule-cell schedule-cell-header">${daysMap[day] || day}</div>`;
           });
+          html += '</div>';
 
-          days.forEach(day => {
-            html += `<div class="day-schedule">`;
-            html += `<h3 class="day-title">${daysMap[day] || day}</h3>`;
+          // Rows for each session
+          sessionsOrder.forEach(session => {
+            html += '<div class="schedule-row">';
+            html += `<div class="schedule-cell schedule-cell-session"><strong>${session}</strong></div>`;
 
-            const sessions = groupedSchedule[day];
-            const sortedSessions = Object.keys(sessions).sort((a, b) =>
-              sessionsOrder.indexOf(a) - sessionsOrder.indexOf(b)
-            );
+            daysOrder.forEach(day => {
+              const subjects = scheduleGrid[day][session];
+              html += '<div class="schedule-cell">';
 
-            sortedSessions.forEach(session => {
-              html += `<div class="session-group">`;
-              html += `<h4 class="session-title">${session}</h4>`;
+              if (subjects.length > 0) {
+                subjects.forEach(subject => {
+                  const room = subject.room ||
+                    (subject.roomAssignments && subject.roomAssignments.find(r =>
+                      selectedWeek >= r.weekStart && selectedWeek <= r.weekEnd
+                    )?.room) || 'Chưa xác định';
 
-              sessions[session].forEach(subject => {
-                const room = subject.room ||
-                  (subject.roomAssignments && subject.roomAssignments.find(r =>
-                    selectedWeek >= r.weekStart && selectedWeek <= r.weekEnd
-                  )?.room) || 'Chưa xác định';
-
-                html += `
-                  <div class="subject-card">
-                    <div class="subject-header">
-                      <span class="subject-code">${subject.subjectCode || ''}</span>
-                      <span class="subject-hours">${subject.hours || 0}h</span>
-                    </div>
-                    <h5 class="subject-name">${subject.subjectName || 'Không rõ'}</h5>
-                    <div class="subject-details">
-                      <div class="detail-row">
-                        <span class="material-icons">person</span>
-                        <span>${subject.teacher || 'Chưa có giảng viên'}</span>
+                  html += `
+                    <div class="subject-block">
+                      <div class="subject-block-header">
+                        <span class="subject-code-small">${subject.subjectCode || ''}</span>
                       </div>
-                      <div class="detail-row">
-                        <span class="material-icons">room</span>
-                        <span>${room}</span>
-                      </div>
-                      <div class="detail-row">
-                        <span class="material-icons">date_range</span>
-                        <span>Tuần ${subject.weekStart} - ${subject.weekEnd}</span>
+                      <div class="subject-name-small">${subject.subjectName || 'Không rõ'}</div>
+                      <div class="subject-info-small">
+                        <div><span class="material-icons icon-tiny">person</span>${subject.teacher || 'N/A'}</div>
+                        <div><span class="material-icons icon-tiny">room</span>${room}</div>
                       </div>
                     </div>
-                  </div>
-                `;
-              });
+                  `;
+                });
+              }
 
-              html += `</div>`;
+              html += '</div>';
             });
 
-            html += `</div>`;
+            html += '</div>';
           });
 
           html += '</div>';
@@ -454,7 +439,6 @@
         }
 
         weekSelect.addEventListener('change', renderSchedule);
-        classSelect.addEventListener('change', renderSchedule);
       })();
     </script>
   </body>

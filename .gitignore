@@ -27,3 +27,6 @@ yarn-error.log*
 
 # System
 Thumbs.db
+
+# Debug files
+debug/
