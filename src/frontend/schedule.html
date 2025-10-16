@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <script src="/js/themeManager.js"></script>
+    <script src="/js/headerManager.js"></script>
   </head>
   <body>
     <div id="app-loader" class="loader-backdrop" aria-hidden="true">
@@ -96,7 +97,19 @@
 
           <div id="schedule-container" class="schedule-container" hidden>
             <div class="schedule-header">
-              <h2 id="schedule-class-name">Thời khóa biểu</h2>
+              <div class="schedule-header-left">
+                <h2 id="schedule-class-name">Thời khóa biểu</h2>
+                <div id="schedule-stats" class="schedule-stats" hidden>
+                  <div class="stat-item">
+                    <span class="material-icons">event</span>
+                    <span id="total-classes">0</span> lớp
+                  </div>
+                  <div class="stat-item">
+                    <span class="material-icons">schedule</span>
+                    <span id="total-periods">0</span> tiết
+                  </div>
+                </div>
+              </div>
               <div class="schedule-controls">
                 <select id="week-select" class="week-select">
                   <option value="">Chọn tuần...</option>
@@ -213,6 +226,9 @@
         const weekSelect = document.getElementById('week-select');
         const scheduleView = document.getElementById('schedule-view');
         const scheduleClassName = document.getElementById('schedule-class-name');
+        const scheduleStats = document.getElementById('schedule-stats');
+        const totalClasses = document.getElementById('total-classes');
+        const totalPeriods = document.getElementById('total-periods');
 
         let scheduleData = null;
         let selectedClassName = null;
@@ -320,6 +336,33 @@
           }
         }
 
+        function calculatePeriods(subject, selectedWeek) {
+          // Tính số tiết cho môn học trong tuần cụ thể
+          if (subject.weekPeriods) {
+            const weekPeriod = subject.weekPeriods.find(wp => wp.week === selectedWeek);
+            if (weekPeriod) {
+              return weekPeriod.periods || 5;
+            }
+          }
+          return 5; // Mặc định 5 tiết/buổi
+        }
+
+        function updateStats(weekSubjects, selectedWeek) {
+          if (!scheduleStats || !totalClasses || !totalPeriods) return;
+
+          const uniqueSubjects = new Set();
+          let totalPeriodsCount = 0;
+
+          weekSubjects.forEach(subject => {
+            uniqueSubjects.add(subject.subjectCode);
+            totalPeriodsCount += calculatePeriods(subject, selectedWeek);
+          });
+
+          totalClasses.textContent = uniqueSubjects.size;
+          totalPeriods.textContent = totalPeriodsCount;
+          scheduleStats.hidden = false;
+        }
+
         function renderSchedule() {
           const selectedWeek = parseInt(weekSelect.value);
 
@@ -330,6 +373,7 @@
                 <p>Chọn tuần để xem thời khóa biểu</p>
               </div>
             `;
+            if (scheduleStats) scheduleStats.hidden = true;
             return;
           }
 
@@ -366,8 +410,12 @@
                 <p>Không có lịch học trong tuần này</p>
               </div>
             `;
+            if (scheduleStats) scheduleStats.hidden = true;
             return;
           }
+
+          // Update statistics
+          updateStats(weekSubjects, selectedWeek);
 
           // Group by day and session
           const scheduleGrid = {};

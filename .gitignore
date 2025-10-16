@@ -30,3 +30,5 @@ Thumbs.db
 
 # Debug files
 debug/
+debug/ai_fallback/
+debug/ai_cache/

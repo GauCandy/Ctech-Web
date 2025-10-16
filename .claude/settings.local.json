@@ -1,6 +1,11 @@
 {
   "permissions": {
-    "allow": ["*"],
+    "allow": [
+      "*",
+      "Bash(node:*)",
+      "Bash(timeout:*)",
+      "Bash(test:*)"
+    ],
     "deny": [],
     "ask": []
   }

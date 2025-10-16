@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="/css/services.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <script src="/js/themeManager.js"></script>
+    <script src="/js/headerManager.js"></script>
   </head>
   <body>
     <div id="app-loader" class="loader-backdrop" aria-hidden="true">
@@ -32,11 +33,12 @@
         <div class="header-actions">
           <nav class="nav-links" aria-label="Điều hướng chính">
             <a href="/">Trang chủ</a>
-            <a href="/home#gioi-thieu">Giới thiệu</a>
-            <a href="/home#chuong-trinh">Chương trình</a>
-            <a href="/home#doi-song">Đời sống</a>
-            <a href="/services" aria-current="page">Dịch vụ</a>
-            <a href="/home#tin-tuc">Tin tức</a>
+            <a href="/#tai-sao-chon-ctech">Giới thiệu</a>
+            <a href="/#chuong-trinh">Chương trình</a>
+            <a href="/#doi-song">Đời sống</a>
+            <a href="/services" class="active">Dịch vụ</a>
+            <a href="/schedule">Lịch trình</a>
+            <a href="/#tin-tuc">Tin tức</a>
           </nav>
           <div id="theme-toggle-container"></div>
           <div class="user-indicator" data-user-indicator>
@@ -129,10 +131,6 @@
 
     <script>
       (() => {
-        const sessionKey = 'ctechSession';
-        const displayNameKey = 'ctechDisplayName';
-
-        const indicator = document.querySelector('[data-user-indicator]');
         const listEl = document.querySelector('[data-services-list]');
         const summaryEl = document.querySelector('[data-services-summary]');
         const detailEl = document.querySelector('[data-service-detail]');
@@ -148,8 +146,6 @@
             : null;
 
         const state = {
-          session: null,
-          displayName: '',
           services: [],
           isLoading: false,
           error: null,
@@ -187,186 +183,13 @@
             .replaceAll("'", '&#39;');
         }
 
-        function normalizeNamePart(value) {
-          if (!value) {
-            return '';
-          }
-          const lower = value.toLocaleLowerCase('vi-VN');
-          return lower.charAt(0).toLocaleUpperCase('vi-VN') + lower.slice(1);
-        }
-
-        function extractGivenName(value) {
-          if (!value) {
-            return '';
-          }
-          const trimmed = value.trim();
-          if (!trimmed) {
-            return '';
-          }
-          const parts = trimmed.split(/\s+/);
-          return normalizeNamePart(parts[parts.length - 1]);
-        }
-
-        function isLikelyIdentifier(value) {
-          if (!value) {
-            return true;
-          }
-          const sample = String(value).trim();
-          if (!sample) {
-            return true;
-          }
-          if (/[0-9]/.test(sample)) {
-            return true;
-          }
-          if (!/\s/.test(sample) && sample === sample.toUpperCase()) {
-            return true;
-          }
-          return false;
-        }
-
-        function loadSessionFromStorage() {
-          try {
-            const raw = localStorage.getItem(sessionKey);
-            if (!raw) {
-              return null;
-            }
-            const parsed = JSON.parse(raw);
-            if (parsed && typeof parsed === 'object' && parsed.token) {
-              return parsed;
-            }
-          } catch (error) {
-            console.warn('Không thể đọc session từ localStorage:', error);
-          }
-          return null;
-        }
-
-        function loadDisplayNameFromStorage(session) {
-          const stored = localStorage.getItem(displayNameKey) || '';
-          if (stored && !isLikelyIdentifier(stored)) {
-            return stored;
-          }
-
-          if (session && session.user) {
-            const fromProfile =
-              session.user.fullName || session.user.displayName || session.user.name || session.user.userId;
-            if (fromProfile && !isLikelyIdentifier(fromProfile)) {
-              return fromProfile;
-            }
-          }
-
-          return '';
-        }
-
-        function updateAuthState() {
-          state.session = loadSessionFromStorage();
-          state.displayName = loadDisplayNameFromStorage(state.session);
-        }
-
-        function persistSession(sessionPayload) {
-          if (!sessionPayload || typeof sessionPayload !== 'object') {
-            localStorage.removeItem(sessionKey);
-            localStorage.removeItem(displayNameKey);
-            return;
-          }
-
-          try {
-            localStorage.setItem(sessionKey, JSON.stringify(sessionPayload));
-          } catch (error) {
-            console.warn('Không thể lưu session vào localStorage:', error);
-          }
-
-          const candidate =
-            (sessionPayload.user &&
-              (sessionPayload.user.displayName ||
-                sessionPayload.user.fullName ||
-                sessionPayload.user.name ||
-                sessionPayload.user.userId)) ||
-            '';
-
-          if (candidate && !isLikelyIdentifier(candidate)) {
-            try {
-              localStorage.setItem(displayNameKey, candidate);
-            } catch (error) {
-              console.warn('Không thể lưu displayName vào localStorage:', error);
-            }
-          } else {
-            localStorage.removeItem(displayNameKey);
-          }
+        function getSession() {
+          return window.HeaderManager ? window.HeaderManager.loadSession() : null;
         }
 
         function handleLogout() {
-          localStorage.removeItem(sessionKey);
-          localStorage.removeItem(displayNameKey);
-          updateAuthState();
-          updateIndicator();
-          window.location.href = '/login';
-        }
-
-        function updateIndicator() {
-          if (!indicator) {
-            return;
-          }
-
-          indicator.innerHTML = '';
-
-          const session = state.session;
-          const rawName =
-            state.displayName ||
-            (session && session.user && (session.user.fullName || session.user.displayName || session.user.name)) ||
-            '';
-          const safeName = isLikelyIdentifier(rawName) ? '' : rawName;
-
-          if (session && session.token) {
-            const rawUserId = session && session.user && (session.user.userId || session.user.id);
-            const displayUserId = isLikelyIdentifier(rawUserId) ? '' : String(rawUserId || '');
-            const greetingName =
-              extractGivenName(safeName) ||
-              extractGivenName(displayUserId) ||
-              normalizeNamePart(displayUserId) ||
-              TEXT.greetingFallback;
-
-            indicator.innerHTML = `
-              <span class="user-pill">Xin chào, <strong>${escapeHtml(greetingName)}</strong></span>
-              <button type="button" class="user-logout" data-logout>Đăng xuất</button>
-            `;
-
-            const logoutBtn = indicator.querySelector('[data-logout]');
-            if (logoutBtn) {
-              logoutBtn.addEventListener('click', handleLogout);
-            }
-          } else {
-            indicator.innerHTML = '<a class="user-link" href="/login">Đăng nhập</a>';
-          }
-        }
-
-        async function syncSessionWithServer() {
-          if (!state.session || !state.session.token) {
-            return;
-          }
-
-          try {
-            const response = await fetch('/api/auth/me', {
-              headers: {
-                Authorization: `Bearer ${state.session.token}`,
-              },
-            });
-
-            if (response.status === 401 || response.status === 403) {
-              handleLogout();
-              return;
-            }
-
-            if (!response.ok) {
-              throw new Error(`Unexpected status ${response.status}`);
-            }
-
-            const payload = await response.json();
-            persistSession(payload);
-            updateAuthState();
-            updateIndicator();
-            renderDetail();
-          } catch (error) {
-            console.warn('Không thể đồng bộ thông tin người dùng:', error);
+          if (window.HeaderManager) {
+            window.HeaderManager.handleLogout();
           }
         }
 
@@ -607,8 +430,9 @@
             ? escapeHtml(service.description)
             : 'Dịch vụ chưa có mô tả chi tiết. Vui lòng liên hệ phòng dịch vụ để được hỗ trợ thêm.';
 
-          const isLoggedIn = Boolean(state.session && state.session.token);
-          const role = state.session && state.session.user && state.session.user.role;
+          const session = getSession();
+          const isLoggedIn = Boolean(session && session.token);
+          const role = session && session.user && session.user.role;
           const canPurchase = isLoggedIn && service.isActive && (role === 'teacher' || role === 'student');
 
           detailEl.innerHTML = `
@@ -713,6 +537,12 @@
             submitBtn.disabled = true;
             setFeedback(feedback, TEXT.purchaseLoading, '');
 
+            const session = getSession();
+            if (!session || !session.token) {
+              handleLogout();
+              return;
+            }
+
             try {
               const response = await fetch(
                 `/api/services/${encodeURIComponent(service.serviceCode)}/purchase`,
@@ -720,7 +550,7 @@
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${state.session.token}`,
+                    Authorization: `Bearer ${session.token}`,
                   },
                   body: notes ? JSON.stringify({ notes }) : null,
                 }
@@ -876,22 +706,9 @@
           });
         }
 
-        window.addEventListener('storage', (event) => {
-          if (event.key === sessionKey || event.key === displayNameKey) {
-            updateAuthState();
-            updateIndicator();
-            renderDetail();
-          }
-        });
-
-        updateAuthState();
-        updateIndicator();
         initializeFiltersFromQuery();
         syncUrlWithFilters();
         fetchServices();
-        if (state.session && state.session.token) {
-          syncSessionWithServer();
-        }
       })();
     </script>
 

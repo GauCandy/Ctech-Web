@@ -2,6 +2,8 @@ const fs = require('fs/promises');
 const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
+const { AI_ENABLED, AI_FALLBACK, parseWithAI, logAIFallback } = require('./aiTimetableParser');
+const { generatePDFHash, getCachedPDFResult, setCachedPDFResult } = require('./aiCache');
 
 // Debug mode - set to true to output JSON files to debug folder
 const DEBUG_MODE = process.env.DEBUG === 'true';
@@ -22,7 +24,9 @@ class TimetableParserError extends Error {
 const removeDiacritics = (value = '') =>
   String(value)
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '');
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D');
 
 const toPlainLower = (value = '') => removeDiacritics(value).toLowerCase();
 
@@ -331,6 +335,98 @@ const groupLinesIntoBlocks = (lines) => {
   });
 };
 
+/**
+ * Validate if regex result looks suspicious or incomplete
+ */
+const shouldFallbackToAI = (lesson, text) => {
+  // Check if there's "nghi" keyword but weeksOff is empty or suspicious
+  const hasNghiKeyword = /nghi/i.test(toPlainLower(text));
+  const hasDenKeyword = /den/i.test(toPlainLower(text));
+
+  if (hasNghiKeyword && hasDenKeyword && lesson.weeksOff && lesson.weeksOff.length === 2) {
+    // Likely a range like "10 đến 13" but only got [10, 13]
+    const diff = lesson.weeksOff[1] - lesson.weeksOff[0];
+    if (diff > 1) {
+      // Gap detected - should be a range!
+      return 'suspected_range_not_expanded';
+    }
+  }
+
+  // Check if essential fields are missing
+  if (!lesson.subject && text.length > 20) {
+    return 'missing_subject_info';
+  }
+
+  return null; // No fallback needed
+};
+
+const parseLessonBlockWithAI = async (text) => {
+  if (!text) {
+    return { lesson: { raw: '' }, usedAI: false };
+  }
+
+  // STRATEGY 1: Always use AI if AI_ENABLED=true
+  if (AI_ENABLED) {
+    try {
+      const aiResult = await parseWithAI(text);
+      return {
+        lesson: convertAIResultToLesson(aiResult, text),
+        usedAI: true
+      };
+    } catch (error) {
+      console.warn('[AI Parser] Failed, falling back to regex:', error.message);
+    }
+  }
+
+  // STRATEGY 2: Try regex first, use AI as fallback if result is suspicious
+  const regexResult = parseLessonBlock(text);
+
+  if (AI_FALLBACK) {
+    const fallbackReason = shouldFallbackToAI(regexResult, text);
+
+    if (fallbackReason) {
+      console.log(`[Hybrid Parser] Fallback to AI: ${fallbackReason}`);
+
+      try {
+        const aiResult = await parseWithAI(text);
+        const aiLesson = convertAIResultToLesson(aiResult, text);
+
+        // Log this case for analysis
+        await logAIFallback(text, regexResult, aiLesson, fallbackReason);
+
+        return { lesson: aiLesson, usedAI: true };
+      } catch (error) {
+        console.warn('[AI Fallback] Failed, using regex result:', error.message);
+      }
+    }
+  }
+
+  // Return regex result
+  return { lesson: regexResult, usedAI: false };
+};
+
+/**
+ * Convert AI result to internal lesson format
+ */
+const convertAIResultToLesson = (aiResult, text) => {
+  return {
+    raw: text,
+    subject: aiResult.subjectCode || aiResult.subjectName ? {
+      code: aiResult.subjectCode,
+      name: aiResult.subjectName,
+      hours: aiResult.hours,
+    } : null,
+    teacher: aiResult.teacher,
+    weeks: aiResult.weekStart && aiResult.weekEnd ? {
+      start: aiResult.weekStart,
+      end: aiResult.weekEnd,
+    } : null,
+    weeksOff: aiResult.weeksOff || [],
+    room: aiResult.room,
+    notes: aiResult.notes || [],
+  };
+};
+
 const parseLessonBlock = (text) => {
   if (!text) {
     return { raw: '' };
@@ -456,7 +552,7 @@ const parseLessonBlock = (text) => {
           const normalizedBetween = toPlainLower(betweenText);
 
           // Check if "den" exists in between (indicating RANGE)
-          // Also check if it contains "den" as a word (not just "and" in English)
+          // After normalization: "đến" → "den" (đ→d, ế→e, n→n)
           const hasDen = /\bden\b/i.test(normalizedBetween);
           const hasCommaOrAnd = /,|va|and/i.test(normalizedBetween);
 
@@ -664,7 +760,7 @@ const toTextArray = (value) => {
   return [];
 };
 
-const buildDayEntries = (periodOrder, periodMap) => {
+const buildDayEntries = async (periodOrder, periodMap) => {
   const periods =
     Array.isArray(periodOrder) && periodOrder.length > 0
       ? periodOrder
@@ -696,49 +792,59 @@ const buildDayEntries = (periodOrder, periodMap) => {
     activeGroups = nextActive;
   });
 
-  return groups.map((group) => {
-    const subset = periods.slice(group.startIndex, group.endIndex + 1);
-    const parsed = parseLessonBlock(group.text);
-    const entry = {
-      startPeriod: subset[0],
-      endPeriod: subset[subset.length - 1],
-      periods: subset,
-      raw: parsed.raw,
-    };
+  // Parse all groups in parallel using AI-capable parser
+  const parseResults = await Promise.all(
+    groups.map(async (group) => {
+      const subset = periods.slice(group.startIndex, group.endIndex + 1);
+      const { lesson: parsed, usedAI } = await parseLessonBlockWithAI(group.text);
 
-    if (parsed.subject) {
-      entry.subject = parsed.subject;
-    }
-    if (parsed.teacher) {
-      entry.teacher = parsed.teacher;
-    }
-    if (parsed.weeks) {
-      entry.weeks = parsed.weeks;
-    }
-    if (parsed.weeksOff) {
-      entry.weeksOff = parsed.weeksOff;
-    }
-    if (parsed.dates) {
-      entry.dates = parsed.dates;
-    }
-    if (parsed.room) {
-      entry.room = parsed.room;
-    }
-    if (parsed.rooms) {
-      entry.rooms = parsed.rooms;
-    }
-    if (parsed.roomAssignments) {
-      entry.roomAssignments = parsed.roomAssignments;
-    }
-    if (parsed.weekPeriods) {
-      entry.weekPeriods = parsed.weekPeriods;
-    }
-    if (parsed.notes) {
-      entry.notes = parsed.notes;
-    }
+      const entry = {
+        startPeriod: subset[0],
+        endPeriod: subset[subset.length - 1],
+        periods: subset,
+        raw: parsed.raw,
+      };
 
-    return entry;
-  });
+      if (parsed.subject) {
+        entry.subject = parsed.subject;
+      }
+      if (parsed.teacher) {
+        entry.teacher = parsed.teacher;
+      }
+      if (parsed.weeks) {
+        entry.weeks = parsed.weeks;
+      }
+      if (parsed.weeksOff) {
+        entry.weeksOff = parsed.weeksOff;
+      }
+      if (parsed.dates) {
+        entry.dates = parsed.dates;
+      }
+      if (parsed.room) {
+        entry.room = parsed.room;
+      }
+      if (parsed.rooms) {
+        entry.rooms = parsed.rooms;
+      }
+      if (parsed.roomAssignments) {
+        entry.roomAssignments = parsed.roomAssignments;
+      }
+      if (parsed.weekPeriods) {
+        entry.weekPeriods = parsed.weekPeriods;
+      }
+      if (parsed.notes) {
+        entry.notes = parsed.notes;
+      }
+
+      return { entry, usedAI };
+    })
+  );
+
+  // Separate entries from AI usage flags
+  return {
+    entries: parseResults.map(r => r.entry),
+    anyUsedAI: parseResults.some(r => r.usedAI)
+  };
 };
 
 const sessionRankLookup = {
@@ -807,7 +913,19 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
     );
   }
 
+  // Generate PDF hash for caching
+  const pdfHash = generatePDFHash(buffer);
+  console.log(`[PDF Parser] Processing PDF with hash: ${pdfHash}`);
+
+  // Check if we have cached result for this PDF
+  const cachedResult = await getCachedPDFResult(pdfHash);
+  if (cachedResult) {
+    console.log('[PDF Parser] Returning cached result - skipping AI processing');
+    return cachedResult;
+  }
+
   const { tempDir, filePath } = await createTempPdfFile(buffer, originalName);
+  let usedAI = false; // Track if AI was used
 
   try {
     const pdfjs = await loadPdfModule();
@@ -1060,17 +1178,37 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
 
     const simplifiedSheets = {};
 
-    pageSchedules.forEach(({ classes, dayPeriods }, pageKey) => {
-      const classEvents = {};
+    // Process all pages in parallel
+    const pageResults = await Promise.all(
+      Array.from(pageSchedules.entries()).map(async ([pageKey, { classes, dayPeriods }]) => {
+        const classEvents = {};
 
-      classes.forEach((sessionMap, className) => {
-        const events = [];
+        // Process all classes in parallel
+        const classResults = await Promise.all(
+          Array.from(classes.entries()).map(async ([className, sessionMap]) => {
+            const events = [];
+            let classUsedAI = false;
 
-        sessionMap.forEach((dayMap, sessionName) => {
-          dayMap.forEach((periodMap, dayName) => {
-            const periodOrder = dayPeriods[dayName] ?? Object.keys(periodMap);
-            const entries = buildDayEntries(periodOrder, periodMap);
+            // Process all sessions in parallel
+            const sessionResults = await Promise.all(
+              Array.from(sessionMap.entries()).map(async ([sessionName, dayMap]) => {
+                // Process all days in parallel
+                const dayResults = await Promise.all(
+                  Array.from(dayMap.entries()).map(async ([dayName, periodMap]) => {
+                    const periodOrder = dayPeriods[dayName] ?? Object.keys(periodMap);
+                    const { entries, anyUsedAI } = await buildDayEntries(periodOrder, periodMap);
+                    return { entries, anyUsedAI, sessionName, dayName };
+                  })
+                );
 
+                return dayResults;
+              })
+            );
+
+            // Flatten session results
+            const allDayResults = sessionResults.flat();
+
+            // Define mergeEventData function once per class
             const mergeEventData = (target, entry) => {
               if (entry.subject?.code) {
                 target.subjectCode = entry.subject.code;
@@ -1176,72 +1314,94 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
               }
             };
 
-            const bucketEvents = [];
-            let currentEvent = null;
-
-            entries.forEach((entry) => {
-              const hasSubject =
-                Boolean(entry.subject?.code) || Boolean(entry.subject?.name);
-
-              if (hasSubject || !currentEvent) {
-                currentEvent = {
-                  session: sessionName,
-                  day: dayName,
-                };
-                bucketEvents.push(currentEvent);
+            // Process all day results and track AI usage
+            allDayResults.forEach(({ entries, anyUsedAI, sessionName, dayName }) => {
+              if (anyUsedAI) {
+                classUsedAI = true;
               }
 
-              mergeEventData(currentEvent, entry);
+              const bucketEvents = [];
+              let currentEvent = null;
+
+              entries.forEach((entry) => {
+                const hasSubject =
+                  Boolean(entry.subject?.code) || Boolean(entry.subject?.name);
+
+                if (hasSubject || !currentEvent) {
+                  currentEvent = {
+                    session: sessionName,
+                    day: dayName,
+                  };
+                  bucketEvents.push(currentEvent);
+                }
+
+                mergeEventData(currentEvent, entry);
+              });
+
+              bucketEvents
+                .filter((event) =>
+                  Boolean(
+                    event.subjectCode ||
+                      event.subjectName ||
+                    event.teacher ||
+                    event.weekStart !== undefined ||
+                    event.weekEnd !== undefined ||
+                    event.weeksOff ||
+                    event.room ||
+                    event.rooms ||
+                    event.roomAssignments ||
+                    event.weekPeriods
+                  )
+                )
+                .forEach((event) => events.push(event));
             });
 
-            bucketEvents
-              .filter((event) =>
-                Boolean(
-                  event.subjectCode ||
-                    event.subjectName ||
-                  event.teacher ||
-                  event.weekStart !== undefined ||
-                  event.weekEnd !== undefined ||
-                  event.weeksOff ||
-                  event.room ||
-                  event.rooms ||
-                  event.roomAssignments ||
-                  event.weekPeriods
-                )
-              )
-              .forEach((event) => events.push(event));
-          });
+            // Track if AI was used for this class
+            return { className, events, classUsedAI };
+          })
+        );
+
+        // Merge all class results
+        classResults.forEach(({ className, events, classUsedAI }) => {
+          if (classUsedAI) {
+            usedAI = true;  // Update the PDF-level usedAI flag
+          }
+
+          if (events.length > 0) {
+            events.sort((a, b) => {
+              const sessionA =
+                sessionRankLookup[toPlainLower(a.session)] ??
+                Number.POSITIVE_INFINITY;
+              const sessionB =
+                sessionRankLookup[toPlainLower(b.session)] ??
+                Number.POSITIVE_INFINITY;
+
+              if (sessionA !== sessionB) {
+                return sessionA - sessionB;
+              }
+
+              const dayA = parseDayIndex(a.day);
+              const dayB = parseDayIndex(b.day);
+
+              if (dayA !== dayB) {
+                return dayA - dayB;
+              }
+
+              const subjectA = a.subjectCode || a.subjectName || '';
+              const subjectB = b.subjectCode || b.subjectName || '';
+              return subjectA.localeCompare(subjectB);
+            });
+
+            classEvents[className] = events;
+          }
         });
 
-        if (events.length > 0) {
-          events.sort((a, b) => {
-            const sessionA =
-              sessionRankLookup[toPlainLower(a.session)] ??
-              Number.POSITIVE_INFINITY;
-            const sessionB =
-              sessionRankLookup[toPlainLower(b.session)] ??
-              Number.POSITIVE_INFINITY;
+        return { pageKey, classEvents };
+      })
+    );
 
-            if (sessionA !== sessionB) {
-              return sessionA - sessionB;
-            }
-
-            const dayA = parseDayIndex(a.day);
-            const dayB = parseDayIndex(b.day);
-
-            if (dayA !== dayB) {
-              return dayA - dayB;
-            }
-
-            const subjectA = a.subjectCode || a.subjectName || '';
-            const subjectB = b.subjectCode || b.subjectName || '';
-            return subjectA.localeCompare(subjectB);
-          });
-
-          classEvents[className] = events;
-        }
-      });
-
+    // Build simplified sheets from page results
+    pageResults.forEach(({ pageKey, classEvents }) => {
       if (Object.keys(classEvents).length > 0) {
         simplifiedSheets[pageKey] = classEvents;
       }
@@ -1263,6 +1423,18 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
     // Save debug files if DEBUG mode is enabled
     await saveDebugJson(scheduleOutput, 'schedule_output.json');
     await saveDebugJson({ pageSchedules: Array.from(pageSchedules.entries()) }, 'page_schedules_raw.json');
+
+    // Save to PDF cache if AI was used during parsing
+    if (usedAI) {
+      console.log('[PDF Cache] Saving result to cache (AI was used)');
+      await setCachedPDFResult(pdfHash, scheduleOutput, {
+        originalName: originalName || 'uploaded.pdf',
+        usedAI: true,
+        timestamp: new Date().toISOString(),
+      });
+    } else {
+      console.log('[PDF Cache] Skipping cache (AI not used, regex-only parsing)');
+    }
 
     return scheduleOutput;
   } catch (error) {

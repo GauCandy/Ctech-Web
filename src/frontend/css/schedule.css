@@ -196,16 +196,49 @@
 .schedule-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 2rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
 
+.schedule-header-left {
+  flex: 1;
+}
+
 .schedule-header h2 {
   font-size: 1.75rem;
   color: var(--text-color, #1f2937);
-  margin: 0;
+  margin: 0 0 0.75rem 0;
+}
+
+.schedule-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+  font-size: 0.95rem;
+  color: var(--text-color, #1f2937);
+  font-weight: 500;
+}
+
+.stat-item .material-icons {
+  font-size: 1.25rem;
+  color: var(--primary-color, #2563eb);
+}
+
+.stat-item span:not(.material-icons) {
+  font-weight: 600;
+  color: var(--primary-color, #2563eb);
 }
 
 .schedule-controls {
@@ -498,4 +531,9 @@
 
 [data-theme="dark"] .file-info {
   background: var(--input-bg);
+}
+
+[data-theme="dark"] .stat-item {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.08) 100%);
+  border-color: rgba(59, 130, 246, 0.3);
 }
