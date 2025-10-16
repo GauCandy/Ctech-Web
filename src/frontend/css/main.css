@@ -673,13 +673,13 @@ img {
 
   inset: 0;
 
-  background-image: url('/img/background.webp');
+  background: var(--bg-primary);
 
-  background-size: 100% auto;
+  background-size: cover;
 
   background-repeat: no-repeat;
 
-  background-position: center top;
+  background-position: center;
 
   background-attachment: scroll;
 

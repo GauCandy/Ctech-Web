@@ -1,4 +1,4 @@
-/* Schedule Page Styles */
+﻿/* Schedule Page Styles */
 
 .schedule-page {
   min-height: calc(100vh - 200px);
@@ -11,7 +11,19 @@
   background: var(--card-bg, #ffffff);
   border-radius: 1rem;
   padding: 2rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.time-table-section::before {
+  content: '';
+  position: absolute;
+  inset: -40% -30% auto -30%;
+  height: 60%;
+  background: radial-gradient(circle at center, rgba(37, 99, 235, 0.18), transparent 55%);
+  opacity: 0.9;
+  pointer-events: none;
 }
 
 .time-table-title {
@@ -31,53 +43,62 @@
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
-  background: var(--card-bg, #ffffff);
-  border: 2px solid var(--border-color, #e5e7eb);
-  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(37, 99, 235, 0.12);
+  border-radius: 1rem;
   overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
 .time-table th,
 .time-table td {
-  padding: 0.75rem;
+  padding: 0.85rem 1rem;
   text-align: center;
-  border: 1px solid var(--border-color, #e5e7eb);
+  border: 1px solid rgba(37, 99, 235, 0.08);
 }
 
 .time-table-header-main {
-  background: var(--text-color, #1f2937);
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
   color: white;
   font-weight: 700;
   font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: inset 0 -2px 0 rgba(255, 255, 255, 0.14);
 }
 
 .time-table-header-session {
   font-weight: 700;
   font-size: 1rem;
-  padding: 0.875rem;
+  padding: 0.875rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .time-table-header-session.morning {
-  background: #fbbf24;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
   color: #78350f;
 }
 
 .time-table-header-session.afternoon {
-  background: #4ade80;
-  color: #14532d;
+  background: linear-gradient(135deg, #34d399, #10b981);
+  color: #064e3b;
 }
 
 .time-table-header-session.evening {
-  background: #60a5fa;
+  background: linear-gradient(135deg, #60a5fa, #3b82f6);
   color: #1e3a8a;
 }
 
 .time-table-subheader {
-  background: var(--bg-light, #f3f4f6);
+  background: rgba(37, 99, 235, 0.06);
   color: var(--text-color, #1f2937);
   font-weight: 600;
   font-style: italic;
   font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .time-table-period {
@@ -87,18 +108,18 @@
   font-size: 1rem;
 }
 
-.time-table tbody tr:hover {
-  background: rgba(37, 99, 235, 0.05);
+.time-table tbody tr:nth-child(odd) td {
+  background: rgba(37, 99, 235, 0.03);
+}
+
+.time-table tbody tr:hover td {
+  background: rgba(59, 130, 246, 0.12);
+  color: #0f172a;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .time-table-empty {
-  background: repeating-linear-gradient(
-    45deg,
-    var(--bg-light, #f9fafb),
-    var(--bg-light, #f9fafb) 10px,
-    var(--border-color, #e5e7eb) 10px,
-    var(--border-color, #e5e7eb) 12px
-  );
+  background: var(--bg-light, #f9fafb);
 }
 
 /* Upload Section */
@@ -701,13 +722,23 @@
 }
 
 [data-theme="dark"] .time-table {
-  background: var(--card-bg);
-  border-color: var(--border-color);
+  background: rgba(17, 24, 39, 0.92);
+  border-color: rgba(59, 130, 246, 0.28);
+  box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.14);
 }
 
 [data-theme="dark"] .time-table th,
 [data-theme="dark"] .time-table td {
-  border-color: var(--border-color);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+[data-theme="dark"] .time-table tbody tr:nth-child(odd) td {
+  background: rgba(37, 99, 235, 0.12);
+}
+
+[data-theme="dark"] .time-table tbody tr:hover td {
+  background: rgba(59, 130, 246, 0.25);
+  color: #f9fafb;
 }
 
 [data-theme="dark"] .time-table-header-session.morning {
@@ -728,3 +759,8 @@
 [data-theme="dark"] .time-table tbody tr:hover {
   background: rgba(59, 130, 246, 0.1);
 }
+
+[data-theme="dark"] .time-table-section::before {
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.25), transparent 55%);
+}
+

@@ -157,12 +157,20 @@ async function login(req, res, next) {
       deviceInfo = deviceResult;
     }
 
-    const session = await createSession(user.user_id);
+    const rememberPreference =
+      req.body &&
+      (req.body.remember === true ||
+        req.body.remember === 'true' ||
+        req.body.rememberMe === true ||
+        req.body.rememberMe === 'true');
+
+    const session = await createSession(user.user_id, { remember: rememberPreference });
     const profile = buildProfilePayload(accountRow);
 
     const responsePayload = {
       token: session.token,
       expiresAt: session.expiresAt,
+      remember: session.remember,
       user: {
         userId: user.user_id,
         role: user.role,
@@ -224,6 +232,7 @@ async function getCurrentUser(req, res, next) {
     return res.json({
       token: auth.token,
       expiresAt: auth.expiresAt,
+      remember: Boolean(auth.remember),
       user: profile || {
         userId: auth.userId,
         role: auth.role,

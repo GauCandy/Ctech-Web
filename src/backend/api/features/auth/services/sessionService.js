@@ -3,21 +3,37 @@ const crypto = require('crypto');
 const { pool } = require('../../../../database/connection');
 const { loadAccountProfileRow, buildProfilePayload } = require('./userProfileService');
 
-const DEFAULT_SESSION_TIMEOUT_SECONDS = 60 * 60;
+const DEFAULT_SESSION_TIMEOUT_SECONDS = 60 * 60; // 1 hour
+const DEFAULT_REMEMBER_SESSION_TIMEOUT_SECONDS = 60 * 60 * 24 * 30; // 30 days
+
 const SESSION_TIMEOUT_ENV = process.env.SESSION_TIMEOUT;
-const SESSION_TTL_MS = (() => {
-  if (!SESSION_TIMEOUT_ENV) {
-    return DEFAULT_SESSION_TIMEOUT_SECONDS * 1000;
+const SESSION_REMEMBER_TIMEOUT_ENV = process.env.SESSION_REMEMBER_TIMEOUT;
+
+const resolveTimeoutMs = (envValue, fallbackSeconds, label) => {
+  if (!envValue) {
+    return fallbackSeconds * 1000;
   }
 
-  const parsed = Number(SESSION_TIMEOUT_ENV);
+  const parsed = Number(envValue);
   if (!Number.isFinite(parsed) || parsed <= 0) {
-    console.warn('Invalid SESSION_TIMEOUT value, using default:', SESSION_TIMEOUT_ENV);
-    return DEFAULT_SESSION_TIMEOUT_SECONDS * 1000;
+    console.warn(`Invalid ${label} value, using fallback:`, envValue);
+    return fallbackSeconds * 1000;
   }
 
   return Math.floor(parsed * 1000);
-})();
+};
+
+const SESSION_TTL_MS = resolveTimeoutMs(
+  SESSION_TIMEOUT_ENV,
+  DEFAULT_SESSION_TIMEOUT_SECONDS,
+  'SESSION_TIMEOUT'
+);
+
+const REMEMBER_SESSION_TTL_MS = resolveTimeoutMs(
+  SESSION_REMEMBER_TIMEOUT_ENV,
+  DEFAULT_REMEMBER_SESSION_TIMEOUT_SECONDS,
+  'SESSION_REMEMBER_TIMEOUT'
+);
 
 // Lay token tu header Authorization hoac query.
 function extractToken(req) {
@@ -30,8 +46,11 @@ function extractToken(req) {
 }
 
 // Tao token ngau nhien 64 ky tu hex.
-function generateToken() {
-  return crypto.randomBytes(32).toString('hex');
+function generateToken(options = {}) {
+  const remember = Boolean(options.remember);
+  const randomHex = crypto.randomBytes(32).toString('hex');
+  const prefix = remember ? 'R' : 'S';
+  return prefix + randomHex.slice(1);
 }
 
 // Xoa tat ca session cua nguoi dung cu the.
@@ -45,12 +64,15 @@ async function pruneExpiredSessions() {
 }
 
 // Tao session moi va gia han thoi gian het han mac dinh.
-async function createSession(userId) {
+async function createSession(userId, options = {}) {
+  const remember = Boolean(options.remember);
+
   await pruneExpiredSessions();
   await destroyUserSessions(userId);
 
-  const token = generateToken();
-  const expiresAt = new Date(Date.now() + SESSION_TTL_MS);
+  const token = generateToken({ remember });
+  const ttlMs = remember ? REMEMBER_SESSION_TTL_MS : SESSION_TTL_MS;
+  const expiresAt = new Date(Date.now() + ttlMs);
 
   await pool.execute(
     'INSERT INTO user_sessions (user_id, token, expires_at) VALUES (?, ?, ?)',
@@ -60,11 +82,14 @@ async function createSession(userId) {
   return {
     token,
     expiresAt: expiresAt.toISOString(),
+    remember,
   };
 }
 
 // Kiem tra token, gia han thoi gian neu hop le va nguoi dung dang hoat dong.
 async function validateSessionToken(token) {
+  const rememberToken = typeof token === 'string' && token.startsWith('R');
+
   const [rows] = await pool.execute(
     `SELECT us.id, us.user_id, us.expires_at, ua.role, ua.is_active
      FROM user_sessions us
@@ -92,17 +117,19 @@ async function validateSessionToken(token) {
     return null;
   }
 
-  const newExpiry = new Date(nowMs + SESSION_TTL_MS);
+  const ttlMs = rememberToken ? REMEMBER_SESSION_TTL_MS : SESSION_TTL_MS;
+  const updatedExpiry = new Date(nowMs + ttlMs);
   await pool.execute(
     'UPDATE user_sessions SET expires_at = ?, last_used_at = CURRENT_TIMESTAMP WHERE id = ?',
-    [newExpiry, record.id]
+    [updatedExpiry, record.id]
   );
 
   return {
     id: record.id,
     userId: record.user_id,
     role: record.role,
-    expiresAt: newExpiry.toISOString(),
+    expiresAt: updatedExpiry.toISOString(),
+    remember: rememberToken,
   };
 }
 
@@ -133,6 +160,7 @@ async function authenticateRequest(req) {
     role: session.role,
     token,
     expiresAt: session.expiresAt,
+    remember: session.remember,
     displayName: profile ? profile.displayName : session.userId,
     profile,
   };
@@ -140,6 +168,7 @@ async function authenticateRequest(req) {
 
 module.exports = {
   SESSION_TTL_MS,
+  REMEMBER_SESSION_TTL_MS,
   extractToken,
   generateToken,
   pruneExpiredSessions,

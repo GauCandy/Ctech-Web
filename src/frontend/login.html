@@ -395,6 +395,7 @@
         const loginSubmit = loginForm.querySelector('[data-login-submit]');
         const loginUsername = loginForm.querySelector('#login-username');
         const loginPassword = loginForm.querySelector('#login-password');
+        const rememberCheckbox = loginForm.querySelector('input[name="remember"]');
 
         const registerForm = document.querySelector('[data-register-form]');
         const registerStatus = registerForm.querySelector('[data-register-status]');
@@ -673,7 +674,7 @@
 
         activateTab('login');
 
-        async function attemptLogin({ username, password, statusElement, submitButton, displayName }) {
+        async function attemptLogin({ username, password, remember = false, statusElement, submitButton, displayName }) {
           setStatus(statusElement, '', '');
           if (submitButton) {
             submitButton.disabled = true;
@@ -683,7 +684,7 @@
             const response = await fetch('/api/auth/login', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ username, password }),
+              body: JSON.stringify({ username, password, rememberMe: Boolean(remember) }),
             });
 
             if (!response.ok) {
@@ -732,7 +733,13 @@
           }
 
           try {
-            await attemptLogin({ username, password, statusElement: loginStatus, submitButton: loginSubmit });
+            await attemptLogin({
+              username,
+              password,
+              remember: rememberCheckbox ? rememberCheckbox.checked : false,
+              statusElement: loginStatus,
+              submitButton: loginSubmit,
+            });
           } catch (error) {
             // lỗi đã được hiển thị trong attemptLogin
           }
@@ -796,6 +803,7 @@
             await attemptLogin({
               username: userId,
               password,
+              remember: true,
               statusElement: registerStatus,
               submitButton: registerSubmit,
               displayName: fullName,
