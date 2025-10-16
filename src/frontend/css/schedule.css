@@ -304,6 +304,26 @@
   margin: 0;
 }
 
+.schedule-meta {
+  margin: -0.5rem 0 1.5rem;
+  color: var(--text-secondary, #6b7280);
+  font-size: 0.95rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.schedule-meta span {
+  background: var(--chip-bg, rgba(37, 99, 235, 0.08));
+  color: inherit;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  line-height: 1.2;
+}
+
 .schedule-controls {
   display: flex;
   gap: 1rem;

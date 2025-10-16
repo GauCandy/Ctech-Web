@@ -1,9 +1,9 @@
+// ugh miễn nó còn chạy thì đừng động vào
+
 const fs = require('fs/promises');
 const path = require('path');
 const os = require('os');
 const crypto = require('crypto');
-const { AI_ENABLED, AI_FALLBACK, parseWithAI, logAIFallback } = require('./aiTimetableParser');
-const { generatePDFHash, getCachedPDFResult, setCachedPDFResult } = require('./aiCache');
 
 // Debug mode - set to true to output JSON files to debug folder
 const DEBUG_MODE = process.env.DEBUG === 'true';
@@ -102,6 +102,18 @@ const parseWeekRange = (plain) => {
 
   return null;
 };
+
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
+
+const toIsoDateString = (date) => {
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
+const addDaysUtc = (date, days) =>
+  new Date(date.getTime() + days * DAY_IN_MS);
 
 const formatDayLabel = (label) => {
   const normalized = normalizeText(label).replace(/\s+/g, '');
@@ -335,96 +347,38 @@ const groupLinesIntoBlocks = (lines) => {
   });
 };
 
-/**
- * Validate if regex result looks suspicious or incomplete
- */
-const shouldFallbackToAI = (lesson, text) => {
-  // Check if there's "nghi" keyword but weeksOff is empty or suspicious
-  const hasNghiKeyword = /nghi/i.test(toPlainLower(text));
-  const hasDenKeyword = /den/i.test(toPlainLower(text));
-
-  if (hasNghiKeyword && hasDenKeyword && lesson.weeksOff && lesson.weeksOff.length === 2) {
-    // Likely a range like "10 đến 13" but only got [10, 13]
-    const diff = lesson.weeksOff[1] - lesson.weeksOff[0];
-    if (diff > 1) {
-      // Gap detected - should be a range!
-      return 'suspected_range_not_expanded';
-    }
+const parseDateMatchToUtc = (match) => {
+  if (!match) {
+    return null;
   }
 
-  // Check if essential fields are missing
-  if (!lesson.subject && text.length > 20) {
-    return 'missing_subject_info';
+  const day = Number.parseInt(match[1], 10);
+  const month = Number.parseInt(match[2], 10);
+  const year = Number.parseInt(match[3], 10);
+
+  if (
+    !Number.isFinite(day) ||
+    !Number.isFinite(month) ||
+    !Number.isFinite(year)
+  ) {
+    return null;
   }
 
-  return null; // No fallback needed
-};
-
-const parseLessonBlockWithAI = async (text) => {
-  if (!text) {
-    return { lesson: { raw: '' }, usedAI: false };
+  if (month < 1 || month > 12 || day < 1 || day > 31) {
+    return null;
   }
 
-  // STRATEGY 1: Always use AI if AI_ENABLED=true
-  if (AI_ENABLED) {
-    try {
-      const aiResult = await parseWithAI(text);
-      return {
-        lesson: convertAIResultToLesson(aiResult, text),
-        usedAI: true
-      };
-    } catch (error) {
-      console.warn('[AI Parser] Failed, falling back to regex:', error.message);
-    }
+  const utcDate = new Date(Date.UTC(year, month - 1, day));
+
+  if (
+    utcDate.getUTCFullYear() !== year ||
+    utcDate.getUTCMonth() !== month - 1 ||
+    utcDate.getUTCDate() !== day
+  ) {
+    return null;
   }
 
-  // STRATEGY 2: Try regex first, use AI as fallback if result is suspicious
-  const regexResult = parseLessonBlock(text);
-
-  if (AI_FALLBACK) {
-    const fallbackReason = shouldFallbackToAI(regexResult, text);
-
-    if (fallbackReason) {
-      console.log(`[Hybrid Parser] Fallback to AI: ${fallbackReason}`);
-
-      try {
-        const aiResult = await parseWithAI(text);
-        const aiLesson = convertAIResultToLesson(aiResult, text);
-
-        // Log this case for analysis
-        await logAIFallback(text, regexResult, aiLesson, fallbackReason);
-
-        return { lesson: aiLesson, usedAI: true };
-      } catch (error) {
-        console.warn('[AI Fallback] Failed, using regex result:', error.message);
-      }
-    }
-  }
-
-  // Return regex result
-  return { lesson: regexResult, usedAI: false };
-};
-
-/**
- * Convert AI result to internal lesson format
- */
-const convertAIResultToLesson = (aiResult, text) => {
-  return {
-    raw: text,
-    subject: aiResult.subjectCode || aiResult.subjectName ? {
-      code: aiResult.subjectCode,
-      name: aiResult.subjectName,
-      hours: aiResult.hours,
-    } : null,
-    teacher: aiResult.teacher,
-    weeks: aiResult.weekStart && aiResult.weekEnd ? {
-      start: aiResult.weekStart,
-      end: aiResult.weekEnd,
-    } : null,
-    weeksOff: aiResult.weeksOff || [],
-    room: aiResult.room,
-    notes: aiResult.notes || [],
-  };
+  return utcDate;
 };
 
 const parseLessonBlock = (text) => {
@@ -792,59 +746,293 @@ const buildDayEntries = async (periodOrder, periodMap) => {
     activeGroups = nextActive;
   });
 
-  // Parse all groups in parallel using AI-capable parser
-  const parseResults = await Promise.all(
-    groups.map(async (group) => {
-      const subset = periods.slice(group.startIndex, group.endIndex + 1);
-      const { lesson: parsed, usedAI } = await parseLessonBlockWithAI(group.text);
+  return groups.map((group) => {
+    const subset = periods.slice(group.startIndex, group.endIndex + 1);
+    const parsed = parseLessonBlock(group.text);
 
-      const entry = {
-        startPeriod: subset[0],
-        endPeriod: subset[subset.length - 1],
-        periods: subset,
-        raw: parsed.raw,
-      };
+    const entry = {
+      startPeriod: subset[0],
+      endPeriod: subset[subset.length - 1],
+      periods: subset,
+      raw: parsed.raw,
+    };
 
-      if (parsed.subject) {
-        entry.subject = parsed.subject;
-      }
-      if (parsed.teacher) {
-        entry.teacher = parsed.teacher;
-      }
-      if (parsed.weeks) {
-        entry.weeks = parsed.weeks;
-      }
-      if (parsed.weeksOff) {
-        entry.weeksOff = parsed.weeksOff;
-      }
-      if (parsed.dates) {
-        entry.dates = parsed.dates;
-      }
-      if (parsed.room) {
-        entry.room = parsed.room;
-      }
-      if (parsed.rooms) {
-        entry.rooms = parsed.rooms;
-      }
-      if (parsed.roomAssignments) {
-        entry.roomAssignments = parsed.roomAssignments;
-      }
-      if (parsed.weekPeriods) {
-        entry.weekPeriods = parsed.weekPeriods;
-      }
-      if (parsed.notes) {
-        entry.notes = parsed.notes;
-      }
+    if (parsed.subject) {
+      entry.subject = parsed.subject;
+    }
+    if (parsed.teacher) {
+      entry.teacher = parsed.teacher;
+    }
+    if (parsed.weeks) {
+      entry.weeks = parsed.weeks;
+    }
+    if (parsed.weeksOff) {
+      entry.weeksOff = parsed.weeksOff;
+    }
+    if (parsed.dates) {
+      entry.dates = parsed.dates;
+    }
+    if (parsed.room) {
+      entry.room = parsed.room;
+    }
+    if (parsed.rooms) {
+      entry.rooms = parsed.rooms;
+    }
+    if (parsed.roomAssignments) {
+      entry.roomAssignments = parsed.roomAssignments;
+    }
+    if (parsed.weekPeriods) {
+      entry.weekPeriods = parsed.weekPeriods;
+    }
+    if (parsed.notes) {
+      entry.notes = parsed.notes;
+    }
 
-      return { entry, usedAI };
-    })
+    return entry;
+  });
+};
+
+const computeWeekAnchors = (startDateUtc, weekRange) => {
+  if (
+    !startDateUtc ||
+    !weekRange ||
+    !Number.isFinite(weekRange.start) ||
+    !Number.isFinite(weekRange.end)
+  ) {
+    return [];
+  }
+
+  const anchors = [];
+
+  for (
+    let week = weekRange.start;
+    week <= weekRange.end;
+    week += 1
+  ) {
+    const offsetWeeks = week - weekRange.start;
+    const weekStartDate = addDaysUtc(startDateUtc, offsetWeeks * 7);
+    const weekEndDate = addDaysUtc(weekStartDate, 6);
+
+    anchors.push({
+      week,
+      startDate: toIsoDateString(weekStartDate),
+      endDate: toIsoDateString(weekEndDate),
+    });
+  }
+
+  return anchors;
+};
+
+const determineCurrentWeekInfo = (anchors, weekRange, startDateUtc) => {
+  if (!anchors || anchors.length === 0 || !startDateUtc || !weekRange) {
+    return null;
+  }
+
+  const todayLocal = new Date();
+  const todayUtc = new Date(
+    Date.UTC(
+      todayLocal.getFullYear(),
+      todayLocal.getMonth(),
+      todayLocal.getDate()
+    )
   );
 
-  // Separate entries from AI usage flags
+  const diffDays = Math.floor(
+    (todayUtc.getTime() - startDateUtc.getTime()) / DAY_IN_MS
+  );
+
+  const totalDays = anchors.length * 7;
+
+  if (totalDays <= 0) {
+    return null;
+  }
+
+  let status = 'within-range';
+  let effectiveDiff = diffDays;
+
+  if (diffDays < 0) {
+    status = 'before-range';
+    effectiveDiff = 0;
+  } else if (diffDays >= totalDays) {
+    status = 'after-range';
+    effectiveDiff = totalDays - 1;
+  }
+
+  const offsetWeeks = Math.floor(effectiveDiff / 7);
+  const currentWeek = weekRange.start + offsetWeeks;
+  const currentWeekRange =
+    anchors.find((anchor) => anchor.week === currentWeek) ?? null;
+
   return {
-    entries: parseResults.map(r => r.entry),
-    anyUsedAI: parseResults.some(r => r.usedAI)
+    today: toIsoDateString(todayUtc),
+    status,
+    currentWeek,
+    currentWeekRange,
   };
+};
+
+const extractTimetableMetadata = (items, tableLeftEdge) => {
+  if (!Array.isArray(items) || items.length === 0) {
+    return null;
+  }
+
+  const limitX = Number.isFinite(tableLeftEdge)
+    ? tableLeftEdge
+    : Number.POSITIVE_INFINITY;
+
+  const headerCandidates = items.filter((item) => item.x < limitX);
+
+  if (headerCandidates.length === 0) {
+    return null;
+  }
+
+  const blocks = groupLinesIntoBlocks(headerCandidates);
+
+  const metadata = {
+    source: 'header_table',
+  };
+
+  let found = false;
+  let startDateUtc = null;
+  let endDateUtc = null;
+
+  for (const block of blocks) {
+    const trimmed = block.text.trim();
+    if (!trimmed) {
+      continue;
+    }
+
+    const plain = toPlainLower(trimmed);
+
+    if (plain.includes('ghi chu')) {
+      continue;
+    }
+
+    if (plain.includes('khoa')) {
+      const facultyParts = trimmed.split(':');
+      const facultyName =
+        facultyParts.length > 1
+          ? facultyParts.slice(1).join(':').trim()
+          : trimmed;
+      if (facultyName) {
+        metadata.faculty = facultyName;
+        metadata.facultyRaw = trimmed;
+        found = true;
+      }
+    }
+
+    if (plain.includes('tuan')) {
+      const weekMatches = Array.from(
+        plain.matchAll(/tu\s*tuan\s*(\d+)[^0-9]+(\d+)/g)
+      );
+
+      if (weekMatches.length > 0) {
+        const primary = weekMatches[0];
+        const startWeek = Number.parseInt(primary[1], 10);
+        const endWeek = Number.parseInt(primary[2], 10);
+
+        if (Number.isFinite(startWeek) && Number.isFinite(endWeek)) {
+          metadata.weekRange = { start: startWeek, end: endWeek };
+          metadata.weekRangeRaw = trimmed;
+          found = true;
+        }
+
+        if (weekMatches.length > 1) {
+          const secondary = weekMatches.find((match) => {
+            const altStart = Number.parseInt(match[1], 10);
+            const altEnd = Number.parseInt(match[2], 10);
+            return (
+              Number.isFinite(altStart) &&
+              Number.isFinite(altEnd) &&
+              (!metadata.weekRange ||
+                altStart !== metadata.weekRange.start ||
+                altEnd !== metadata.weekRange.end)
+            );
+          });
+
+          if (secondary) {
+            const altStart = Number.parseInt(secondary[1], 10);
+            const altEnd = Number.parseInt(secondary[2], 10);
+            if (Number.isFinite(altStart) && Number.isFinite(altEnd)) {
+              metadata.fullWeekRange = { start: altStart, end: altEnd };
+            }
+          }
+        }
+      }
+    }
+
+    if (plain.includes('ngay')) {
+      const containsHolidayKeywords =
+        plain.includes('nghi') || plain.includes('le');
+      const isDateRangeLine =
+        plain.includes('tu ngay') || plain.startsWith('ngay');
+
+      if (!isDateRangeLine && containsHolidayKeywords) {
+        continue;
+      }
+
+      if (!isDateRangeLine) {
+        continue;
+      }
+
+      const dateMatches = Array.from(
+        trimmed.matchAll(/(\d{1,2})\s*[./-]\s*(\d{1,2})\s*[./-]\s*(\d{4})/g)
+      );
+
+      if (dateMatches.length > 0) {
+        const startCandidate = parseDateMatchToUtc(dateMatches[0]);
+        if (startCandidate) {
+          startDateUtc = startDateUtc ?? startCandidate;
+          found = true;
+        }
+      }
+
+      if (dateMatches.length > 1) {
+        const endCandidate = parseDateMatchToUtc(dateMatches[1]);
+        if (endCandidate) {
+          endDateUtc = endDateUtc ?? endCandidate;
+          found = true;
+        }
+      }
+    }
+  }
+
+  if (!found) {
+    return null;
+  }
+
+  if (startDateUtc || endDateUtc) {
+    metadata.dateRange = {};
+    if (startDateUtc) {
+      metadata.dateRange.startDate = toIsoDateString(startDateUtc);
+    }
+    if (endDateUtc) {
+      metadata.dateRange.endDate = toIsoDateString(endDateUtc);
+    }
+  }
+
+  if (metadata.weekRange && startDateUtc) {
+    const anchors = computeWeekAnchors(startDateUtc, metadata.weekRange);
+    if (anchors.length > 0) {
+      metadata.weekDateAnchors = anchors;
+      metadata.totalWeeks = anchors.length;
+
+      const currentWeekInfo = determineCurrentWeekInfo(
+        anchors,
+        metadata.weekRange,
+        startDateUtc
+      );
+
+      if (currentWeekInfo) {
+        metadata.today = currentWeekInfo.today;
+        metadata.currentWeek = currentWeekInfo.currentWeek;
+        metadata.currentWeekStatus = currentWeekInfo.status;
+        metadata.currentWeekRange = currentWeekInfo.currentWeekRange;
+      }
+    }
+  }
+
+  return metadata;
 };
 
 const sessionRankLookup = {
@@ -913,19 +1101,9 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
     );
   }
 
-  // Generate PDF hash for caching
-  const pdfHash = generatePDFHash(buffer);
-  console.log(`[PDF Parser] Processing PDF with hash: ${pdfHash}`);
-
-  // Check if we have cached result for this PDF
-  const cachedResult = await getCachedPDFResult(pdfHash);
-  if (cachedResult) {
-    console.log('[PDF Parser] Returning cached result - skipping AI processing');
-    return cachedResult;
-  }
+  console.log('[PDF Parser] Processing PDF upload with manual parser');
 
   const { tempDir, filePath } = await createTempPdfFile(buffer, originalName);
-  let usedAI = false; // Track if AI was used
 
   try {
     const pdfjs = await loadPdfModule();
@@ -933,6 +1111,7 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
     const pdfDocument = await loadingTask.promise;
 
     let dayLayout = null;
+    let timetableMetadata = null;
     const pageSchedules = new Map();
 
     for (let pageIndex = 1; pageIndex <= pdfDocument.numPages; pageIndex += 1) {
@@ -942,6 +1121,13 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
 
       if (!dayLayout) {
         dayLayout = buildDayLayout(items);
+      }
+
+      if (!timetableMetadata) {
+        timetableMetadata = extractTimetableMetadata(
+          items,
+          dayLayout.tableLeftEdge
+        );
       }
 
       const { dayGroups, dayPeriodOrder, periodRowY, tableLeftEdge } = dayLayout;
@@ -1187,7 +1373,6 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
         const classResults = await Promise.all(
           Array.from(classes.entries()).map(async ([className, sessionMap]) => {
             const events = [];
-            let classUsedAI = false;
 
             // Process all sessions in parallel
             const sessionResults = await Promise.all(
@@ -1196,8 +1381,8 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
                 const dayResults = await Promise.all(
                   Array.from(dayMap.entries()).map(async ([dayName, periodMap]) => {
                     const periodOrder = dayPeriods[dayName] ?? Object.keys(periodMap);
-                    const { entries, anyUsedAI } = await buildDayEntries(periodOrder, periodMap);
-                    return { entries, anyUsedAI, sessionName, dayName };
+                    const entries = await buildDayEntries(periodOrder, periodMap);
+                    return { entries, sessionName, dayName };
                   })
                 );
 
@@ -1314,12 +1499,8 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
               }
             };
 
-            // Process all day results and track AI usage
-            allDayResults.forEach(({ entries, anyUsedAI, sessionName, dayName }) => {
-              if (anyUsedAI) {
-                classUsedAI = true;
-              }
-
+            // Process all day results
+            allDayResults.forEach(({ entries, sessionName, dayName }) => {
               const bucketEvents = [];
               let currentEvent = null;
 
@@ -1356,17 +1537,12 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
                 .forEach((event) => events.push(event));
             });
 
-            // Track if AI was used for this class
-            return { className, events, classUsedAI };
+            return { className, events };
           })
         );
 
         // Merge all class results
-        classResults.forEach(({ className, events, classUsedAI }) => {
-          if (classUsedAI) {
-            usedAI = true;  // Update the PDF-level usedAI flag
-          }
-
+        classResults.forEach(({ className, events }) => {
           if (events.length > 0) {
             events.sort((a, b) => {
               const sessionA =
@@ -1417,6 +1593,7 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
     const scheduleOutput = {
       document: originalName || 'uploaded.pdf',
       generatedAt: new Date().toISOString(),
+      metadata: timetableMetadata || null,
       sheets: simplifiedSheets,
     };
 
@@ -1424,17 +1601,7 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
     await saveDebugJson(scheduleOutput, 'schedule_output.json');
     await saveDebugJson({ pageSchedules: Array.from(pageSchedules.entries()) }, 'page_schedules_raw.json');
 
-    // Save to PDF cache if AI was used during parsing
-    if (usedAI) {
-      console.log('[PDF Cache] Saving result to cache (AI was used)');
-      await setCachedPDFResult(pdfHash, scheduleOutput, {
-        originalName: originalName || 'uploaded.pdf',
-        usedAI: true,
-        timestamp: new Date().toISOString(),
-      });
-    } else {
-      console.log('[PDF Cache] Skipping cache (AI not used, regex-only parsing)');
-    }
+    console.log('[PDF Parser] Manual parsing complete');
 
     return scheduleOutput;
   } catch (error) {

@@ -175,6 +175,8 @@
               </div>
             </div>
 
+            <p id="schedule-meta" class="schedule-meta" hidden></p>
+
             <div id="schedule-view" class="schedule-view">
               <div class="schedule-empty">
                 <span class="material-icons">event_busy</span>
@@ -283,6 +285,7 @@
         const scheduleContainer = document.getElementById('schedule-container');
         const weekSelect = document.getElementById('week-select');
         const scheduleView = document.getElementById('schedule-view');
+        const scheduleMeta = document.getElementById('schedule-meta');
         const scheduleClassName = document.getElementById('schedule-class-name');
 
         let scheduleData = null;
@@ -347,6 +350,7 @@
             // Populate dropdowns
             populateDropdowns();
             scheduleContainer.hidden = false;
+            uploadBtn.disabled = false;
 
           } catch (error) {
             console.error('Upload error:', error);
@@ -358,6 +362,8 @@
         function populateDropdowns() {
           if (!scheduleData || !scheduleData.sheets) return;
 
+          const metadata = scheduleData.metadata || null;
+
           // Get first class (assuming 1 PDF = 1 class)
           const firstSheet = Object.values(scheduleData.sheets)[0];
           if (!firstSheet) return;
@@ -368,27 +374,59 @@
             scheduleClassName.textContent = `Thời khóa biểu - ${selectedClassName}`;
           }
 
-          // Get week range
-          let minWeek = Infinity;
-          let maxWeek = -Infinity;
+          // Determine week range
+          let minWeek = metadata?.weekRange?.start ?? Infinity;
+          let maxWeek = metadata?.weekRange?.end ?? -Infinity;
 
-          Object.values(scheduleData.sheets).forEach(sheet => {
-            Object.values(sheet).forEach(classList => {
-              classList.forEach(subject => {
-                if (subject.weekStart < minWeek) minWeek = subject.weekStart;
-                if (subject.weekEnd > maxWeek) maxWeek = subject.weekEnd;
+          if (!Number.isFinite(minWeek) || !Number.isFinite(maxWeek)) {
+            minWeek = Infinity;
+            maxWeek = -Infinity;
+
+            Object.values(scheduleData.sheets).forEach((sheet) => {
+              Object.values(sheet).forEach((classList) => {
+                classList.forEach((subject) => {
+                  if (Number.isFinite(subject.weekStart) && subject.weekStart < minWeek) {
+                    minWeek = subject.weekStart;
+                  }
+                  if (Number.isFinite(subject.weekEnd) && subject.weekEnd > maxWeek) {
+                    maxWeek = subject.weekEnd;
+                  }
+                });
               });
             });
-          });
+          }
+
+          if (!Number.isFinite(minWeek) || minWeek === Infinity) {
+            minWeek = 1;
+          }
+          if (!Number.isFinite(maxWeek) || maxWeek === -Infinity) {
+            maxWeek = minWeek;
+          }
+          if (minWeek > maxWeek) {
+            const temp = minWeek;
+            minWeek = maxWeek;
+            maxWeek = temp;
+          }
 
           // Populate week select
           weekSelect.innerHTML = '<option value="">Chọn tuần...</option>';
-          for (let week = minWeek; week <= maxWeek; week++) {
+          for (let week = minWeek; week <= maxWeek; week += 1) {
             const option = document.createElement('option');
             option.value = week;
-            option.textContent = `Tuần ${week}`;
+            option.textContent = `Tuần ${String(week).padStart(2, '0')}`;
             weekSelect.appendChild(option);
           }
+
+          const defaultWeek = determineDefaultWeek(metadata, minWeek, maxWeek);
+          if (Number.isFinite(defaultWeek) && weekSelect.querySelector(`option[value="${defaultWeek}"]`)) {
+            weekSelect.value = String(defaultWeek);
+          } else {
+            weekSelect.value = '';
+          }
+
+          const selectedWeekNumber = Number.parseInt(weekSelect.value, 10);
+          updateMetadataDisplay(Number.isFinite(selectedWeekNumber) ? selectedWeekNumber : null);
+          renderSchedule();
         }
 
         function getPeriodsForDay(subject, selectedWeek) {
@@ -403,18 +441,179 @@
           return 5;
         }
 
-        function renderSchedule() {
-          const selectedWeek = parseInt(weekSelect.value);
+        function formatIsoDateLabel(isoDate) {
+          if (!isoDate || typeof isoDate !== 'string') {
+            return null;
+          }
 
-          if (!selectedWeek || !selectedClassName || !scheduleData) {
+          const parts = isoDate.split('-').map((part) => Number.parseInt(part, 10));
+          if (parts.length !== 3) {
+            return null;
+          }
+
+          const [year, month, day] = parts;
+          if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) {
+            return null;
+          }
+
+          const paddedDay = String(day).padStart(2, '0');
+          const paddedMonth = String(month).padStart(2, '0');
+          return `${paddedDay}/${paddedMonth}/${year}`;
+        }
+
+        function clampWeek(value, minWeek, maxWeek) {
+          if (!Number.isFinite(value)) {
+            return null;
+          }
+
+          let result = value;
+          if (Number.isFinite(minWeek) && result < minWeek) {
+            result = minWeek;
+          }
+          if (Number.isFinite(maxWeek) && result > maxWeek) {
+            result = maxWeek;
+          }
+          return result;
+        }
+
+        function determineDefaultWeek(metadata, minWeek, maxWeek) {
+          if (metadata) {
+            const { currentWeek, currentWeekStatus, weekRange } = metadata;
+
+            if (Number.isFinite(currentWeek)) {
+              if (currentWeekStatus === 'before-range' && weekRange) {
+                return clampWeek(weekRange.start, minWeek, maxWeek);
+              }
+              if (currentWeekStatus === 'after-range' && weekRange) {
+                return clampWeek(weekRange.end, minWeek, maxWeek);
+              }
+              return clampWeek(currentWeek, minWeek, maxWeek);
+            }
+
+            if (weekRange && Number.isFinite(weekRange.start)) {
+              return clampWeek(weekRange.start, minWeek, maxWeek);
+            }
+          }
+
+          if (Number.isFinite(minWeek)) {
+            return minWeek;
+          }
+
+          return null;
+        }
+
+        function updateMetadataDisplay(selectedWeek) {
+          if (!scheduleMeta) return;
+
+          const metadata = scheduleData?.metadata;
+          if (!metadata) {
+            scheduleMeta.hidden = true;
+            scheduleMeta.textContent = '';
+            return;
+          }
+
+          const chips = [];
+
+          if (metadata.faculty) {
+            chips.push(`Khoa: ${metadata.faculty}`);
+          }
+
+          if (metadata.weekRange && Number.isFinite(metadata.weekRange.start) && Number.isFinite(metadata.weekRange.end)) {
+            chips.push(`Tuần ${metadata.weekRange.start} – ${metadata.weekRange.end}`);
+          }
+
+          if (metadata.dateRange?.startDate && metadata.dateRange?.endDate) {
+            const startLabel = formatIsoDateLabel(metadata.dateRange.startDate);
+            const endLabel = formatIsoDateLabel(metadata.dateRange.endDate);
+            if (startLabel && endLabel) {
+              chips.push(`Từ ${startLabel} đến ${endLabel}`);
+            }
+          }
+
+          if (Number.isFinite(metadata.currentWeek)) {
+            let currentLabel = `Tuần hiện tại: ${metadata.currentWeek}`;
+            const currentRange = metadata.currentWeekRange;
+
+            if (currentRange?.startDate && currentRange?.endDate) {
+              const rangeStart = formatIsoDateLabel(currentRange.startDate);
+              const rangeEnd = formatIsoDateLabel(currentRange.endDate);
+              if (rangeStart && rangeEnd) {
+                currentLabel += ` (${rangeStart} - ${rangeEnd})`;
+              }
+            }
+
+            if (metadata.currentWeekStatus === 'before-range') {
+              currentLabel += ' (Chưa bắt đầu)';
+            } else if (metadata.currentWeekStatus === 'after-range') {
+              currentLabel += ' (Đã kết thúc)';
+            }
+
+            chips.push(currentLabel);
+          } else if (metadata.today) {
+            const todayLabel = formatIsoDateLabel(metadata.today);
+            if (todayLabel) {
+              chips.push(`Hôm nay: ${todayLabel}`);
+            }
+          }
+
+          if (Number.isFinite(selectedWeek)) {
+            const anchors = Array.isArray(metadata.weekDateAnchors) ? metadata.weekDateAnchors : [];
+            const anchor = anchors.find((item) => item.week === selectedWeek);
+
+            if (anchor) {
+              const startLabel = formatIsoDateLabel(anchor.startDate);
+              const endLabel = formatIsoDateLabel(anchor.endDate);
+              if (startLabel && endLabel) {
+                chips.push(`Đang xem: Tuần ${selectedWeek} (${startLabel} - ${endLabel})`);
+              } else {
+                chips.push(`Đang xem: Tuần ${selectedWeek}`);
+              }
+            } else {
+              chips.push(`Đang xem: Tuần ${selectedWeek}`);
+            }
+          }
+
+          if (chips.length === 0) {
+            scheduleMeta.hidden = true;
+            scheduleMeta.textContent = '';
+            return;
+          }
+
+          scheduleMeta.innerHTML = '';
+          chips.forEach((text) => {
+            const chip = document.createElement('span');
+            chip.textContent = text;
+            scheduleMeta.appendChild(chip);
+          });
+          scheduleMeta.hidden = false;
+        }
+
+        function renderSchedule() {
+          if (!scheduleData) {
             scheduleView.innerHTML = `
               <div class="schedule-empty">
                 <span class="material-icons">event_busy</span>
                 <p>Chọn tuần để xem thời khóa biểu</p>
               </div>
             `;
+            updateMetadataDisplay(null);
             return;
           }
+
+          const selectedWeek = Number.parseInt(weekSelect.value, 10);
+
+          if (!Number.isFinite(selectedWeek) || !selectedClassName) {
+            scheduleView.innerHTML = `
+              <div class="schedule-empty">
+                <span class="material-icons">event_busy</span>
+                <p>Chọn tuần để xem thời khóa biểu</p>
+              </div>
+            `;
+            updateMetadataDisplay(null);
+            return;
+          }
+
+          updateMetadataDisplay(selectedWeek);
 
           // Find class data
           let classSchedule = null;
