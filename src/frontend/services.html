@@ -87,6 +87,9 @@
                 <button type="button" class="services-button secondary" data-services-reset>
                   Đặt lại bộ lọc
                 </button>
+                <button type="button" class="services-button secondary" data-order-history-btn>
+                  Lịch sử đơn hàng
+                </button>
               </div>
               <div class="services-meta" data-services-summary aria-live="polite"></div>
             </div>
@@ -109,6 +112,18 @@
         </div>
       </section>
     </main>
+
+    <!-- Modal lich su don hang -->
+    <div id="order-history-modal" class="order-history-modal" style="display: none;">
+      <div class="order-history-backdrop" data-modal-backdrop></div>
+      <div class="order-history-content">
+        <div class="order-history-header">
+          <h2>Lịch sử đơn hàng</h2>
+          <button type="button" class="order-history-close" data-modal-close>&times;</button>
+        </div>
+        <div class="order-history-body" data-order-list></div>
+      </div>
+    </div>
 
     <script>
       (() => {
@@ -169,9 +184,10 @@
           loginRequired:
             'Đăng nhập bằng tài khoản sinh viên hoặc giảng viên để nhận mã thanh toán cho dịch vụ này.',
           roleRestricted: 'Chỉ tài khoản sinh viên hoặc giảng viên mới có thể thực hiện đặt mua dịch vụ.',
-          purchaseLoading: 'Đang tạo mã thanh toán...',
-          purchaseMissing: 'Đã tạo yêu cầu nhưng không nhận được mã thanh toán.',
-          purchaseFailed: 'Không thể tạo mã thanh toán. Vui lòng thử lại.',
+          purchaseLoading: 'Đang tạo mã QR thanh toán...',
+          purchaseMissing: 'Đã tạo yêu cầu nhưng không nhận được mã QR.',
+          purchaseFailed: 'Không thể tạo mã QR. Vui lòng thử lại.',
+          paymentSuccess: 'Thanh toán thành công! Cảm ơn bạn đã sử dụng dịch vụ.',
         };
 
         function escapeHtml(value) {
@@ -490,6 +506,7 @@
 
           const formField = document.createElement('div');
           formField.className = 'services-field';
+          formField.dataset.purchaseFormField = 'true';
 
           const label = document.createElement('label');
           label.setAttribute('for', 'service-note');
@@ -568,13 +585,132 @@
               }
 
               const payload = await response.json();
-              const paymentCode = payload && payload.paymentCode ? payload.paymentCode : null;
-              if (paymentCode) {
-                setFeedback(
-                  feedback,
-                  `Mã thanh toán của bạn: ${paymentCode}. Vui lòng lưu lại để hoàn tất giao dịch.`,
-                  'success'
-                );
+              const qrCodeUrl = payload && payload.qrCodeUrl ? payload.qrCodeUrl : null;
+              const transactionCode = payload && payload.transactionCode ? payload.transactionCode : null;
+              const bankInfo = payload && payload.bankInfo ? payload.bankInfo : {};
+              const orderCode = payload && payload.orderCode ? payload.orderCode : null;
+
+              if (qrCodeUrl && transactionCode) {
+                feedback.innerHTML = '';
+                feedback.classList.remove('error');
+                feedback.classList.add('success');
+
+                // An nut submit va hop ghi chu
+                submitBtn.style.display = 'none';
+                const formFieldEl = purchaseForm.querySelector('[data-purchase-form-field]');
+                if (formFieldEl) {
+                  formFieldEl.style.display = 'none';
+                }
+
+                const qrContainer = document.createElement('div');
+                qrContainer.className = 'payment-qr-container';
+
+                const header = document.createElement('div');
+                header.className = 'payment-qr-header';
+                header.innerHTML = `
+                  <h3>Quét mã QR để thanh toán</h3>
+                  <p>Sử dụng ứng dụng ngân hàng để quét mã QR bên dưới</p>
+                `;
+
+                const content = document.createElement('div');
+                content.className = 'payment-qr-content';
+
+                const imageWrapper = document.createElement('div');
+                imageWrapper.className = 'payment-qr-image';
+                const qrImage = document.createElement('img');
+                qrImage.src = qrCodeUrl;
+                qrImage.alt = 'Mã QR thanh toán';
+                imageWrapper.appendChild(qrImage);
+
+                const info = document.createElement('div');
+                info.className = 'payment-qr-info';
+                info.innerHTML = `
+                  <div class="payment-info-item">
+                    <span class="payment-info-label">Ngân hàng</span>
+                    <span class="payment-info-value">${escapeHtml(bankInfo.bankName || '')}</span>
+                  </div>
+                  <div class="payment-info-item">
+                    <span class="payment-info-label">Số tài khoản</span>
+                    <span class="payment-info-value">${escapeHtml(bankInfo.bankNumber || '')}</span>
+                  </div>
+                  <div class="payment-info-item">
+                    <span class="payment-info-label">Chủ tài khoản</span>
+                    <span class="payment-info-value">${escapeHtml(bankInfo.bankOwner || '')}</span>
+                  </div>
+                  <div class="payment-info-item">
+                    <span class="payment-info-label">Số tiền</span>
+                    <span class="payment-info-value">${formatPrice(payload.amount)}</span>
+                  </div>
+                  <div class="payment-info-item full-width">
+                    <span class="payment-info-label">Nội dung chuyển khoản</span>
+                    <span class="payment-info-value highlight">${escapeHtml(transactionCode)}</span>
+                  </div>
+                `;
+
+                content.appendChild(imageWrapper);
+                content.appendChild(info);
+
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'payment-qr-actions';
+
+                const completeBtn = document.createElement('button');
+                completeBtn.type = 'button';
+                completeBtn.className = 'payment-complete-btn';
+                completeBtn.textContent = 'Hoàn thiện thanh toán';
+                completeBtn.addEventListener('click', async () => {
+                  if (!orderCode) {
+                    return;
+                  }
+
+                  completeBtn.disabled = true;
+                  completeBtn.textContent = 'Đang xử lý...';
+
+                  try {
+                    // Goi API de cap nhat trang thai thanh toan
+                    const session = getSession();
+                    const completeResponse = await fetch(`/api/orders/${orderCode}/complete`, {
+                      method: 'PATCH',
+                      headers: {
+                        'Authorization': `Bearer ${session.token}`,
+                      },
+                    });
+
+                    if (!completeResponse.ok) {
+                      throw new Error('Khong the cap nhat trang thai thanh toan');
+                    }
+
+                    feedback.innerHTML = '';
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'payment-success-message';
+                    successMsg.textContent = TEXT.paymentSuccess;
+                    feedback.appendChild(successMsg);
+
+                    setTimeout(() => {
+                      feedback.innerHTML = '';
+                      feedback.classList.remove('success');
+
+                      // Hien lai nut submit va hop ghi chu
+                      submitBtn.style.display = '';
+                      const formFieldEl = purchaseForm.querySelector('[data-purchase-form-field]');
+                      if (formFieldEl) {
+                        formFieldEl.style.display = '';
+                      }
+                    }, 3000);
+                  } catch (error) {
+                    console.error('Loi hoan thien thanh toan:', error);
+                    completeBtn.disabled = false;
+                    completeBtn.textContent = 'Hoàn thiện thanh toán';
+                    alert('Có lỗi xảy ra khi hoàn thiện thanh toán. Vui lòng thử lại.');
+                  }
+                });
+
+                actionsDiv.appendChild(completeBtn);
+
+                qrContainer.appendChild(header);
+                qrContainer.appendChild(content);
+                qrContainer.appendChild(actionsDiv);
+                feedback.appendChild(qrContainer);
+
               } else {
                 setFeedback(feedback, TEXT.purchaseMissing, 'error');
               }
@@ -722,6 +858,161 @@
             showDropdown: true
           });
         }
+      })();
+    </script>
+
+    <script>
+      // Quan ly modal lich su don hang
+      (() => {
+        const modal = document.getElementById('order-history-modal');
+        const orderHistoryBtn = document.querySelector('[data-order-history-btn]');
+        const closeBtn = modal.querySelector('[data-modal-close]');
+        const backdrop = modal.querySelector('[data-modal-backdrop]');
+        const orderListEl = modal.querySelector('[data-order-list]');
+
+        function getSession() {
+          return window.HeaderManager ? window.HeaderManager.loadSession() : null;
+        }
+
+        function formatDateTime(value) {
+          if (!value) return 'Chưa xác định';
+          const date = new Date(value);
+          if (Number.isNaN(date.getTime())) return 'Chưa xác định';
+          try {
+            return date.toLocaleString('vi-VN', {
+              hour12: false,
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+            });
+          } catch (error) {
+            return date.toISOString();
+          }
+        }
+
+        function formatPrice(value) {
+          if (value === undefined || value === null) return 'Liên hệ';
+          const numeric = Number(value);
+          if (Number.isFinite(numeric)) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(numeric);
+          }
+          return 'Liên hệ';
+        }
+
+        function getStatusText(status) {
+          const statusMap = {
+            'pending': 'Chờ thanh toán',
+            'completed': 'Đã thanh toán',
+            'failed': 'Thất bại',
+            'cancelled': 'Đã hủy'
+          };
+          return statusMap[status] || status;
+        }
+
+        function openModal() {
+          modal.style.display = 'flex';
+          document.body.style.overflow = 'hidden';
+          loadOrders();
+        }
+
+        function closeModal() {
+          modal.style.display = 'none';
+          document.body.style.overflow = '';
+        }
+
+        async function loadOrders() {
+          const session = getSession();
+          if (!session || !session.token) {
+            orderListEl.innerHTML = '<div class="order-empty">Vui lòng đăng nhập để xem lịch sử đơn hàng</div>';
+            return;
+          }
+
+          orderListEl.innerHTML = '<div class="order-loading">Đang tải lịch sử đơn hàng...</div>';
+
+          try {
+            const response = await fetch('/api/orders/my-orders', {
+              headers: {
+                'Authorization': `Bearer ${session.token}`,
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error('Không thể tải lịch sử đơn hàng');
+            }
+
+            const data = await response.json();
+            const orders = data.orders || [];
+
+            if (!orders.length) {
+              orderListEl.innerHTML = '<div class="order-empty">Bạn chưa có đơn hàng nào</div>';
+              return;
+            }
+
+            orderListEl.innerHTML = orders.map(order => `
+              <div class="order-item">
+                <div class="order-item-header">
+                  <span class="order-item-code">${order.orderCode}</span>
+                  <span class="order-item-status ${order.paymentStatus}">${getStatusText(order.paymentStatus)}</span>
+                </div>
+                <div class="order-item-details">
+                  <div class="order-item-detail">
+                    <span class="order-item-label">Dịch vụ</span>
+                    <span class="order-item-value">${order.serviceName || order.serviceCode}</span>
+                  </div>
+                  <div class="order-item-detail">
+                    <span class="order-item-label">Số tiền</span>
+                    <span class="order-item-value">${formatPrice(order.amount)}</span>
+                  </div>
+                  <div class="order-item-detail">
+                    <span class="order-item-label">Mã giao dịch</span>
+                    <span class="order-item-value">${order.transactionCode}</span>
+                  </div>
+                  <div class="order-item-detail">
+                    <span class="order-item-label">Ngày tạo</span>
+                    <span class="order-item-value">${formatDateTime(order.createdAt)}</span>
+                  </div>
+                  ${order.paidAt ? `
+                    <div class="order-item-detail">
+                      <span class="order-item-label">Ngày thanh toán</span>
+                      <span class="order-item-value">${formatDateTime(order.paidAt)}</span>
+                    </div>
+                  ` : ''}
+                  ${order.notes ? `
+                    <div class="order-item-detail" style="grid-column: 1 / -1;">
+                      <span class="order-item-label">Ghi chú</span>
+                      <span class="order-item-value">${order.notes}</span>
+                    </div>
+                  ` : ''}
+                </div>
+              </div>
+            `).join('');
+
+          } catch (error) {
+            console.error('Loi tai lich su don hang:', error);
+            orderListEl.innerHTML = '<div class="order-empty">Có lỗi xảy ra khi tải lịch sử đơn hàng</div>';
+          }
+        }
+
+        if (orderHistoryBtn) {
+          orderHistoryBtn.addEventListener('click', openModal);
+        }
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', closeModal);
+        }
+
+        if (backdrop) {
+          backdrop.addEventListener('click', closeModal);
+        }
+
+        // Dong modal khi nhan ESC
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && modal.style.display === 'flex') {
+            closeModal();
+          }
+        });
       })();
     </script>
   </body>

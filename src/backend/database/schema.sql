@@ -114,3 +114,28 @@ CREATE TABLE IF NOT EXISTS admin_profiles (
     ON DELETE CASCADE,                     -- Xóa tài khoản → xóa hồ sơ admin
   UNIQUE KEY uq_admin_profiles_user (user_id) -- Mỗi tài khoản admin chỉ có 1 hồ sơ duy nhất
 );
+
+-- ======================================================
+-- 🛒 BẢNG ĐƠN HÀNG (ORDERS)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS orders (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,           -- ID đơn hàng tự tăng
+  order_code VARCHAR(20) NOT NULL UNIQUE,         -- Mã đơn hàng duy nhất (VD: ORD20250101001)
+  user_id VARCHAR(20) NOT NULL,                   -- Người đặt hàng (sinh viên/giáo viên)
+  service_code VARCHAR(10) NOT NULL,              -- Mã dịch vụ
+  transaction_code VARCHAR(10) NOT NULL,          -- Mã giao dịch (mã chuyển khoản 6 ký tự)
+  amount DECIMAL(12, 2) NOT NULL DEFAULT 0,       -- Số tiền thanh toán
+  notes TEXT,                                     -- Ghi chú từ người dùng
+  payment_status ENUM('pending', 'completed', 'failed', 'cancelled') DEFAULT 'pending', -- Trạng thái thanh toán
+  payment_method VARCHAR(50) DEFAULT 'bank_transfer', -- Phương thức thanh toán
+  paid_at DATETIME,                               -- Thời điểm thanh toán thành công
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Thời điểm tạo đơn
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Tự cập nhật khi sửa
+  FOREIGN KEY (user_id) REFERENCES user_accounts(user_id)
+    ON DELETE CASCADE,                            -- Xóa tài khoản → xóa đơn hàng
+  FOREIGN KEY (service_code) REFERENCES services(service_code)
+    ON DELETE CASCADE,                            -- Xóa dịch vụ → xóa đơn hàng liên quan
+  INDEX idx_orders_user (user_id),                -- Tăng tốc truy vấn theo user
+  INDEX idx_orders_status (payment_status),       -- Tăng tốc truy vấn theo trạng thái
+  INDEX idx_orders_transaction (transaction_code) -- Tăng tốc tìm kiếm theo mã giao dịch
+);

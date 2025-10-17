@@ -51,45 +51,55 @@ function normalizeActiveFilter(value) {
 
 // Tra ve danh sach dich vu kem theo cac bo loc co ban.
 async function listServices({ searchTerm, activeFilter } = {}) {
-  const conditions = [];
-  const params = [];
+  try {
+    const conditions = [];
+    const params = [];
 
-  const normalizedActive = normalizeActiveFilter(activeFilter);
-  if (normalizedActive !== null) {
-    conditions.push('is_active = ?');
-    params.push(normalizedActive);
+    const normalizedActive = normalizeActiveFilter(activeFilter);
+    if (normalizedActive !== null) {
+      conditions.push('is_active = ?');
+      params.push(normalizedActive);
+    }
+
+    if (searchTerm) {
+      const like = `%${searchTerm.trim()}%`;
+      conditions.push('(service_code LIKE ? OR name LIKE ? OR description LIKE ?)');
+      params.push(like, like, like);
+    }
+
+    let sql = `${SERVICE_SELECT_COLUMNS}`;
+
+    if (conditions.length) {
+      sql += ` WHERE ${conditions.join(' AND ')}`;
+    }
+
+    sql += ' ORDER BY service_code ASC';
+
+    const [rows] = await pool.execute(sql, params);
+    return rows.map(mapServiceRow);
+  } catch (error) {
+    console.error('Error listing services:', error);
+    throw new Error('Failed to retrieve services list: ' + error.message);
   }
-
-  if (searchTerm) {
-    const like = `%${searchTerm.trim()}%`;
-    conditions.push('(service_code LIKE ? OR name LIKE ? OR description LIKE ?)');
-    params.push(like, like, like);
-  }
-
-  let sql = `${SERVICE_SELECT_COLUMNS}`;
-
-  if (conditions.length) {
-    sql += ` WHERE ${conditions.join(' AND ')}`;
-  }
-
-  sql += ' ORDER BY service_code ASC';
-
-  const [rows] = await pool.execute(sql, params);
-  return rows.map(mapServiceRow);
 }
 
 // Lay thong tin mot dich vu theo ma.
 async function getServiceByCode(code) {
-  const [rows] = await pool.execute(
-    `${SERVICE_SELECT_COLUMNS} WHERE service_code = ?`,
-    [code]
-  );
+  try {
+    const [rows] = await pool.execute(
+      `${SERVICE_SELECT_COLUMNS} WHERE service_code = ?`,
+      [code]
+    );
 
-  if (!rows.length) {
-    return null;
+    if (!rows.length) {
+      return null;
+    }
+
+    return mapServiceRow(rows[0]);
+  } catch (error) {
+    console.error('Error getting service by code:', error);
+    throw new Error('Failed to retrieve service: ' + error.message);
   }
-
-  return mapServiceRow(rows[0]);
 }
 
 module.exports = {

@@ -1,5 +1,5 @@
 # Danh sách dịch vụ hiện có
-# Sinh lúc: 2025-10-16T08:38:04.413Z
+# Sinh lúc: 2025-10-17T06:02:19.273Z
 # Ghi chú: File này được tạo tự động để hỗ trợ mô hình AI hiểu các dịch vụ của trường.
 
 ## Tài liệu tham chiếu
@@ -149,38 +149,10 @@ không đề xuất các dịch vụ đã Trạng thái: ngừng hoạt động 
 nếu người dùng hỏi tới thì trả lời lại dịch vụ này đã bị dừng triển khai từ ngày ...
 Có thể linh hoạt câu chữ miễn đảm bảo đầy đủ thông tin, giọng điệu thân thiện và chuyên nghiệp.
 
-### DV001 - Vé tháng Căn Tin
+### DV001 - Vé Gửi xe tháng
 Trạng thái: Hoạt động
-Giá tham khảo: 1.000 VND
-Cập nhật lần cuối: 2025-10-04T09:11:44.000Z
+Giá tham khảo: 50.000 VND
+Cập nhật lần cuối: 2025-10-17T04:31:47.000Z
 Mô tả:
-vé tháng căn tin ctech
----
-### DV002 - Vé ngày Căn Tin
-Trạng thái: Hoạt động
-Giá tham khảo: 100 VND
-Cập nhật lần cuối: 2025-10-04T09:17:36.000Z
-Mô tả:
-vé Ngày căn tin ctech
----
-### DV003 - Vé Gửi xe tháng
-Trạng thái: Hoạt động
-Giá tham khảo: 12.123 VND
-Cập nhật lần cuối: 2025-10-04T10:23:23.000Z
-Mô tả:
-Không có mô tả chi tiết.
----
-### DV004 - vé mượn sách thư viện
-Trạng thái: Hoạt động
-Giá tham khảo: 10 VND
-Cập nhật lần cuối: 2025-10-04T10:48:50.000Z
-Mô tả:
-mượn sách thư viện
----
-### DV005 - mượn máy phòng học
-Trạng thái: Hoạt động
-Giá tham khảo: 500 VND
-Cập nhật lần cuối: 2025-10-04T13:51:37.000Z
-Mô tả:
-mượn máy tính của phòng học
+Không phát sinh phí mỗi lần ra vào
 ---

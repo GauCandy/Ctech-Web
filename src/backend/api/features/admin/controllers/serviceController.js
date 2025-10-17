@@ -3,15 +3,35 @@ const {
   insertService,
   updateService,
   deleteService,
+  normalizePrice,
+  normalizeActiveFlag,
 } = require('../services/catalogService');
 
 // Tao dich vu moi thong qua dich vu xu ly du lieu.
 async function createService(req, res) {
   try {
-    const result = await insertService(req.body || {});
+    const body = req.body || {};
+
+    // Validate required field
+    if (!body.name || typeof body.name !== 'string' || !body.name.trim()) {
+      return res.status(400).json({ error: 'Ten dich vu bat buoc.' });
+    }
+
+    // Normalize and prepare data
+    const serviceData = {
+      name: body.name.trim(),
+      description: body.description ? String(body.description).trim() : null,
+      price: normalizePrice(body.price),
+      activeFlag: normalizeActiveFlag(body.isActive),
+    };
+
+    console.log('[CREATE SERVICE] Du lieu dau vao:', JSON.stringify(serviceData, null, 2));
+    const result = await insertService(serviceData);
+    console.log('[CREATE SERVICE] Tao dich vu thanh cong:', result.serviceCode, '-', result.name);
+
     return res.status(201).json(result);
   } catch (error) {
-    console.error('Loi tao dich vu:', error);
+    console.error('[CREATE SERVICE] Loi tao dich vu:', error);
     return res.status(error.status || 500).json({ error: error.message || 'Khong the tao dich vu.' });
   }
 }
@@ -24,14 +44,40 @@ async function updateServiceDetails(req, res) {
       return res.status(400).json({ error: 'Ma dich vu bat buoc.' });
     }
 
-    const updated = await updateService(code, req.body || {});
+    const body = req.body || {};
+    const updates = {};
+
+    // Only add fields that are provided
+    if (body.name !== undefined) {
+      if (typeof body.name !== 'string' || !body.name.trim()) {
+        return res.status(400).json({ error: 'Ten dich vu khong hop le.' });
+      }
+      updates.name = body.name.trim();
+    }
+
+    if (body.description !== undefined) {
+      updates.description = body.description ? String(body.description).trim() : null;
+    }
+
+    if (body.price !== undefined) {
+      updates.price = normalizePrice(body.price);
+    }
+
+    if (body.isActive !== undefined) {
+      updates.is_active = normalizeActiveFlag(body.isActive);
+    }
+
+    console.log('[UPDATE SERVICE] Ma dich vu:', code, '- Du lieu cap nhat:', JSON.stringify(updates, null, 2));
+    const updated = await updateService(code, updates);
     if (!updated) {
+      console.log('[UPDATE SERVICE] Khong tim thay dich vu:', code);
       return res.status(404).json({ error: 'Khong tim thay dich vu.' });
     }
 
+    console.log('[UPDATE SERVICE] Cap nhat thanh cong:', code);
     return res.json(updated);
   } catch (error) {
-    console.error('Loi cap nhat dich vu:', error);
+    console.error('[UPDATE SERVICE] Loi cap nhat dich vu:', error);
     return res.status(error.status || 500).json({ error: error.message || 'Khong the cap nhat dich vu.' });
   }
 }
@@ -44,14 +90,17 @@ async function removeService(req, res) {
       return res.status(400).json({ error: 'Ma dich vu bat buoc.' });
     }
 
+    console.log('[DELETE SERVICE] Xoa dich vu:', code);
     const removed = await deleteService(code);
     if (!removed) {
+      console.log('[DELETE SERVICE] Khong tim thay dich vu:', code);
       return res.status(404).json({ error: 'Khong tim thay dich vu.' });
     }
 
+    console.log('[DELETE SERVICE] Xoa thanh cong:', code);
     return res.status(204).send();
   } catch (error) {
-    console.error('Loi xoa dich vu:', error);
+    console.error('[DELETE SERVICE] Loi xoa dich vu:', error);
     return res.status(error.status || 500).json({ error: error.message || 'Khong the xoa dich vu.' });
   }
 }

@@ -67,8 +67,49 @@ if (sslFlag === true) {
 
 const pool = mysql.createPool(poolConfig);
 
+async function validateDatabaseTables() {
+  try {
+    const [tables] = await pool.query(`
+      SELECT TABLE_NAME 
+      FROM information_schema.tables 
+      WHERE table_schema = DATABASE()
+    `);
+    
+    if (!tables || tables.length === 0) {
+      throw new Error('No tables found in database. Database may be corrupted or not properly initialized.');
+    }
+
+    const requiredTables = ['services']; // Add other required tables here
+    const existingTables = tables.map(t => t.TABLE_NAME.toLowerCase());
+    
+    const missingTables = requiredTables.filter(
+      table => !existingTables.includes(table.toLowerCase())
+    );
+
+    if (missingTables.length > 0) {
+      throw new Error(`Missing required tables: ${missingTables.join(', ')}`);
+    }
+
+    return true;
+  } catch (error) {
+    console.error('Database validation error:', error);
+    throw error;
+  }
+}
+
+// Initialize pool and validate tables
+const initializeDatabase = async () => {
+  try {
+    await validateDatabaseTables();
+  } catch (error) {
+    console.error('Failed to initialize database:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   pool,
   getConnection: () => pool.getConnection(),
   query: (...args) => pool.query(...args),
+  initializeDatabase
 };
