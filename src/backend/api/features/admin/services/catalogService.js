@@ -8,6 +8,7 @@ const SERVICE_CODE_PAD = 3;
 const SERVICE_SELECT_COLUMNS = `SELECT service_code AS code,
        name,
        description,
+       category,
        price,
        is_active AS isActive,
        created_at AS createdAt,
@@ -84,6 +85,7 @@ function mapServiceRow(row) {
     serviceCode: row.code,
     name: row.name,
     description: row.description ?? null,
+    category: row.category ?? 'Khác',
     price: row.price !== undefined && row.price !== null ? Number(row.price) : null,
     isActive: Boolean(row.isActive),
     createdAt: row.createdAt,
@@ -92,7 +94,7 @@ function mapServiceRow(row) {
 }
 
 // Chen dich vu moi, bao gom xu ly giao dich.
-async function insertService({ name, description, price, activeFlag }) {
+async function insertService({ name, description, category, price, activeFlag }) {
   let connection;
 
   try {
@@ -102,9 +104,9 @@ async function insertService({ name, description, price, activeFlag }) {
     const serviceCode = await generateNextServiceCode(connection);
 
     await connection.execute(
-      `INSERT INTO services (service_code, name, description, price, is_active)
-       VALUES (?, ?, ?, ?, ?)`,
-      [serviceCode, name, description, price, activeFlag]
+      `INSERT INTO services (service_code, name, description, category, price, is_active)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [serviceCode, name, description, category || 'Khác', price, activeFlag]
     );
 
     await connection.commit();
@@ -118,6 +120,7 @@ async function insertService({ name, description, price, activeFlag }) {
       serviceCode,
       name,
       description,
+      category: category || 'Khác',
       price,
       isActive: Boolean(activeFlag),
     };
@@ -150,6 +153,11 @@ async function updateService(code, updates) {
   if (Object.prototype.hasOwnProperty.call(updates, 'description')) {
     assignments.push('description = ?');
     params.push(updates.description);
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updates, 'category')) {
+    assignments.push('category = ?');
+    params.push(updates.category || 'Khác');
   }
 
   if (Object.prototype.hasOwnProperty.call(updates, 'price')) {

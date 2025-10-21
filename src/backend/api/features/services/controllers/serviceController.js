@@ -1,6 +1,6 @@
 ﻿// Ghi chu: Xu ly cac request CRUD doc thong tin dich vu va tao ma thanh toan gia lap.
 const crypto = require('crypto');
-const { listServices, getServiceByCode } = require('../services/serviceCatalogService');
+const { listServices, getServiceByCode, listCategories } = require('../services/serviceCatalogService');
 const { createOrder } = require('../../orders/services/orderService');
 
 // Tao ma giao dich 6 ky tu ngau nhien (chi chu cai hoa va so)
@@ -25,13 +25,14 @@ function generateVietQRUrl(amount, transactionCode) {
   return qrUrl;
 }
 
-// Lay danh sach dich vu, ho tro tim kiem theo tu khoa va trang thai.
+// Lay danh sach dich vu, ho tro tim kiem theo tu khoa, trang thai va danh muc.
 async function listServicesHandler(req, res, next) {
   try {
-    const { q, active } = req.query || {};
+    const { q, active, category } = req.query || {};
     const services = await listServices({
       searchTerm: q,
       activeFilter: active,
+      category,
     });
 
     res.json({ services });
@@ -130,8 +131,19 @@ async function purchaseServiceHandler(req, res, next) {
   }
 }
 
+// Lay danh sach tat ca cac danh muc dich vu.
+async function listCategoriesHandler(req, res, next) {
+  try {
+    const categories = await listCategories();
+    res.json({ categories });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   listServicesHandler,
   getServiceHandler,
   purchaseServiceHandler,
+  listCategoriesHandler,
 };

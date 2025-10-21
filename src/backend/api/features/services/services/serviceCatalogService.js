@@ -4,6 +4,7 @@ const { pool } = require('../../../../database/connection');
 const SERVICE_SELECT_COLUMNS = `SELECT service_code AS code,
        name,
        description,
+       category,
        price,
        is_active AS isActive,
        created_at AS createdAt,
@@ -20,6 +21,7 @@ function mapServiceRow(row) {
     serviceCode: row.code,
     name: row.name,
     description: row.description ?? null,
+    category: row.category ?? 'Khác',
     price: row.price !== undefined && row.price !== null ? Number(row.price) : null,
     isActive: Boolean(row.isActive),
     createdAt: row.createdAt,
@@ -50,7 +52,7 @@ function normalizeActiveFilter(value) {
 }
 
 // Tra ve danh sach dich vu kem theo cac bo loc co ban.
-async function listServices({ searchTerm, activeFilter } = {}) {
+async function listServices({ searchTerm, activeFilter, category } = {}) {
   try {
     const conditions = [];
     const params = [];
@@ -59,6 +61,11 @@ async function listServices({ searchTerm, activeFilter } = {}) {
     if (normalizedActive !== null) {
       conditions.push('is_active = ?');
       params.push(normalizedActive);
+    }
+
+    if (category && category.trim()) {
+      conditions.push('category = ?');
+      params.push(category.trim());
     }
 
     if (searchTerm) {
@@ -73,7 +80,7 @@ async function listServices({ searchTerm, activeFilter } = {}) {
       sql += ` WHERE ${conditions.join(' AND ')}`;
     }
 
-    sql += ' ORDER BY service_code ASC';
+    sql += ' ORDER BY category ASC, service_code ASC';
 
     const [rows] = await pool.execute(sql, params);
     return rows.map(mapServiceRow);
@@ -102,8 +109,25 @@ async function getServiceByCode(code) {
   }
 }
 
+// Lay danh sach tat ca cac danh muc dich vu hien co.
+async function listCategories() {
+  try {
+    const sql = `SELECT DISTINCT category
+                 FROM services
+                 WHERE is_active = 1 AND category IS NOT NULL
+                 ORDER BY category ASC`;
+
+    const [rows] = await pool.execute(sql);
+    return rows.map(row => row.category);
+  } catch (error) {
+    console.error('Error listing categories:', error);
+    throw new Error('Failed to retrieve categories: ' + error.message);
+  }
+}
+
 module.exports = {
   listServices,
   getServiceByCode,
+  listCategories,
   mapServiceRow,
 };

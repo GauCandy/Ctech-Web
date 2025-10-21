@@ -21,6 +21,7 @@ async function createService(req, res) {
     const serviceData = {
       name: body.name.trim(),
       description: body.description ? String(body.description).trim() : null,
+      category: body.category ? String(body.category).trim() : 'Khác',
       price: normalizePrice(body.price),
       activeFlag: normalizeActiveFlag(body.isActive),
     };
@@ -57,6 +58,10 @@ async function updateServiceDetails(req, res) {
 
     if (body.description !== undefined) {
       updates.description = body.description ? String(body.description).trim() : null;
+    }
+
+    if (body.category !== undefined) {
+      updates.category = body.category ? String(body.category).trim() : 'Khác';
     }
 
     if (body.price !== undefined) {

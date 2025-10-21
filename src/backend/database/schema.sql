@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS services (
   service_code VARCHAR(10) NOT NULL UNIQUE,-- Mã dịch vụ (VD: DV001)
   name VARCHAR(120) NOT NULL,              -- Tên dịch vụ (VD: Đặt phòng học, Đăng ký học phần...)
   description TEXT,                        -- Mô tả chi tiết
+  category VARCHAR(50) DEFAULT 'Khác',     -- Danh mục dịch vụ (VD: Học tập, Hành chính, Thư viện, Sinh hoạt, Khác)
   price DECIMAL(12, 2) NOT NULL DEFAULT 0, -- Giá (nếu có phí)
   is_active TINYINT(1) NOT NULL DEFAULT 1, -- 1 = đang hoạt động, 0 = ngừng
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo

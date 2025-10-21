@@ -5,11 +5,14 @@ const {
   listServicesHandler,
   getServiceHandler,
   purchaseServiceHandler,
+  listCategoriesHandler,
 } = require('./controllers/serviceController');
 
 const router = express.Router();
 
-// GET /api/services - Tra ve danh sach dich vu co the loc theo tu khoa/trang thai.
+// GET /api/services/categories - Tra ve danh sach tat ca cac danh muc dich vu.
+router.get('/categories', listCategoriesHandler);
+// GET /api/services - Tra ve danh sach dich vu co the loc theo tu khoa/trang thai/danh muc.
 router.get('/', listServicesHandler);
 // GET /api/services/:code - Tra ve chi tiet mot dich vu.
 router.get('/:code', getServiceHandler);
