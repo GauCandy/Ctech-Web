@@ -1,5 +1,5 @@
 # Danh sách dịch vụ hiện có
-# Sinh lúc: 2025-10-17T06:02:19.273Z
+# Sinh lúc: 2025-10-21T06:14:37.193Z
 # Ghi chú: File này được tạo tự động để hỗ trợ mô hình AI hiểu các dịch vụ của trường.
 
 ## Tài liệu tham chiếu
@@ -148,6 +148,10 @@ Nếu bạn cần hướng dẫn đăng ký hoặc thông tin liên hệ cụ th
 không đề xuất các dịch vụ đã Trạng thái: ngừng hoạt động hoặc bị dừng
 nếu người dùng hỏi tới thì trả lời lại dịch vụ này đã bị dừng triển khai từ ngày ...
 Có thể linh hoạt câu chữ miễn đảm bảo đầy đủ thông tin, giọng điệu thân thiện và chuyên nghiệp.
+
+Học Phí 1 kỳ 10-12tr
+một kỳ 5 tháng
+một số ngành được nhà nước hỗ trợ sẽ được hỗ trợ 70% học phí
 
 ### DV001 - Vé Gửi xe tháng
 Trạng thái: Hoạt động

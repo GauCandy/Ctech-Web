@@ -255,7 +255,7 @@ body {
 
 .auth-form {
   display: grid;
-  gap: 18px;
+  gap: 20px;
   width: 100%;
   max-width: 420px;
   margin: 0 auto;
@@ -275,7 +275,7 @@ body {
 
 .auth-field {
   display: grid;
-  gap: 10px;
+  gap: 6px;
 }
 
 .password-field {
@@ -283,6 +283,11 @@ body {
   display: flex;
   align-items: center;
   width: 100%;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  margin-top: 0;
+  padding-top: 0;
   font-family: inherit;
   font-size: var(--input-font-size);
   --password-font-family: 'Fira Code', 'Roboto Mono', 'Source Code Pro', 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
@@ -395,16 +400,27 @@ body {
   gap: 16px;
 }
 
+.auth-field--split > div {
+  display: grid;
+  gap: 6px;
+}
+
 .auth-field__label {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
+  line-height: 1.3;
   color: var(--primary-dark);
+  margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .auth-field__input {
   width: 100%;
   height: 48px;
   padding: 12px 14px;
+  margin: 0;
+  margin-top: 0;
+  padding-top: 12px;
   border-radius: 14px;
   border: 1px solid var(--line);
   background: var(--surface-alt);
