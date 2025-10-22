@@ -251,6 +251,33 @@ body.optimal-resolution::before {
    Specific Section Styles
    ======================================== */
 
+/* About Section - Background Image */
+.section-about {
+  position: relative;
+  overflow: hidden;
+  background: url('/img/background-7.webp') center center / cover no-repeat !important;
+  background-color: #f0fdf4 !important;
+  margin: 0 !important;
+}
+
+.section-about::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(4, 120, 87, 0.25), rgba(5, 150, 105, 0.25));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.section-about .about-container {
+  position: relative;
+  z-index: 1;
+}
+
+[data-theme="dark"] .section-about::before {
+  background: linear-gradient(135deg, rgba(4, 120, 87, 0.2), rgba(5, 150, 105, 0.2));
+}
+
 /* 5C Section - Full viewport display */
 .section-5c {
   background: linear-gradient(to bottom, var(--surface), var(--background));
