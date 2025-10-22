@@ -10,6 +10,7 @@ const SERVICE_SELECT_COLUMNS = `SELECT service_code AS code,
        description,
        category,
        price,
+       image_url AS imageUrl,
        is_active AS isActive,
        created_at AS createdAt,
        updated_at AS updatedAt
@@ -87,6 +88,7 @@ function mapServiceRow(row) {
     description: row.description ?? null,
     category: row.category ?? 'Khác',
     price: row.price !== undefined && row.price !== null ? Number(row.price) : null,
+    imageUrl: row.imageUrl ?? null,
     isActive: Boolean(row.isActive),
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
@@ -163,6 +165,11 @@ async function updateService(code, updates) {
   if (Object.prototype.hasOwnProperty.call(updates, 'price')) {
     assignments.push('price = ?');
     params.push(updates.price);
+  }
+
+  if (Object.prototype.hasOwnProperty.call(updates, 'image_url')) {
+    assignments.push('image_url = ?');
+    params.push(updates.image_url);
   }
 
   if (Object.prototype.hasOwnProperty.call(updates, 'is_active')) {

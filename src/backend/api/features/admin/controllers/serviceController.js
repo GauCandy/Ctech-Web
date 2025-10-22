@@ -87,6 +87,38 @@ async function updateServiceDetails(req, res) {
   }
 }
 
+// Upload hinh anh cho dich vu.
+async function uploadServiceImage(req, res) {
+  try {
+    const code = String(req.params.code || '').trim();
+    if (!code) {
+      return res.status(400).json({ error: 'Ma dich vu bat buoc.' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Khong co file nao duoc upload.' });
+    }
+
+    // Đường dẫn tương đối từ root
+    const imageUrl = `/uploads/services/${req.file.filename}`;
+
+    // Cập nhật image_url vào database
+    const updated = await updateService(code, { image_url: imageUrl });
+    if (!updated) {
+      return res.status(404).json({ error: 'Khong tim thay dich vu.' });
+    }
+
+    console.log('[UPLOAD IMAGE] Upload thanh cong:', code, '-', imageUrl);
+    return res.json({
+      imageUrl,
+      message: 'Upload hinh anh thanh cong.'
+    });
+  } catch (error) {
+    console.error('[UPLOAD IMAGE] Loi upload hinh anh:', error);
+    return res.status(error.status || 500).json({ error: error.message || 'Khong the upload hinh anh.' });
+  }
+}
+
 // Xoa dich vu theo ma.
 async function removeService(req, res) {
   try {
@@ -113,5 +145,6 @@ async function removeService(req, res) {
 module.exports = {
   createService,
   updateServiceDetails,
+  uploadServiceImage,
   removeService,
 };

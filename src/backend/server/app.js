@@ -8,6 +8,7 @@ const { servicesRouter } = require('../api/features/services/router');
 const { chatbotRouter } = require('../api/features/chatbot/router');
 const { timetableRouter } = require('../api/features/timetable/router');
 const { ordersRouter } = require('../api/features/orders/router');
+const { vouchersRouter } = require('../api/features/vouchers/router');
 
 function createApp() {
   const app = express();
@@ -27,6 +28,10 @@ function createApp() {
 
   app.use(express.json());
   app.use(express.static(frontendDir));
+
+  // Serve uploaded files (images, etc.)
+  const uploadsDir = path.join(__dirname, '..', '..', '..', 'uploads');
+  app.use('/uploads', express.static(uploadsDir));
 
   // Trang web tam thoi.
   app.get('/', (req, res) => {
@@ -88,6 +93,7 @@ function createApp() {
   app.use('/api/chatbot', chatbotRouter);
   app.use('/api/timetable', timetableRouter);
   app.use('/api/orders', ordersRouter);
+  app.use('/api/vouchers', vouchersRouter);
 
   // Mac dinh tra ve giao dien frontend cho cac GET path (tru /api) neu chua duoc khai bao.
   app.get(/^\/(?!api).*/, (req, res, next) => {

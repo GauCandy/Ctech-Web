@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS services (
   description TEXT,                        -- Mô tả chi tiết
   category VARCHAR(50) DEFAULT 'Khác',     -- Danh mục dịch vụ (VD: Học tập, Hành chính, Thư viện, Sinh hoạt, Khác)
   price DECIMAL(12, 2) NOT NULL DEFAULT 0, -- Giá (nếu có phí)
+  image_url VARCHAR(255),                  -- Đường dẫn hình ảnh dịch vụ (VD: /uploads/services/DV001.jpg)
   is_active TINYINT(1) NOT NULL DEFAULT 1, -- 1 = đang hoạt động, 0 = ngừng
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Ngày tạo
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP -- Tự cập nhật khi sửa
@@ -139,4 +140,29 @@ CREATE TABLE IF NOT EXISTS orders (
   INDEX idx_orders_user (user_id),                -- Tăng tốc truy vấn theo user
   INDEX idx_orders_status (payment_status),       -- Tăng tốc truy vấn theo trạng thái
   INDEX idx_orders_transaction (transaction_code) -- Tăng tốc tìm kiếm theo mã giao dịch
+);
+
+-- ======================================================
+-- 🎟️ BẢNG VOUCHER (MÃ GIẢM GIÁ)
+-- ======================================================
+CREATE TABLE IF NOT EXISTS vouchers (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,                -- ID voucher tự tăng
+  voucher_code VARCHAR(20) NOT NULL UNIQUE,            -- Mã voucher (VD: DISCOUNT10, NEWUSER2024)
+  name VARCHAR(120) NOT NULL,                          -- Tên voucher để hiển thị
+  description TEXT,                                    -- Mô tả chi tiết voucher
+  discount_type ENUM('percentage', 'fixed') NOT NULL,  -- Loại giảm giá: % hoặc số tiền cố định
+  discount_value DECIMAL(12, 2) NOT NULL,              -- Giá trị giảm (% hoặc VND)
+  max_discount DECIMAL(12, 2),                         -- Giảm tối đa (cho loại %, VD: 50000 VND)
+  min_order_value DECIMAL(12, 2),                      -- Giá trị đơn hàng tối thiểu để áp dụng
+  applies_to ENUM('all', 'service', 'category') DEFAULT 'all', -- Áp dụng cho: tất cả / 1 dịch vụ / 1 category
+  target_code VARCHAR(50),                             -- Mã dịch vụ hoặc tên category (nếu applies_to != 'all')
+  usage_limit INT DEFAULT NULL,                        -- Giới hạn số lần sử dụng (NULL = không giới hạn)
+  used_count INT DEFAULT 0,                            -- Số lần đã sử dụng
+  valid_from DATETIME NOT NULL,                        -- Ngày bắt đầu hiệu lực
+  valid_until DATETIME NOT NULL,                       -- Ngày hết hạn
+  is_active TINYINT(1) DEFAULT 1,                      -- 1 = đang hoạt động, 0 = tạm dừng
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,      -- Ngày tạo
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Tự cập nhật
+  INDEX idx_vouchers_code (voucher_code),              -- Tăng tốc tìm kiếm theo mã
+  INDEX idx_vouchers_applies (applies_to, target_code) -- Tăng tốc tìm kiếm theo phạm vi áp dụng
 );

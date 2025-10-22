@@ -8,7 +8,10 @@
       "Bash(npm install axios)",
       "Bash(npm install cheerio)",
       "Bash(npm install puppeteer)",
-      "Bash(find \"c:\\Users\\gau\\Documents\\Api Web\" -type f ( -name \"*.js\" -o -name \"*.ts\" -o -name \"*.html\" ) -exec grep -l \"news\\|tin.*tuc\\|article\" {} ;)"
+      "Bash(find \"c:\\Users\\gau\\Documents\\Api Web\" -type f ( -name \"*.js\" -o -name \"*.ts\" -o -name \"*.html\" ) -exec grep -l \"news\\|tin.*tuc\\|article\" {} ;)",
+      "Bash(npm install multer)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "ask": []

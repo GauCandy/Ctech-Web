@@ -15,10 +15,15 @@
     <link rel="stylesheet" href="/css/enhancements.css" />
     <link rel="stylesheet" href="/css/floating-buttons.css" />
     <link rel="stylesheet" href="/css/loader.css" />
+    <link rel="stylesheet" href="/css/presentation-mode.css" />
+    <link rel="stylesheet" href="/css/c5-modal.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <script src="/js/themeManager.js"></script>
     <script src="/js/headerManager.js"></script>
+    <script src="/js/scrollAnimations.js"></script>
+    <script src="/js/presentationMode.js"></script>
+    <script src="/js/c5Modal.js"></script>
   </head>
   <body>
     <div id="app-loader" class="loader-backdrop" aria-hidden="true">
@@ -112,7 +117,11 @@
               </p>
             </div>
           </div>
+        </div>
+      </section>
 
+      <section class="section section-5c" id="mo-hinh-5c">
+        <div class="container">
           <div class="about-5c-section">
             <div class="about-5c-title">
               <span class="c5-badge">5C</span>
@@ -121,7 +130,7 @@
             </div>
 
             <div class="c5-grid">
-              <article class="c5-card c5-card--1">
+              <article class="c5-card c5-card--1" data-c5-id="1" role="button" tabindex="0" aria-label="Xem chi tiết Chất lượng giảng dạy">
                 <div class="c5-number">01</div>
                 <div class="c5-icon">
                   <span class="material-icons">school</span>
@@ -130,7 +139,7 @@
                 <p>Đội ngũ giảng viên giỏi chuyên môn từ các doanh nghiệp lớn, mang kinh nghiệm thực tế cho sinh viên</p>
               </article>
 
-              <article class="c5-card c5-card--2">
+              <article class="c5-card c5-card--2" data-c5-id="2" role="button" tabindex="0" aria-label="Xem chi tiết Cơ sở vật chất hiện đại">
                 <div class="c5-number">02</div>
                 <div class="c5-icon">
                   <span class="material-icons">apartment</span>
@@ -139,7 +148,7 @@
                 <p>Phòng học, phòng thí nghiệm và xưởng thực hành đạt tiêu chuẩn quốc tế</p>
               </article>
 
-              <article class="c5-card c5-card--3">
+              <article class="c5-card c5-card--3" data-c5-id="3" role="button" tabindex="0" aria-label="Xem chi tiết Chương trình thực tiễn">
                 <div class="c5-number">03</div>
                 <div class="c5-icon">
                   <span class="material-icons">work</span>
@@ -148,7 +157,7 @@
                 <p>Tiếp cận dự án thực tế, ứng dụng kiến thức ngay trong quá trình học</p>
               </article>
 
-              <article class="c5-card c5-card--4">
+              <article class="c5-card c5-card--4" data-c5-id="4" role="button" tabindex="0" aria-label="Xem chi tiết Doanh nghiệp hợp tác">
                 <div class="c5-number">04</div>
                 <div class="c5-icon">
                   <span class="material-icons">handshake</span>
@@ -157,7 +166,7 @@
                 <p>Mạng lưới liên kết với các tập đoàn lớn, cơ hội thực tập và việc làm</p>
               </article>
 
-              <article class="c5-card c5-card--5">
+              <article class="c5-card c5-card--5" data-c5-id="5" role="button" tabindex="0" aria-label="Xem chi tiết Hội nhập quốc tế">
                 <div class="c5-number">05</div>
                 <div class="c5-icon">
                   <span class="material-icons">public</span>
@@ -1070,6 +1079,32 @@
       })();
 
     </script>
+
+    <!-- 5C Detail Modal -->
+    <div class="c5-modal" id="c5Modal" aria-hidden="true" role="dialog" aria-modal="true">
+      <div class="c5-modal__overlay" data-close-modal></div>
+      <div class="c5-modal__container">
+        <button class="c5-modal__close" data-close-modal aria-label="Đóng">
+          <span class="material-icons">close</span>
+        </button>
+
+        <div class="c5-modal__content">
+          <div class="c5-modal__header">
+            <div class="c5-modal__icon" id="modalIcon"></div>
+            <h3 class="c5-modal__title" id="modalTitle"></h3>
+          </div>
+
+          <div class="c5-modal__body">
+            <p class="c5-modal__description" id="modalDescription"></p>
+
+            <div class="c5-modal__gallery" id="modalGallery">
+              <!-- Images will be loaded dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>
 

@@ -1,5 +1,5 @@
 # Danh sách dịch vụ hiện có
-# Sinh lúc: 2025-10-21T07:27:16.665Z
+# Sinh lúc: 2025-10-22T06:39:19.854Z
 # Ghi chú: File này được tạo tự động để hỗ trợ mô hình AI hiểu các dịch vụ của trường.
 
 ## Tài liệu tham chiếu
@@ -153,40 +153,42 @@ Học Phí 1 kỳ 10-12tr
 một kỳ 5 tháng
 một số ngành được nhà nước hỗ trợ sẽ được hỗ trợ 70% học phí
 
-### DV001 - Xe Máy
-Trạng thái: Hoạt động
-Giá tham khảo: 3.000 VND
-Cập nhật lần cuối: 2025-10-21T07:11:51.000Z
-Mô tả:
-Gửi xe máy theo ngày
----
-### DV002 - Gửi Xe Máy theo tháng
-Trạng thái: Hoạt động
-Giá tham khảo: 50.000 VND
-Cập nhật lần cuối: 2025-10-21T07:08:56.000Z
-Mô tả:
-Gói Gửi xe theo tháng
-không giới hạn lượt ra vào
----
-### DV003 - Xe Đạp
-Trạng thái: Hoạt động
-Giá tham khảo: 0 (Miễn phí)
-Cập nhật lần cuối: 2025-10-21T06:51:25.000Z
-Mô tả:
-Gửi xe đạp tại trường không phát sinh phí quản lý xe
----
-### DV004 - Xe Oto
-Trạng thái: Hoạt động
-Giá tham khảo: 50.000 VND
-Cập nhật lần cuối: 2025-10-21T06:53:24.000Z
-Mô tả:
-gửi xe tại trường
-lấy xe hoặc gửi lại xe trong ngày không phát sinh phí
----
-### DV005 - Xe Oto
+### DV001 - Vé Gửi Xe Oto theo tháng
 Trạng thái: Hoạt động
 Giá tham khảo: 300.000 VND
-Cập nhật lần cuối: 2025-10-21T06:54:44.000Z
+Cập nhật lần cuối: 2025-10-22T00:33:07.000Z
 Mô tả:
-Gửi xe tại trường không phát sinh phí ra vào trong tháng
+gửi Oto tại trường không phát sinh phí ra vào trong tháng
+---
+### DV002 - Nước Ép
+Trạng thái: Hoạt động
+Giá tham khảo: 8.000 VND
+Cập nhật lần cuối: 2025-10-22T02:46:20.000Z
+Mô tả:
+menu 4 món:
+- nước mía
+- trà tắc
+- nước ép cam
+- nước mận
+---
+### DV003 - Vé Gửi Xe Oto theo ngày
+Trạng thái: Hoạt động
+Giá tham khảo: 50.000 VND
+Cập nhật lần cuối: 2025-10-22T00:34:51.000Z
+Mô tả:
+Gửi xe tại trường ra vào trong ngày không mất phí
+---
+### DV004 - Vé Gửi Xe Máy theo tháng
+Trạng thái: Hoạt động
+Giá tham khảo: 50.000 VND
+Cập nhật lần cuối: 2025-10-22T00:36:16.000Z
+Mô tả:
+Gửi xe tại khuôn viên trường không mất phí ra vào trong tháng
+---
+### DV005 - Vé Gửi xe Máy Theo Ngày
+Trạng thái: Hoạt động
+Giá tham khảo: 3.000 VND
+Cập nhật lần cuối: 2025-10-22T00:41:33.000Z
+Mô tả:
+Gửi xe trong trường không mất phí ra vào trong ngày
 ---

@@ -190,6 +190,21 @@
             </div>
 
             <div class="services-field">
+              <label for="new-service-image">Hình ảnh dịch vụ</label>
+              <input
+                type="file"
+                id="new-service-image"
+                name="image"
+                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                data-image-input
+              />
+              <div class="image-preview" data-image-preview style="display: none;">
+                <img src="" alt="Preview" />
+                <button type="button" class="image-preview-remove" data-image-remove>&times;</button>
+              </div>
+            </div>
+
+            <div class="services-field">
               <label>
                 <input type="checkbox" name="isActive" checked />
                 <span>Kích hoạt dịch vụ ngay</span>
@@ -263,6 +278,21 @@
                 step="1000"
                 placeholder="0"
               />
+            </div>
+
+            <div class="services-field">
+              <label for="edit-service-image">Hình ảnh dịch vụ</label>
+              <input
+                type="file"
+                id="edit-service-image"
+                name="image"
+                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                data-edit-image-input
+              />
+              <div class="image-preview" data-edit-image-preview style="display: none;">
+                <img src="" alt="Preview" data-edit-preview-img />
+                <button type="button" class="image-preview-remove" data-edit-image-remove>&times;</button>
+              </div>
             </div>
 
             <div class="services-field">
@@ -541,8 +571,13 @@
               ? `<button type="button" class="service-card__edit-btn show" data-edit-service="${escapeHtml(service.serviceCode)}" title="Chỉnh sửa dịch vụ">✎</button>`
               : '';
 
+            const serviceImage = service.imageUrl
+              ? `<img src="${escapeHtml(service.imageUrl)}" alt="${escapeHtml(service.name)}" class="service-card__image" />`
+              : '';
+
             button.innerHTML = `
               ${editButton}
+              ${serviceImage}
               <div class="service-card__header">
                 <div>
                   <h3 class="service-card__title">${escapeHtml(service.name || service.serviceCode)}</h3>
@@ -631,6 +666,10 @@
           const role = session && session.user && session.user.role;
           const canPurchase = isLoggedIn && service.isActive && (role === 'teacher' || role === 'student');
 
+          const serviceImage = service.imageUrl
+            ? `<img src="${escapeHtml(service.imageUrl)}" alt="${escapeHtml(service.name)}" class="service-detail__image" />`
+            : '';
+
           detailEl.innerHTML = `
             <header class="service-detail__header">
               <div>
@@ -638,6 +677,8 @@
                 <span class="service-detail__status ${statusClass}">${escapeHtml(statusText)}</span>
               </div>
             </header>
+
+            ${serviceImage}
 
             <p class="service-detail__description">${description}</p>
 
@@ -1112,6 +1153,16 @@
           document.getElementById('edit-service-price').value = service.price || 0;
           document.getElementById('edit-service-active').checked = service.isActive;
 
+          // Show existing image if available
+          const editImagePreview = modal.querySelector('[data-edit-image-preview]');
+          const editPreviewImg = modal.querySelector('[data-edit-preview-img]');
+          if (service.imageUrl && editImagePreview && editPreviewImg) {
+            editPreviewImg.src = service.imageUrl;
+            editImagePreview.style.display = 'block';
+          } else if (editImagePreview) {
+            editImagePreview.style.display = 'none';
+          }
+
           // Load categories for datalist
           loadCategoriesForEdit();
 
@@ -1204,6 +1255,9 @@
         const backdrop = modal.querySelector('[data-add-service-backdrop]');
         const form = document.getElementById('add-service-form');
         const feedback = modal.querySelector('[data-add-service-feedback]');
+        const imageInput = form.querySelector('[data-image-input]');
+        const imagePreview = form.querySelector('[data-image-preview]');
+        const imageRemoveBtn = form.querySelector('[data-image-remove]');
 
         function getSession() {
           return window.HeaderManager ? window.HeaderManager.loadSession() : null;
@@ -1215,9 +1269,33 @@
           form.reset();
           feedback.textContent = '';
           feedback.className = 'add-service-feedback';
+          imagePreview.style.display = 'none';
 
           // Load categories into datalist
           await loadCategories();
+        }
+
+        // Image preview handling
+        if (imageInput) {
+          imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                const img = imagePreview.querySelector('img');
+                img.src = event.target.result;
+                imagePreview.style.display = 'block';
+              };
+              reader.readAsDataURL(file);
+            }
+          });
+        }
+
+        if (imageRemoveBtn) {
+          imageRemoveBtn.addEventListener('click', () => {
+            imageInput.value = '';
+            imagePreview.style.display = 'none';
+          });
         }
 
         async function loadCategories() {
@@ -1317,6 +1395,31 @@
               }
 
               const result = await response.json();
+
+              // Upload image if present
+              const imageFile = formData.get('image');
+              if (imageFile && imageFile.size > 0) {
+                feedback.textContent = 'Đang upload hình ảnh...';
+                try {
+                  const imageFormData = new FormData();
+                  imageFormData.append('image', imageFile);
+
+                  const uploadResponse = await fetch(`/api/admin/services/${result.serviceCode}/upload-image`, {
+                    method: 'POST',
+                    headers: {
+                      'Authorization': `Bearer ${session.token}`,
+                    },
+                    body: imageFormData,
+                  });
+
+                  if (!uploadResponse.ok) {
+                    console.error('Upload image failed');
+                  }
+                } catch (uploadError) {
+                  console.error('Error uploading image:', uploadError);
+                }
+              }
+
               feedback.textContent = `Đã tạo dịch vụ: ${result.serviceCode}`;
               feedback.className = 'add-service-feedback success';
 
@@ -1522,6 +1625,10 @@
         const backdrop = modal.querySelector('[data-edit-service-backdrop]');
         const form = document.getElementById('edit-service-form');
         const feedback = modal.querySelector('[data-edit-service-feedback]');
+        const imageInput = form.querySelector('[data-edit-image-input]');
+        const imagePreview = form.querySelector('[data-edit-image-preview]');
+        const imageRemoveBtn = form.querySelector('[data-edit-image-remove]');
+        const previewImg = form.querySelector('[data-edit-preview-img]');
 
         function getSession() {
           return window.HeaderManager ? window.HeaderManager.loadSession() : null;
@@ -1530,6 +1637,28 @@
         function closeModal() {
           modal.style.display = 'none';
           document.body.style.overflow = '';
+        }
+
+        // Image preview handling
+        if (imageInput) {
+          imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                previewImg.src = event.target.result;
+                imagePreview.style.display = 'block';
+              };
+              reader.readAsDataURL(file);
+            }
+          });
+        }
+
+        if (imageRemoveBtn) {
+          imageRemoveBtn.addEventListener('click', () => {
+            imageInput.value = '';
+            imagePreview.style.display = 'none';
+          });
         }
 
         if (closeBtn) {
@@ -1586,6 +1715,31 @@
               }
 
               const result = await response.json();
+
+              // Upload image if present
+              const imageFile = formData.get('image');
+              if (imageFile && imageFile.size > 0) {
+                feedback.textContent = 'Đang upload hình ảnh...';
+                try {
+                  const imageFormData = new FormData();
+                  imageFormData.append('image', imageFile);
+
+                  const uploadResponse = await fetch(`/api/admin/services/${encodeURIComponent(serviceCode)}/upload-image`, {
+                    method: 'POST',
+                    headers: {
+                      'Authorization': `Bearer ${session.token}`,
+                    },
+                    body: imageFormData,
+                  });
+
+                  if (!uploadResponse.ok) {
+                    console.error('Upload image failed');
+                  }
+                } catch (uploadError) {
+                  console.error('Error uploading image:', uploadError);
+                }
+              }
+
               feedback.textContent = 'Đã cập nhật dịch vụ thành công!';
               feedback.className = 'add-service-feedback success';
 

@@ -1,0 +1,566 @@
+/**
+ * 5C Modal Styles
+ * Modal for displaying detailed information about 5C cards
+ */
+
+/* ========================================
+   Modal Container
+   ======================================== */
+.c5-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  pointer-events: none;
+}
+
+.c5-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+}
+
+/* ========================================
+   Modal Overlay
+   ======================================== */
+.c5-modal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+}
+
+/* ========================================
+   Modal Container
+   ======================================== */
+.c5-modal__container {
+  position: relative;
+  width: 95%;
+  max-width: 1400px;
+  max-height: 92vh;
+  background: var(--surface);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  transform: scale(0.9) translateY(30px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.c5-modal.is-open .c5-modal__container {
+  transform: scale(1) translateY(0);
+}
+
+/* ========================================
+   Close Button
+   ======================================== */
+.c5-modal__close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.c5-modal__close:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: rotate(90deg);
+}
+
+.c5-modal__close .material-icons {
+  color: var(--text-main);
+  font-size: 28px;
+}
+
+.c5-modal__close:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Modal Content
+   ======================================== */
+.c5-modal__content {
+  flex: 1;
+  overflow: hidden;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ========================================
+   Modal Header
+   ======================================== */
+.c5-modal__header {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border-soft);
+  flex-shrink: 0;
+}
+
+.c5-modal__icon {
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.c5-modal__icon .material-icons {
+  font-size: 60px;
+  font-weight: 500;
+}
+
+/* Icon colors matching card themes */
+.c5-modal__icon.c5-card--1 {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.25), rgba(220, 38, 38, 0.2));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.c5-modal__icon.c5-card--1 .material-icons {
+  color: #b91c1c;
+}
+
+.c5-modal__icon.c5-card--2 {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(79, 70, 229, 0.2));
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.c5-modal__icon.c5-card--2 .material-icons {
+  color: #4338ca;
+}
+
+.c5-modal__icon.c5-card--3 {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.25), rgba(22, 163, 74, 0.2));
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.c5-modal__icon.c5-card--3 .material-icons {
+  color: #15803d;
+}
+
+.c5-modal__icon.c5-card--4 {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.25), rgba(245, 158, 11, 0.2));
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.c5-modal__icon.c5-card--4 .material-icons {
+  color: #d97706;
+}
+
+.c5-modal__icon.c5-card--5 {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(6, 182, 212, 0.2));
+  border: 1px solid rgba(14, 165, 233, 0.3);
+}
+
+.c5-modal__icon.c5-card--5 .material-icons {
+  color: #0284c7;
+}
+
+.c5-modal__title {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* ========================================
+   Modal Body
+   ======================================== */
+.c5-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.c5-modal__description {
+  font-size: 1.3rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin: 0;
+  flex-shrink: 0;
+}
+
+/* ========================================
+   Image Gallery - Default
+   ======================================== */
+.c5-modal__gallery {
+  display: grid;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+  align-content: center;
+}
+
+.c5-modal__image-wrapper {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--background);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.c5-modal__image-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.c5-modal__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.c5-modal__image-wrapper:hover .c5-modal__image {
+  transform: scale(1.05);
+}
+
+/* ========================================
+   Gallery Layout: Single Image (1 ảnh)
+   ======================================== */
+.c5-modal__gallery--single {
+  grid-template-columns: 1fr;
+}
+
+.c5-modal__gallery--single .c5-modal__image-wrapper {
+  max-height: 100%;
+}
+
+.c5-modal__gallery--single .c5-modal__image {
+  aspect-ratio: 16 / 10;
+  max-height: 600px;
+  width: 100%;
+  height: auto;
+}
+
+/* ========================================
+   Gallery Layout: Dual (2 ảnh)
+   ======================================== */
+.c5-modal__gallery--dual {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.c5-modal__gallery--dual .c5-modal__image {
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ========================================
+   Gallery Layout: Triple (3 ảnh - 1 lớn, 2 nhỏ chồng)
+   ======================================== */
+.c5-modal__gallery--triple {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto auto;
+  gap: 12px;
+}
+
+.c5-modal__gallery--triple .c5-modal__image-wrapper:nth-child(1) {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+}
+
+.c5-modal__gallery--triple .c5-modal__image-wrapper:nth-child(1) .c5-modal__image {
+  aspect-ratio: 4 / 5;
+  height: 100%;
+}
+
+.c5-modal__gallery--triple .c5-modal__image-wrapper:nth-child(2),
+.c5-modal__gallery--triple .c5-modal__image-wrapper:nth-child(3) {
+  grid-column: 2 / 3;
+}
+
+.c5-modal__gallery--triple .c5-modal__image-wrapper:nth-child(2) .c5-modal__image,
+.c5-modal__gallery--triple .c5-modal__image-wrapper:nth-child(3) .c5-modal__image {
+  aspect-ratio: 16 / 10;
+}
+
+/* ========================================
+   Gallery Layout: Quad (4 ảnh - 2x2 grid)
+   ======================================== */
+.c5-modal__gallery--quad {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.c5-modal__gallery--quad .c5-modal__image {
+  aspect-ratio: 1 / 1;
+}
+
+/* ========================================
+   Gallery Layout: Many (5+ ảnh - 2x2 với +X)
+   ======================================== */
+.c5-modal__gallery--many {
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.c5-modal__gallery--many .c5-modal__image {
+  aspect-ratio: 1 / 1;
+}
+
+/* Overlay for +X indicator */
+.c5-modal__image-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.c5-modal__image-wrapper:hover .c5-modal__image-overlay {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+/* ========================================
+   Loading and Empty States
+   ======================================== */
+.c5-modal__loading,
+.c5-modal__no-images {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+}
+
+.c5-modal__loading::before {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 24px;
+  border: 4px solid var(--border-soft);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ========================================
+   Cursor Pointer for Cards
+   ======================================== */
+.c5-card[data-c5-id] {
+  cursor: pointer;
+  user-select: none;
+}
+
+.c5-card[data-c5-id]:active {
+  transform: scale(0.98);
+}
+
+/* ========================================
+   Dark Mode
+   ======================================== */
+[data-theme="dark"] .c5-modal__container {
+  background: rgba(30, 41, 59, 0.98);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .c5-modal__close {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .c5-modal__close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] .c5-modal__icon {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .c5-modal__icon.c5-card--1 {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.25));
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+[data-theme="dark"] .c5-modal__icon.c5-card--1 .material-icons {
+  color: #f87171;
+}
+
+[data-theme="dark"] .c5-modal__icon.c5-card--2 {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(79, 70, 229, 0.25));
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+[data-theme="dark"] .c5-modal__icon.c5-card--2 .material-icons {
+  color: #818cf8;
+}
+
+[data-theme="dark"] .c5-modal__icon.c5-card--3 {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(22, 163, 74, 0.25));
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+[data-theme="dark"] .c5-modal__icon.c5-card--3 .material-icons {
+  color: #4ade80;
+}
+
+[data-theme="dark"] .c5-modal__icon.c5-card--4 {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.3), rgba(245, 158, 11, 0.25));
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+[data-theme="dark"] .c5-modal__icon.c5-card--4 .material-icons {
+  color: #fbbf24;
+}
+
+[data-theme="dark"] .c5-modal__icon.c5-card--5 {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.3), rgba(6, 182, 212, 0.25));
+  border-color: rgba(14, 165, 233, 0.4);
+}
+
+[data-theme="dark"] .c5-modal__icon.c5-card--5 .material-icons {
+  color: #38bdf8;
+}
+
+[data-theme="dark"] .c5-modal__image-wrapper {
+  background: rgba(15, 23, 42, 0.8);
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 768px) {
+  .c5-modal__container {
+    width: 95%;
+    max-height: 90vh;
+  }
+
+  .c5-modal__content {
+    padding: 24px;
+  }
+
+  .c5-modal__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .c5-modal__icon {
+    width: 70px;
+    height: 70px;
+  }
+
+  .c5-modal__icon .material-icons {
+    font-size: 36px;
+  }
+
+  /* Reset all gallery layouts to single column on mobile */
+  .c5-modal__gallery,
+  .c5-modal__gallery--single,
+  .c5-modal__gallery--dual,
+  .c5-modal__gallery--triple,
+  .c5-modal__gallery--quad,
+  .c5-modal__gallery--many {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 12px;
+  }
+
+  /* Reset grid positioning for triple layout */
+  .c5-modal__gallery--triple .c5-modal__image-wrapper:nth-child(1) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .c5-modal__gallery--triple .c5-modal__image-wrapper:nth-child(2),
+  .c5-modal__gallery--triple .c5-modal__image-wrapper:nth-child(3) {
+    grid-column: auto;
+  }
+
+  /* All images same aspect ratio on mobile */
+  .c5-modal__gallery--dual .c5-modal__image,
+  .c5-modal__gallery--triple .c5-modal__image,
+  .c5-modal__gallery--quad .c5-modal__image,
+  .c5-modal__gallery--many .c5-modal__image {
+    aspect-ratio: 16 / 10;
+  }
+
+  .c5-modal__close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .c5-modal__close .material-icons {
+    font-size: 20px;
+  }
+}
+
+/* ========================================
+   Accessibility
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+  .c5-modal,
+  .c5-modal__container,
+  .c5-modal__close,
+  .c5-modal__image,
+  .c5-modal__image-wrapper {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .c5-modal__overlay {
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  .c5-modal__container {
+    border: 2px solid var(--text-main);
+  }
+}

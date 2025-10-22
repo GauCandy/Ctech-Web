@@ -9,7 +9,16 @@ const {
   createService,
   updateServiceDetails,
   removeService,
+  uploadServiceImage,
 } = require('./controllers/serviceController');
+const {
+  listVouchersHandler,
+  getVoucherHandler,
+  createVoucherHandler,
+  updateVoucherHandler,
+  deleteVoucherHandler,
+} = require('./controllers/voucherController');
+const { upload } = require('../../../middleware/uploadImage');
 
 const router = express.Router();
 
@@ -22,8 +31,21 @@ router.post('/accounts/:userId/reset-password', requireAdminAuth, resetAccountPa
 router.post('/services', requireAdminAuth, createService);
 // PUT /api/admin/services/:code - Admin cap nhat thong tin dich vu.
 router.put('/services/:code', requireAdminAuth, updateServiceDetails);
+// POST /api/admin/services/:code/upload-image - Admin upload hinh anh cho dich vu.
+router.post('/services/:code/upload-image', requireAdminAuth, upload.single('image'), uploadServiceImage);
 // DELETE /api/admin/services/:code - Admin xoa dich vu.
 router.delete('/services/:code', requireAdminAuth, removeService);
+
+// GET /api/admin/vouchers - Admin lay danh sach voucher.
+router.get('/vouchers', requireAdminAuth, listVouchersHandler);
+// GET /api/admin/vouchers/:code - Admin lay chi tiet voucher.
+router.get('/vouchers/:code', requireAdminAuth, getVoucherHandler);
+// POST /api/admin/vouchers - Admin tao voucher moi.
+router.post('/vouchers', requireAdminAuth, createVoucherHandler);
+// PUT /api/admin/vouchers/:code - Admin cap nhat voucher.
+router.put('/vouchers/:code', requireAdminAuth, updateVoucherHandler);
+// DELETE /api/admin/vouchers/:code - Admin xoa voucher.
+router.delete('/vouchers/:code', requireAdminAuth, deleteVoucherHandler);
 
 module.exports = {
   adminRouter: router,
