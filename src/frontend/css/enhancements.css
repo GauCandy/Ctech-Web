@@ -3,11 +3,15 @@
    Cao đẳng Kỹ thuật Bách Khoa
    ============================================ */
 
-/* Hero section improvements */
+/* Hero section improvements - Full viewport auto scale */
 .hero {
   position: relative;
-  padding: clamp(80px, 10vw, 140px) 0;
-  min-height: clamp(700px, 90vh, 1100px);
+  padding: 0;
+  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Background image restoration */
@@ -58,10 +62,24 @@
   }
 }
 
-/* Enhanced hero content */
+/* Enhanced hero content with auto padding */
 .hero-content {
+  width: 100%;
+  padding: clamp(40px, 5vh, 80px) 0;
   gap: clamp(50px, 7vw, 100px);
   align-items: center;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  .hero {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .hero-content {
+    padding: clamp(60px, 8vh, 100px) 0;
+  }
 }
 
 .hero-highlights {
@@ -245,7 +263,7 @@
 
 /* Section improvements */
 .section {
-  padding: clamp(60px, 8vw, 100px) 0;
+  padding: clamp(40px, 4vw, 60px) 0;
   position: relative;
 }
 

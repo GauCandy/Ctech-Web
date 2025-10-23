@@ -112,13 +112,8 @@ body.optimal-resolution::before {
    Base Section Layout (All Screens)
    ======================================== */
 
-/* Ensure all sections take full viewport height */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/* Ensure all sections take full viewport height - ONLY for presentation mode */
+/* Removed global .hero rule to avoid conflicts with normal theme */
 
 .section {
   min-height: 100vh;
