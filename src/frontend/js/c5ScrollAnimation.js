@@ -91,10 +91,33 @@
       });
     }
 
+    // Check initial position when page loads
+    function checkInitialPosition() {
+      const sectionRect = c5Section.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+
+      // Nếu section đã trong viewport khi trang load (reload ở vị trí này)
+      const isInViewport = (
+        sectionRect.top < viewportHeight * 0.8 &&
+        sectionRect.bottom > viewportHeight * 0.2
+      );
+
+      if (isInViewport) {
+        // Animate ngay lập tức khi trang load
+        animateCards();
+        hasAnimated = true;
+        isAboveSection = false;
+      } else {
+        // Nếu chưa trong viewport, check xem có ở trên section không
+        const isCurrentlyAbove = sectionRect.top > viewportHeight;
+        isAboveSection = isCurrentlyAbove;
+      }
+    }
+
     // Listen scroll event
     window.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Check initial position
-    checkSectionPosition();
+    // Check initial position khi trang vừa load
+    checkInitialPosition();
   }
 })();
