@@ -16,6 +16,7 @@
   let currentIndex = 0;
   let autoScrollInterval = null;
   let isHovering = false;
+  let hoverPauseTimeout = null;
   let carousel, track, cards, prevBtn, nextBtn, dotsContainer;
 
   function initCarousel() {
@@ -91,14 +92,31 @@
       });
     }
 
-    // Pause on hover
+    // Pause on hover (only for 3 seconds)
     carousel.addEventListener('mouseenter', () => {
       isHovering = true;
       stopAutoScroll();
+
+      // Clear any existing pause timeout
+      if (hoverPauseTimeout) {
+        clearTimeout(hoverPauseTimeout);
+      }
+
+      // Resume auto-scroll after 3 seconds even if still hovering
+      hoverPauseTimeout = setTimeout(() => {
+        startAutoScroll();
+      }, 3000);
     });
 
     carousel.addEventListener('mouseleave', () => {
       isHovering = false;
+
+      // Clear the pause timeout
+      if (hoverPauseTimeout) {
+        clearTimeout(hoverPauseTimeout);
+        hoverPauseTimeout = null;
+      }
+
       startAutoScroll();
     });
 
@@ -233,9 +251,7 @@
 
     // Auto-scroll every 2 seconds (2000ms)
     autoScrollInterval = setInterval(() => {
-      if (!isHovering) {
-        next();
-      }
+      next();
     }, 2000);
   }
 
@@ -250,10 +266,14 @@
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       stopAutoScroll();
-    } else {
-      if (!isHovering) {
-        startAutoScroll();
+      // Clear hover pause timeout when page is hidden
+      if (hoverPauseTimeout) {
+        clearTimeout(hoverPauseTimeout);
+        hoverPauseTimeout = null;
       }
+    } else {
+      // Always start when page becomes visible again
+      startAutoScroll();
     }
   });
 
