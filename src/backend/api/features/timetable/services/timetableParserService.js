@@ -1107,7 +1107,12 @@ const parseTimetablePdfBuffer = async (buffer, { originalName } = {}) => {
 
   try {
     const pdfjs = await loadPdfModule();
-    const loadingTask = pdfjs.getDocument(filePath);
+    const loadingTask = pdfjs.getDocument({
+      url: filePath,
+      standardFontDataUrl: null,
+      useSystemFonts: false,
+      verbosity: 0 // Disable verbose warnings
+    });
     const pdfDocument = await loadingTask.promise;
 
     let dayLayout = null;

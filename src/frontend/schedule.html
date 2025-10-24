@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <script src="/js/themeManager.js"></script>
     <script src="/js/headerManager.js"></script>
+    <script src="/js/swRegister.js"></script>
   </head>
   <body>
     <div id="app-loader" class="loader-backdrop" aria-hidden="true">
@@ -39,7 +40,6 @@
             <a href="/#doi-song">Đời sống</a>
             <a href="/services">Dịch vụ</a>
             <a href="/schedule" class="active">Lịch trình</a>
-            <a href="/#tin-tuc">Tin tức</a>
           </nav>
           <div id="theme-toggle-container"></div>
           <div class="user-indicator" data-user-indicator>
@@ -183,6 +183,13 @@
                 <p>Chọn tuần để xem thời khóa biểu</p>
               </div>
             </div>
+
+            <div class="schedule-actions">
+              <button type="button" id="upload-another-btn" class="btn-upload-another">
+                <span class="material-icons">upload_file</span>
+                Tải lên thời khóa biểu khác
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -192,8 +199,12 @@
       <div class="footer-inner container">
         <div class="footer-columns">
           <div>
-            <h4>Trụ sở chính</h4>
-            <p>60 Quốc lộ 1A, xã Tân Phước Khánh, thành phố Hà Nội</p>
+            <h4>Trụ Sở Chính</h4>
+            <p>60 QL1A, xã Thượng Tín, thành phố Hà Nội</p>
+          </div>
+          <div>
+            <h4>Cơ sở đào tạo</h4>
+            <p>số 57 đường Cách Mạng Tháng Tám, phường Bình Thủy, TP. Cần Thơ</p>
           </div>
           <div>
             <h4>Liên hệ</h4>
@@ -282,7 +293,9 @@
         const clearFileBtn = document.getElementById('clear-file');
         const uploadBtn = document.getElementById('upload-btn');
         const uploadStatus = document.getElementById('upload-status');
+        const uploadSection = document.querySelector('.upload-section');
         const scheduleContainer = document.getElementById('schedule-container');
+        const uploadAnotherBtn = document.getElementById('upload-another-btn');
         const weekSelect = document.getElementById('week-select');
         const scheduleView = document.getElementById('schedule-view');
         const scheduleMeta = document.getElementById('schedule-meta');
@@ -304,13 +317,15 @@
         const daysOrder = ['Thu 2', 'Thu 3', 'Thu 4', 'Thu 5', 'Thu 6', 'Thu 7', 'CN'];
         const sessionsOrder = ['Sáng', 'Chiều', 'Tối'];
 
-        // File input change handler
-        pdfFileInput.addEventListener('change', (e) => {
+        // File input change handler - Auto upload when file selected
+        pdfFileInput.addEventListener('change', async (e) => {
           const file = e.target.files[0];
           if (file) {
             fileName.textContent = file.name;
             fileInfo.hidden = false;
-            uploadBtn.disabled = false;
+
+            // Auto submit form immediately
+            await handleUpload(file);
           }
         });
 
@@ -321,11 +336,8 @@
           uploadBtn.disabled = true;
         });
 
-        // Upload form submit
-        uploadForm.addEventListener('submit', async (e) => {
-          e.preventDefault();
-
-          const file = pdfFileInput.files[0];
+        // Handle upload function
+        async function handleUpload(file) {
           if (!file) return;
 
           const formData = new FormData();
@@ -352,11 +364,44 @@
             scheduleContainer.hidden = false;
             uploadBtn.disabled = false;
 
+            // Hide upload section immediately after successful upload
+            uploadSection.style.display = 'none';
+            scheduleContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
           } catch (error) {
             console.error('Upload error:', error);
             uploadStatus.innerHTML = '<div class="status-error"><span class="material-icons">error</span> Có lỗi xảy ra. Vui lòng thử lại.</div>';
             uploadBtn.disabled = false;
           }
+        }
+
+        // Upload form submit (for manual submission if needed)
+        uploadForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const file = pdfFileInput.files[0];
+          await handleUpload(file);
+        });
+
+        // Upload another schedule button
+        uploadAnotherBtn.addEventListener('click', () => {
+          // Reset form
+          pdfFileInput.value = '';
+          fileInfo.hidden = true;
+          uploadBtn.disabled = true;
+          uploadStatus.innerHTML = '';
+
+          // Hide schedule container
+          scheduleContainer.hidden = true;
+
+          // Show upload section
+          uploadSection.style.display = 'flex';
+
+          // Scroll to upload section
+          uploadSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+          // Reset schedule data
+          scheduleData = null;
+          selectedClassName = null;
         });
 
         function populateDropdowns() {

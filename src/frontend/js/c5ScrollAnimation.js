@@ -1,8 +1,7 @@
 /**
  * 5C Cards Scroll Animation
- * Animation chỉ chạy khi scroll từ trên xuống vào viewport
- * Giữ nguyên animation khi scroll lên xuống
- * Reset animation khi scroll lên trên section rồi xuống lại
+ * Animation chỉ chạy khi cards vào viewport
+ * Sử dụng Intersection Observer API để detect viewport entry
  */
 
 (function() {
@@ -16,108 +15,46 @@
   }
 
   function init() {
-    const c5Section = document.querySelector('.section-5c');
     const c5Cards = document.querySelectorAll('.c5-card');
 
-    if (!c5Section || c5Cards.length === 0) {
-      return; // Không có section 5C, thoát
+    if (c5Cards.length === 0) {
+      return; // Không có 5C cards, thoát
     }
 
-    let previousScrollY = window.scrollY;
-    let hasAnimated = false;
-    let isAboveSection = true; // Track nếu đang ở trên section
-
-    // Throttle scroll event để tăng performance
-    let ticking = false;
-
-    function handleScroll() {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          checkSectionPosition();
-          ticking = false;
-        });
-        ticking = true;
-      }
+    // Check if browser supports Intersection Observer
+    if (!('IntersectionObserver' in window)) {
+      // Fallback: hiện tất cả cards ngay lập tức
+      c5Cards.forEach(card => card.classList.add('is-visible'));
+      return;
     }
 
-    function checkSectionPosition() {
-      const currentScrollY = window.scrollY;
-      const scrollDirection = currentScrollY > previousScrollY ? 'down' : 'up';
+    // Intersection Observer options
+    const observerOptions = {
+      root: null, // viewport
+      rootMargin: '0px 0px -100px 0px', // Trigger khi card còn cách đáy viewport 100px
+      threshold: 0.1 // 10% của card phải visible
+    };
 
-      const sectionRect = c5Section.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
+    // Callback khi card vào/ra viewport
+    const observerCallback = (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Card vào viewport → add class để trigger animation
+          entry.target.classList.add('is-visible');
 
-      // Section đang trong viewport (ít nhất 20% của section visible)
-      const isInViewport = (
-        sectionRect.top < viewportHeight * 0.8 &&
-        sectionRect.bottom > viewportHeight * 0.2
-      );
-
-      // Check nếu đang ở trên section (chưa scroll tới)
-      const isCurrentlyAbove = sectionRect.top > viewportHeight;
-
-      // Logic animation:
-      // 1. Nếu scroll xuống VÀ section vào viewport VÀ chưa animate → animate
-      if (scrollDirection === 'down' && isInViewport && !hasAnimated) {
-        animateCards();
-        hasAnimated = true;
-        isAboveSection = false;
-      }
-
-      // 2. Nếu scroll lên trên section (ra khỏi viewport phía trên) → reset flag để animate lại
-      if (isCurrentlyAbove && !isAboveSection) {
-        resetAnimation();
-        hasAnimated = false;
-        isAboveSection = true;
-      }
-
-      // 3. Nếu đang ở trong hoặc dưới section → giữ nguyên
-      if (!isCurrentlyAbove) {
-        isAboveSection = false;
-      }
-
-      previousScrollY = currentScrollY;
-    }
-
-    function animateCards() {
-      c5Cards.forEach((card) => {
-        card.classList.add('is-animated');
+          // Optional: Unobserve card sau khi đã animate (không animate lại)
+          // Nếu muốn animate lại mỗi lần scroll vào, comment dòng dưới
+          observer.unobserve(entry.target);
+        }
       });
-    }
+    };
 
-    function resetAnimation() {
-      c5Cards.forEach((card) => {
-        card.classList.remove('is-animated');
-      });
-    }
+    // Create observer
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-    // Check initial position when page loads
-    function checkInitialPosition() {
-      const sectionRect = c5Section.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-
-      // Nếu section đã trong viewport khi trang load (reload ở vị trí này)
-      const isInViewport = (
-        sectionRect.top < viewportHeight * 0.8 &&
-        sectionRect.bottom > viewportHeight * 0.2
-      );
-
-      if (isInViewport) {
-        // Animate ngay lập tức khi trang load
-        animateCards();
-        hasAnimated = true;
-        isAboveSection = false;
-      } else {
-        // Nếu chưa trong viewport, check xem có ở trên section không
-        const isCurrentlyAbove = sectionRect.top > viewportHeight;
-        isAboveSection = isCurrentlyAbove;
-      }
-    }
-
-    // Listen scroll event
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    // Check initial position khi trang vừa load
-    checkInitialPosition();
+    // Observe tất cả cards
+    c5Cards.forEach(card => {
+      observer.observe(card);
+    });
   }
 })();

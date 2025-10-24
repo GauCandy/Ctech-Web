@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="/css/presentation-mode.css" />
     <link rel="stylesheet" href="/css/c5-modal.css" />
     <link rel="stylesheet" href="/css/c5-animation.css" />
+    <link rel="stylesheet" href="/css/c5-redesign.css" />
+    <link rel="stylesheet" href="/css/departments.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <script src="/js/themeManager.js"></script>
@@ -26,6 +28,8 @@
     <script src="/js/presentationMode.js"></script>
     <script src="/js/c5Modal.js"></script>
     <script src="/js/c5ScrollAnimation.js"></script>
+    <script src="/js/departmentCarousel.js"></script>
+    <script src="/js/swRegister.js"></script>
   </head>
   <body>
     <div id="app-loader" class="loader-backdrop" aria-hidden="true">
@@ -106,77 +110,65 @@
         <div class="about-container">
           <div class="about-header">
             <div class="about-badge">CTECH</div>
-            <h2 class="about-main-title">Tại sao chọn CTECH</h2>
-            <div class="about-intro-box">
+            <h2 class="about-main-title">Giới thiệu về CTECH</h2>
+            <div class="about-intro-text">
               <h3>Trường Cao đẳng Kỹ thuật - Công nghệ Bách Khoa</h3>
               <p class="about-meta">
                 <strong>Mã trường: CCG</strong> • Thành lập <strong>01/10/2008</strong>
               </p>
               <p class="about-description">
                 Được thành lập bởi các giáo sư và tiến sĩ của Đại học Bách Khoa Hà Nội, CTECH là cơ sở giáo dục nghề nghiệp
-                uy tín, hướng đến mục tiêu trang bị toàn diện cho sinh viên về kiến thức chuyên môn, kỹ năng nghề nghiệp và
-                hiểu biết xã hội, giúp họ tự tin hòa nhập thị trường lao động trong nước và quốc tế.
+                uy tín với mô hình trường thực nghiệm chuẩn 5C, trang bị toàn diện cho sinh viên về kiến thức chuyên môn,
+                kỹ năng nghề nghiệp và hiểu biết xã hội, giúp các bạn tự tin hội nhập thị trường lao động.
               </p>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section class="section section-5c" id="mo-hinh-5c">
-        <div class="container">
-          <div class="about-5c-section">
-            <div class="about-5c-title">
-              <span class="c5-badge">5C</span>
-              <h3>Mô hình trường thực nghiệm chuẩn 5C</h3>
-              <p>CTECH chú trọng đào tạo kiến thức, tay nghề và rèn luyện kỹ năng mềm, giúp sinh viên tự tin hội nhập và phát triển bền vững</p>
-            </div>
+          <div class="c5-grid" id="mo-hinh-5c">
+            <article class="c5-card c5-card--1" data-c5-id="1" role="button" tabindex="0" aria-label="Xem chi tiết Chất lượng giảng dạy">
+              <div class="c5-number">01</div>
+              <div class="c5-icon">
+                <span class="material-icons">school</span>
+              </div>
+              <h4>Chất lượng giảng dạy</h4>
+              <p>Đội ngũ giảng viên giỏi chuyên môn từ các doanh nghiệp lớn, mang kinh nghiệm thực tế cho sinh viên</p>
+            </article>
 
-            <div class="c5-grid">
-              <article class="c5-card c5-card--1" data-c5-id="1" role="button" tabindex="0" aria-label="Xem chi tiết Chất lượng giảng dạy">
-                <div class="c5-number">01</div>
-                <div class="c5-icon">
-                  <span class="material-icons">school</span>
-                </div>
-                <h4>Chất lượng giảng dạy</h4>
-                <p>Đội ngũ giảng viên giỏi chuyên môn từ các doanh nghiệp lớn, mang kinh nghiệm thực tế cho sinh viên</p>
-              </article>
+            <article class="c5-card c5-card--2" data-c5-id="2" role="button" tabindex="0" aria-label="Xem chi tiết Cơ sở vật chất hiện đại">
+              <div class="c5-number">02</div>
+              <div class="c5-icon">
+                <span class="material-icons">apartment</span>
+              </div>
+              <h4>Cơ sở vật chất hiện đại</h4>
+              <p>Phòng học, phòng thí nghiệm và xưởng thực hành đạt tiêu chuẩn quốc tế</p>
+            </article>
 
-              <article class="c5-card c5-card--2" data-c5-id="2" role="button" tabindex="0" aria-label="Xem chi tiết Cơ sở vật chất hiện đại">
-                <div class="c5-number">02</div>
-                <div class="c5-icon">
-                  <span class="material-icons">apartment</span>
-                </div>
-                <h4>Cơ sở vật chất hiện đại</h4>
-                <p>Phòng học, phòng thí nghiệm và xưởng thực hành đạt tiêu chuẩn quốc tế</p>
-              </article>
+            <article class="c5-card c5-card--3" data-c5-id="3" role="button" tabindex="0" aria-label="Xem chi tiết Chương trình thực tiễn">
+              <div class="c5-number">03</div>
+              <div class="c5-icon">
+                <span class="material-icons">work</span>
+              </div>
+              <h4>Chương trình thực tiễn</h4>
+              <p>Tiếp cận dự án thực tế, ứng dụng kiến thức ngay trong quá trình học</p>
+            </article>
 
-              <article class="c5-card c5-card--3" data-c5-id="3" role="button" tabindex="0" aria-label="Xem chi tiết Chương trình thực tiễn">
-                <div class="c5-number">03</div>
-                <div class="c5-icon">
-                  <span class="material-icons">work</span>
-                </div>
-                <h4>Chương trình thực tiễn</h4>
-                <p>Tiếp cận dự án thực tế, ứng dụng kiến thức ngay trong quá trình học</p>
-              </article>
+            <article class="c5-card c5-card--4" data-c5-id="4" role="button" tabindex="0" aria-label="Xem chi tiết Doanh nghiệp hợp tác">
+              <div class="c5-number">04</div>
+              <div class="c5-icon">
+                <span class="material-icons">handshake</span>
+              </div>
+              <h4>Doanh nghiệp hợp tác</h4>
+              <p>Mạng lưới liên kết với các tập đoàn lớn, cơ hội thực tập và việc làm</p>
+            </article>
 
-              <article class="c5-card c5-card--4" data-c5-id="4" role="button" tabindex="0" aria-label="Xem chi tiết Doanh nghiệp hợp tác">
-                <div class="c5-number">04</div>
-                <div class="c5-icon">
-                  <span class="material-icons">handshake</span>
-                </div>
-                <h4>Doanh nghiệp hợp tác</h4>
-                <p>Mạng lưới liên kết với các tập đoàn lớn, cơ hội thực tập và việc làm</p>
-              </article>
-
-              <article class="c5-card c5-card--5" data-c5-id="5" role="button" tabindex="0" aria-label="Xem chi tiết Hội nhập quốc tế">
-                <div class="c5-number">05</div>
-                <div class="c5-icon">
-                  <span class="material-icons">public</span>
-                </div>
-                <h4>Hội nhập quốc tế</h4>
-                <p>Hợp tác với trường đại học, tổ chức quốc tế, chương trình liên thông và làm việc nước ngoài</p>
-              </article>
-            </div>
+            <article class="c5-card c5-card--5" data-c5-id="5" role="button" tabindex="0" aria-label="Xem chi tiết Hội nhập quốc tế">
+              <div class="c5-number">05</div>
+              <div class="c5-icon">
+                <span class="material-icons">public</span>
+              </div>
+              <h4>Hội nhập quốc tế</h4>
+              <p>Hợp tác với trường đại học, tổ chức quốc tế, chương trình liên thông và làm việc nước ngoài</p>
+            </article>
           </div>
         </div>
       </section>
@@ -190,23 +182,126 @@
               vững vàng cho sinh viên.
             </p>
           </div>
-          <div class="program-grid">
-            <article class="card">
-              <h3>Công nghệ thông tin</h3>
-              <p>Chuyên sâu lập trình, phát triển phần mềm, trí tuệ nhân tạo và an toàn thông tin với phòng lab hiện đại.</p>
-            </article>
-            <article class="card">
-              <h3>Điện - Điện tử - Tự động hóa</h3>
-              <p>Thực hành với hệ thống tự động hóa, robot công nghiệp và giải pháp điều khiển thông minh.</p>
-            </article>
-            <article class="card">
-              <h3>Thiết kế đa phương tiện</h3>
-              <p>Kết hợp mỹ thuật và công nghệ trong thiết kế giao diện, nhận diện thương hiệu và sản phẩm số.</p>
-            </article>
-            <article class="card">
-              <h3>Logistics & Chuỗi cung ứng</h3>
-              <p>Đào tạo quản lý vận hành, tối ưu chuỗi cung ứng với sự đồng hành của doanh nghiệp đối tác.</p>
-            </article>
+          <div class="departments-carousel">
+            <div class="carousel-wrapper">
+              <div class="carousel-track">
+                <!-- Khoa Cơ khí & Công nghệ -->
+                <article class="department-card" data-department="mechanical">
+                  <div class="department-icon">
+                    <span class="material-icons">precision_manufacturing</span>
+                  </div>
+                  <h3 class="department-name">Cơ khí & Công nghệ</h3>
+                  <span class="department-count">9 chuyên ngành</span>
+                  <ul class="majors-list">
+                    <li>Công nghệ Ô tô</li>
+                    <li>KT Điều khiển & Tự động hóa</li>
+                    <li>Chế tạo Thiết bị Cơ khí</li>
+                    <li>KT Điện, Điện tử</li>
+                    <li>KT Cơ điện tử</li>
+                  </ul>
+                </article>
+
+                <!-- Khoa Du lịch -->
+                <article class="department-card" data-department="tourism">
+                  <div class="department-icon">
+                    <span class="material-icons">flight_takeoff</span>
+                  </div>
+                  <h3 class="department-name">Du lịch</h3>
+                  <span class="department-count">4 chuyên ngành</span>
+                  <ul class="majors-list">
+                    <li>Hướng dẫn Du lịch</li>
+                    <li>KT Chế biến Món ăn</li>
+                    <li>Quản trị Kinh doanh</li>
+                    <li>Nông nghiệp Công nghệ cao</li>
+                  </ul>
+                </article>
+
+                <!-- Khoa Ngoại ngữ -->
+                <article class="department-card" data-department="languages">
+                  <div class="department-icon">
+                    <span class="material-icons">translate</span>
+                  </div>
+                  <h3 class="department-name">Ngoại ngữ</h3>
+                  <span class="department-count">5 ngôn ngữ</span>
+                  <ul class="majors-list">
+                    <li>Tiếng Hàn</li>
+                    <li>Tiếng Nhật</li>
+                    <li>Tiếng Trung</li>
+                    <li>Tiếng Anh</li>
+                    <li>Tiếng Đức</li>
+                  </ul>
+                </article>
+
+                <!-- Khoa Điều dưỡng & Sức khỏe -->
+                <article class="department-card" data-department="nursing">
+                  <div class="department-icon">
+                    <span class="material-icons">medical_services</span>
+                  </div>
+                  <h3 class="department-name">Điều dưỡng & Sức khỏe</h3>
+                  <span class="department-count">4 chuyên ngành</span>
+                  <ul class="majors-list">
+                    <li>Y sĩ Đa khoa</li>
+                    <li>Chăm sóc Sắc đẹp</li>
+                    <li>Điều dưỡng</li>
+                    <li>Chăm sóc Người cao tuổi</li>
+                  </ul>
+                </article>
+
+                <!-- Khoa Công nghệ Thông tin -->
+                <article class="department-card" data-department="it">
+                  <div class="department-icon">
+                    <span class="material-icons">computer</span>
+                  </div>
+                  <h3 class="department-name">Công nghệ Thông tin</h3>
+                  <span class="department-count">3 chuyên ngành</span>
+                  <ul class="majors-list">
+                    <li>CNTT (Ứng dụng PM)</li>
+                    <li>Thiết kế Đồ họa</li>
+                    <li>Lập trình Máy tính</li>
+                  </ul>
+                </article>
+
+                <!-- Khoa Logistics & Xây dựng -->
+                <article class="department-card" data-department="logistics">
+                  <div class="department-icon">
+                    <span class="material-icons">engineering</span>
+                  </div>
+                  <h3 class="department-name">Logistics & Xây dựng</h3>
+                  <span class="department-count">4 chuyên ngành</span>
+                  <ul class="majors-list">
+                    <li>KT Kiến trúc</li>
+                    <li>KT Xây dựng</li>
+                    <li>KT Công trình XD</li>
+                    <li>Logistics</li>
+                  </ul>
+                </article>
+
+                <!-- Khoa Truyền thông -->
+                <article class="department-card" data-department="media">
+                  <div class="department-icon">
+                    <span class="material-icons">campaign</span>
+                  </div>
+                  <h3 class="department-name">Truyền thông</h3>
+                  <span class="department-count">3 chuyên ngành</span>
+                  <ul class="majors-list">
+                    <li>Truyền thông Đa PT</li>
+                    <li>Marketing</li>
+                    <li>Quan hệ Công chúng</li>
+                  </ul>
+                </article>
+              </div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="carousel-controls">
+              <button class="carousel-btn carousel-prev" aria-label="Trước">
+                <span class="material-icons">chevron_left</span>
+              </button>
+              <div class="carousel-dots"></div>
+              <button class="carousel-btn carousel-next" aria-label="Tiếp">
+                <span class="material-icons">chevron_right</span>
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -273,20 +368,20 @@
       <div class="footer-inner container">
         <div class="footer-columns">
           <div>
-            <h4>Trụ sở chính</h4>
-            <p>60 Quốc lộ 1A, xã Tân Phước Khánh, thành phố Hà Nội</p>
+            <h4>Trụ Sở Chính</h4>
+            <p>60 QL1A, xã Thượng Tín, thành phố Hà Nội</p>
           </div>
           <div>
             <h4>Cơ sở đào tạo</h4>
-            <p>57 Cách Mạng Tháng Tám, phường Bình Thủy, TP Cần Thơ</p>
+            <p>số 57 đường Cách Mạng Tháng Tám, phường Bình Thủy, TP. Cần Thơ</p>
           </div>
           <div>
-            <h4>Văn phòng tuyển sinh</h4>
+            <h4>Hệ thống văn phòng tuyển sinh</h4>
             <p>
-              60 Quốc lộ 1A, Hà Nội<br />
-              102 Phùng Hưng, phường Đồng Ba, Huế<br />
-              19 Trần Thái Dự, quận Hoàng Mai, Hà Nội<br />
-              57 Cách Mạng Tháng Tám, phường Bình Thủy, Cần Thơ
+              60 QL1A, xã Thượng Tín, thành phố Hà Nội<br />
+              102 Phùng Hưng, phường Đông Ba, TP. Huế<br />
+              Hải Phòng Building, 19 Trần Thủ Độ, phường Yên Sở, TP. Hà Nội<br />
+              số 57 đường Cách Mạng Tháng Tám, phường Bình Thủy, TP. Cần Thơ
             </p>
           </div>
         </div>

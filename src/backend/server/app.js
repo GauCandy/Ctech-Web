@@ -9,6 +9,7 @@ const { chatbotRouter } = require('../api/features/chatbot/router');
 const { timetableRouter } = require('../api/features/timetable/router');
 const { ordersRouter } = require('../api/features/orders/router');
 const { vouchersRouter } = require('../api/features/vouchers/router');
+const { cacheMiddleware } = require('../api/shared/cacheMiddleware');
 
 function createApp() {
   const app = express();
@@ -89,8 +90,13 @@ function createApp() {
   // Dang ky cac router chinh.
   app.use('/api/auth', authRouter);
   app.use('/api/admin', adminRouter);
-  app.use('/api/services', servicesRouter);
-  app.use('/api/chatbot', chatbotRouter);
+
+  // Services router with cache (5 minutes TTL for normal, 24 hours for fallback)
+  app.use('/api/services', cacheMiddleware({ ttl: 300, fallbackOnError: true }), servicesRouter);
+
+  // Chatbot router with cache (10 minutes TTL)
+  app.use('/api/chatbot', cacheMiddleware({ ttl: 600, fallbackOnError: true }), chatbotRouter);
+
   app.use('/api/timetable', timetableRouter);
   app.use('/api/orders', ordersRouter);
   app.use('/api/vouchers', vouchersRouter);
