@@ -288,6 +288,313 @@
       line-height: 1.7;
       margin-bottom: 8px;
     }
+
+    /* Web Mockup Styles */
+    .web-mockup {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      overflow: hidden;
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+    .web-header {
+      background: linear-gradient(135deg, #0047ab 0%, #003380 100%);
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #002d6b;
+    }
+    .web-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .web-logo {
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .web-logo .material-icons {
+      color: #0047ab;
+      font-size: 28px;
+    }
+    .web-title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .web-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      padding: 8px 16px;
+      border-radius: 20px;
+    }
+    .web-user .material-icons {
+      font-size: 20px;
+    }
+    .web-content {
+      padding: 24px 32px;
+      background: #f8fafc;
+    }
+    .web-search-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .web-input {
+      flex: 1;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .web-input .material-icons {
+      color: #94a3b8;
+      font-size: 20px;
+    }
+    .web-button {
+      background: #0047ab;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .web-categories {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .web-category-btn {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+    }
+    .web-category-btn.active {
+      background: #0047ab;
+      color: white;
+      border-color: #0047ab;
+    }
+    .web-services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .web-service-card {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .web-service-card:hover {
+      border-color: #0047ab;
+      box-shadow: 0 4px 12px rgba(0,71,171,0.15);
+      transform: translateY(-2px);
+    }
+    .web-service-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .web-service-code {
+      background: #eff6ff;
+      color: #0047ab;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .web-service-status {
+      background: #dcfce7;
+      color: #16a34a;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .web-service-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+    .web-service-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0047ab;
+      margin-bottom: 8px;
+    }
+    .web-service-desc {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    /* Service Detail Modal */
+    .service-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .service-modal.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .service-modal-content {
+      background: white;
+      border-radius: 16px;
+      max-width: 700px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .service-modal-header {
+      padding: 24px;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .service-modal-close {
+      background: #f1f5f9;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .service-modal-close:hover {
+      background: #ef4444;
+      color: white;
+    }
+    .service-modal-close .material-icons {
+      font-size: 20px;
+    }
+    .service-modal-body {
+      padding: 24px;
+    }
+    .service-detail-code {
+      background: #eff6ff;
+      color: #0047ab;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .service-detail-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+    .service-detail-price {
+      font-size: 32px;
+      font-weight: 700;
+      color: #0047ab;
+      margin-bottom: 16px;
+    }
+    .service-detail-status {
+      background: #dcfce7;
+      color: #16a34a;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .service-detail-desc {
+      font-size: 16px;
+      color: #4b5563;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .service-detail-image {
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .service-detail-info {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    .service-detail-info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #1a1a1a;
+    }
+    .service-detail-info-item:last-child {
+      margin-bottom: 0;
+    }
+    .service-detail-info-item .material-icons {
+      color: #0047ab;
+      font-size: 20px;
+    }
+    .service-detail-info-item strong {
+      font-weight: 600;
+      color: #0047ab;
+    }
+
     .quote {
       background: linear-gradient(135deg, rgba(0,71,171,0.05) 0%, rgba(0,71,171,0.08) 100%);
       border-left: 6px solid #0047ab;
@@ -562,15 +869,150 @@
         <div class="center">
           <div class="badge">DEMO #1</div>
           <h2 class="title">Giao Diện Dịch Vụ</h2>
-          <p class="subtitle">Phân loại rõ ràng, dễ sử dụng</p>
+          <p class="subtitle">Mô phỏng giao diện web thực tế</p>
         </div>
-        <div class="demo">
-          <h4>Danh sách dịch vụ</h4>
-          <p><strong>SV001</strong> - Vé gửi xe ngày (Hoạt động)</p>
-          <p><strong>SV002</strong> - Vé gửi xe tháng (Hoạt động)</p>
-          <p><strong>SV003</strong> - Xuất ăn căn tin (Hoạt động)</p>
+
+        <div class="web-mockup">
+          <!-- Header -->
+          <div class="web-header">
+            <div class="web-header-left">
+              <div class="web-logo">
+                <span class="material-icons">school</span>
+              </div>
+              <div class="web-title">Dịch Vụ CTECH</div>
+            </div>
+            <div class="web-user">
+              <span class="material-icons">account_circle</span>
+              <span>Trần Tuấn Tú</span>
+            </div>
+          </div>
+
+          <!-- Content -->
+          <div class="web-content">
+            <!-- Search Bar -->
+            <div class="web-search-bar">
+              <div class="web-input">
+                <span class="material-icons">search</span>
+                <span>Nhập mã, tên hoặc mô tả dịch vụ...</span>
+              </div>
+              <div class="web-button">Tìm kiếm</div>
+            </div>
+
+            <!-- Categories -->
+            <div class="web-categories">
+              <div class="web-category-btn active">Tất cả</div>
+              <div class="web-category-btn">Gửi xe</div>
+              <div class="web-category-btn">Căn tin</div>
+              <div class="web-category-btn">Học tập</div>
+            </div>
+
+            <!-- Services Grid -->
+            <div class="web-services-grid">
+              <!-- Service Card 1 -->
+              <div class="web-service-card" onclick="openServiceModal('SV001', 'Vé gửi xe ngày', '5.000đ', 'Hoạt động', 'Vé gửi xe một ngày cho học sinh, sinh viên. Giá cả phải chăng, thuận tiện cho việc đi lại hàng ngày.', 'Gửi xe', '20/01/2025', '')">
+                <div class="web-service-header">
+                  <div class="web-service-code">SV001</div>
+                  <div class="web-service-status">Hoạt động</div>
+                </div>
+                <div class="web-service-name">Vé gửi xe ngày</div>
+                <div class="web-service-price">5.000đ</div>
+                <div class="web-service-desc">Vé gửi xe một ngày cho học sinh, sinh viên</div>
+              </div>
+
+              <!-- Service Card 2 -->
+              <div class="web-service-card" onclick="openServiceModal('SV002', 'Vé gửi xe tháng', '100.000đ', 'Hoạt động', 'Vé gửi xe trọn tháng tiết kiệm hơn. Chỉ 100.000đ cho cả tháng, tiết kiệm 33% so với mua vé ngày.', 'Gửi xe', '20/01/2025', '')">
+                <div class="web-service-header">
+                  <div class="web-service-code">SV002</div>
+                  <div class="web-service-status">Hoạt động</div>
+                </div>
+                <div class="web-service-name">Vé gửi xe tháng</div>
+                <div class="web-service-price">100.000đ</div>
+                <div class="web-service-desc">Vé gửi xe trọn tháng tiết kiệm hơn</div>
+              </div>
+
+              <!-- Service Card 3 -->
+              <div class="web-service-card" onclick="openServiceModal('SV003', 'Xuất ăn căn tin', '25.000đ', 'Hoạt động', 'Suất ăn trưa tại căn tin trường. Thực đơn đa dạng, đảm bảo dinh dưỡng cho sinh viên.', 'Căn tin', '20/01/2025', '')">
+                <div class="web-service-header">
+                  <div class="web-service-code">SV003</div>
+                  <div class="web-service-status">Hoạt động</div>
+                </div>
+                <div class="web-service-name">Xuất ăn căn tin</div>
+                <div class="web-service-price">25.000đ</div>
+                <div class="web-service-desc">Suất ăn trưa tại căn tin trường</div>
+              </div>
+
+              <!-- Service Card 4 -->
+              <div class="web-service-card" onclick="openServiceModal('SV004', 'Mượn thiết bị', 'Miễn phí', 'Hoạt động', 'Mượn dụng cụ học tập, thiết bị thí nghiệm. Hoàn toàn miễn phí cho sinh viên đang học.', 'Học tập', '20/01/2025', '')">
+                <div class="web-service-header">
+                  <div class="web-service-code">SV004</div>
+                  <div class="web-service-status">Hoạt động</div>
+                </div>
+                <div class="web-service-name">Mượn thiết bị</div>
+                <div class="web-service-price">0đ</div>
+                <div class="web-service-desc">Mượn dụng cụ học tập, thí nghiệm</div>
+              </div>
+
+              <!-- Service Card 5 -->
+              <div class="web-service-card" onclick="openServiceModal('SV005', 'Đăng ký thư viện', '50.000đ', 'Hoạt động', 'Thẻ thư viện năm học. Truy cập hàng nghìn đầu sách, tài liệu học tập và nghiên cứu.', 'Học tập', '20/01/2025', '')">
+                <div class="web-service-header">
+                  <div class="web-service-code">SV005</div>
+                  <div class="web-service-status">Hoạt động</div>
+                </div>
+                <div class="web-service-name">Đăng ký thư viện</div>
+                <div class="web-service-price">50.000đ</div>
+                <div class="web-service-desc">Thẻ thư viện năm học</div>
+              </div>
+
+              <!-- Service Card 6 -->
+              <div class="web-service-card" onclick="openServiceModal('SV006', 'In ấn tài liệu', '2.000đ/trang', 'Hoạt động', 'In tài liệu học tập, báo cáo. Chất lượng tốt, giá cả hợp lý cho sinh viên.', 'Học tập', '20/01/2025', '')">
+                <div class="web-service-header">
+                  <div class="web-service-code">SV006</div>
+                  <div class="web-service-status">Hoạt động</div>
+                </div>
+                <div class="web-service-name">In ấn tài liệu</div>
+                <div class="web-service-price">2.000đ/trang</div>
+                <div class="web-service-desc">In tài liệu học tập, báo cáo</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <p class="description">Sinh viên có thể tra cứu, xem giá và thanh toán trực tuyến</p>
+
+        <!-- Service Detail Modal -->
+        <div class="service-modal" id="serviceModal">
+          <div class="service-modal-content">
+            <div class="service-modal-header">
+              <div>
+                <div class="service-detail-code" id="modalCode">SV001</div>
+                <h3 class="service-detail-title" id="modalTitle">Vé gửi xe ngày</h3>
+                <div class="service-detail-price" id="modalPrice">5.000đ</div>
+                <div class="service-detail-status" id="modalStatus">Hoạt động</div>
+              </div>
+              <button class="service-modal-close" onclick="closeServiceModal()">
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+            <div class="service-modal-body">
+              <p class="service-detail-desc" id="modalDesc">Mô tả dịch vụ</p>
+
+              <div class="service-detail-info">
+                <div class="service-detail-info-item">
+                  <span class="material-icons">category</span>
+                  <span><strong>Danh mục:</strong> <span id="modalCategory">Gửi xe</span></span>
+                </div>
+                <div class="service-detail-info-item">
+                  <span class="material-icons">schedule</span>
+                  <span><strong>Cập nhật:</strong> <span id="modalDate">20/01/2025</span></span>
+                </div>
+                <div class="service-detail-info-item">
+                  <span class="material-icons">info</span>
+                  <span><strong>Trạng thái:</strong> Đang hoạt động</span>
+                </div>
+              </div>
+
+              <img id="modalImage" class="service-detail-image" src="" alt="Service Image" style="display: none;">
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Slide 8 -->
@@ -1035,6 +1477,54 @@
 
     updateSlides();
     document.getElementById('total').textContent = totalSlides;
+
+    // Service Modal Functions
+    function openServiceModal(code, name, price, status, desc, category, date, imageUrl) {
+      const modal = document.getElementById('serviceModal');
+
+      // Update modal content
+      document.getElementById('modalCode').textContent = code;
+      document.getElementById('modalTitle').textContent = name;
+      document.getElementById('modalPrice').textContent = price;
+      document.getElementById('modalStatus').textContent = status;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalCategory').textContent = category;
+      document.getElementById('modalDate').textContent = date;
+
+      // Handle image
+      const imageEl = document.getElementById('modalImage');
+      if (imageUrl && imageUrl.trim() !== '') {
+        imageEl.src = imageUrl;
+        imageEl.style.display = 'block';
+      } else {
+        imageEl.style.display = 'none';
+      }
+
+      // Show modal
+      modal.classList.add('active');
+    }
+
+    function closeServiceModal() {
+      const modal = document.getElementById('serviceModal');
+      modal.classList.remove('active');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('serviceModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeServiceModal();
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('serviceModal');
+        if (modal.classList.contains('active')) {
+          closeServiceModal();
+        }
+      }
+    });
   </script>
 </body>
 </html>
