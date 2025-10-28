@@ -369,6 +369,165 @@ async function registerStudentAccount(payload) {
   }
 }
 
+/**
+ * Lay danh sach tat ca users kem theo thong tin profile
+ * Su dung UNION de ket hop students, teachers, admin_profiles
+ */
+async function getAllUsersWithProfiles({ page = 1, limit = 20, search = '', role = '' }) {
+  const offset = (page - 1) * limit;
+
+  // Build WHERE clauses
+  let whereConditions = [];
+  let countWhereConditions = [];
+  let params = [];
+  let countParams = [];
+
+  if (search) {
+    whereConditions.push('(u.user_id LIKE ? OR full_name LIKE ? OR email LIKE ? OR phone_number LIKE ?)');
+    const searchPattern = `%${search}%`;
+    params.push(searchPattern, searchPattern, searchPattern, searchPattern);
+  }
+
+  if (role) {
+    whereConditions.push('u.role = ?');
+    countWhereConditions.push('role = ?');
+    params.push(role);
+    countParams.push(role);
+  }
+
+  const whereClause = whereConditions.length > 0 ? 'WHERE ' + whereConditions.join(' AND ') : '';
+  const countWhereClause = countWhereConditions.length > 0 ? 'WHERE ' + countWhereConditions.join(' AND ') : '';
+
+  // Count total
+  const [countResult] = await pool.execute(
+    `SELECT COUNT(*) as total FROM user_accounts ${countWhereClause}`,
+    countParams
+  );
+
+  // Get users with profiles using UNION
+  const query = `
+    SELECT
+      u.user_id,
+      u.role,
+      u.is_active,
+      u.created_at,
+      COALESCE(s.full_name, t.full_name, a.full_name) as full_name,
+      COALESCE(s.email, t.email, a.email) as email,
+      COALESCE(s.phone_number, t.phone_number, a.phone_number) as phone_number
+    FROM user_accounts u
+    LEFT JOIN students s ON u.user_id = s.user_id AND u.role = 'student'
+    LEFT JOIN teachers t ON u.user_id = t.user_id AND u.role = 'teacher'
+    LEFT JOIN admin_profiles a ON u.user_id = a.user_id AND u.role = 'admin'
+    ${whereClause}
+    ORDER BY u.created_at DESC
+    LIMIT ? OFFSET ?
+  `;
+
+  const [users] = await pool.execute(query, [...params, limit, offset]);
+
+  return {
+    users: users.map(user => ({
+      userId: user.user_id,
+      fullName: user.full_name || '-',
+      email: user.email || '-',
+      phoneNumber: user.phone_number || '-',
+      role: user.role,
+      isActive: Boolean(user.is_active),
+      createdAt: user.created_at,
+    })),
+    pagination: {
+      total: countResult[0].total,
+      page,
+      limit,
+      totalPages: Math.ceil(countResult[0].total / limit),
+    },
+  };
+}
+
+/**
+ * Xoa user account va profile lien quan
+ */
+async function deleteUserAccount(userId) {
+  // Check role
+  const [user] = await pool.execute(
+    'SELECT role FROM user_accounts WHERE user_id = ?',
+    [userId]
+  );
+
+  if (!user.length) {
+    return { success: false, error: 'Khong tim thay nguoi dung' };
+  }
+
+  if (user[0].role === 'admin') {
+    return { success: false, error: 'Khong the xoa tai khoan admin' };
+  }
+
+  // Delete (CASCADE will handle profile deletion)
+  await pool.execute('DELETE FROM user_accounts WHERE user_id = ?', [userId]);
+
+  return { success: true };
+}
+
+/**
+ * Cap nhat thong tin user
+ */
+async function updateUserProfile(userId, updates) {
+  const [user] = await pool.execute(
+    'SELECT role FROM user_accounts WHERE user_id = ?',
+    [userId]
+  );
+
+  if (!user.length) {
+    return { success: false, error: 'Khong tim thay nguoi dung' };
+  }
+
+  const role = user[0].role;
+  const { fullName, email, phoneNumber, isActive } = updates;
+
+  // Update user_accounts if isActive is provided
+  if (isActive !== undefined) {
+    await pool.execute(
+      'UPDATE user_accounts SET is_active = ? WHERE user_id = ?',
+      [isActive ? 1 : 0, userId]
+    );
+  }
+
+  // Update profile table based on role
+  const profileUpdates = [];
+  const profileParams = [];
+
+  if (fullName !== undefined) {
+    profileUpdates.push('full_name = ?');
+    profileParams.push(fullName);
+  }
+  if (email !== undefined) {
+    profileUpdates.push('email = ?');
+    profileParams.push(email);
+  }
+  if (phoneNumber !== undefined) {
+    profileUpdates.push('phone_number = ?');
+    profileParams.push(phoneNumber);
+  }
+
+  if (profileUpdates.length > 0) {
+    profileParams.push(userId);
+
+    let tableName;
+    if (role === 'student') tableName = 'students';
+    else if (role === 'teacher') tableName = 'teachers';
+    else if (role === 'admin') tableName = 'admin_profiles';
+
+    if (tableName) {
+      await pool.execute(
+        `UPDATE ${tableName} SET ${profileUpdates.join(', ')} WHERE user_id = ?`,
+        profileParams
+      );
+    }
+  }
+
+  return { success: true };
+}
+
 module.exports = {
   normalizeRole,
   toNullableString,
@@ -379,5 +538,8 @@ module.exports = {
   createAccountForAdmin,
   resetPasswordForUser,
   registerStudentAccount,
+  getAllUsersWithProfiles,
+  deleteUserAccount,
+  updateUserProfile,
 };
 

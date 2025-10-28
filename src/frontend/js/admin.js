@@ -1,6 +1,11 @@
 // Admin Dashboard JavaScript
 const SESSION_KEY = 'ctechSession';
 
+// Chart instances
+let topServicesChartInstance = null;
+let revenueChartInstance = null;
+let ordersChartInstance = null;
+
 // Helper functions
 function getSession() {
   try {
@@ -148,20 +153,92 @@ async function loadDashboardStats() {
 }
 
 function updateTopServicesChart(topServices) {
-  const chartContainer = document.querySelector('.chart-container');
-  if (!chartContainer) return;
+  const ctx = document.getElementById('topServicesChart');
+  if (!ctx) return;
 
-  const maxOrders = Math.max(...topServices.map(s => s.orderCount), 1);
+  // Destroy previous chart if exists
+  if (topServicesChartInstance) {
+    topServicesChartInstance.destroy();
+  }
 
-  chartContainer.innerHTML = topServices.map(service => {
-    const heightPercent = (service.orderCount / maxOrders) * 100;
-    return `
-      <div class="chart-bar" style="height: ${Math.max(heightPercent, 20)}px;">
-        <div class="chart-label">${service.name}</div>
-        <div class="chart-value">${service.orderCount}</div>
-      </div>
-    `;
-  }).join('');
+  const labels = topServices.map(s => s.name);
+  const data = topServices.map(s => s.orderCount);
+
+  // Create gradient
+  const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, 'rgba(0, 71, 171, 0.8)');
+  gradient.addColorStop(1, 'rgba(0, 51, 128, 0.6)');
+
+  topServicesChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Số lượng đơn hàng',
+        data: data,
+        backgroundColor: gradient,
+        borderColor: 'rgba(0, 71, 171, 1)',
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 12,
+          titleFont: {
+            size: 14,
+            weight: 'bold'
+          },
+          bodyFont: {
+            size: 13
+          },
+          callbacks: {
+            label: function(context) {
+              return 'Đơn hàng: ' + context.parsed.y;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)',
+            drawBorder: false
+          },
+          ticks: {
+            font: {
+              size: 12
+            },
+            color: '#6b7280'
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              size: 12
+            },
+            color: '#6b7280'
+          }
+        }
+      },
+      animation: {
+        duration: 1000,
+        easing: 'easeInOutQuart'
+      }
+    }
+  });
 }
 
 // ============== USERS MANAGEMENT ==============
@@ -402,29 +479,28 @@ function renderServicesTable(services) {
       <td>${service.category || '-'}</td>
       <td>${formatCurrency(service.price)}</td>
       <td>
-        <span class="badge ${service.isActive ? 'badge-success' : 'badge-inactive'}">
+        <span class="badge ${service.isActive ? 'badge-success' : 'badge-warning'}">
           ${service.isActive ? 'Hoạt động' : 'Tạm dừng'}
         </span>
       </td>
       <td>
-        <button class="btn-icon" onclick="editService('${service.serviceCode}')" title="Sửa">
+        <button class="btn-icon" onclick="editService('${service.serviceCode}')" title="Chỉnh sửa">
           <span class="material-icons">edit</span>
         </button>
-        <button class="btn-icon" onclick="confirmDeleteService('${service.serviceCode}', '${service.name}')" title="Xóa">
-          <span class="material-icons">delete</span>
+        <button class="btn-icon" onclick="toggleServiceStatus('${service.serviceCode}', ${service.isActive})" title="${service.isActive ? 'Tắt dịch vụ' : 'Bật dịch vụ'}">
+          <span class="material-icons">${service.isActive ? 'toggle_on' : 'toggle_off'}</span>
         </button>
       </td>
     </tr>
   `).join('');
 }
 
-async function confirmDeleteService(serviceCode, serviceName) {
-  if (confirm(`Bạn có chắc muốn xóa dịch vụ "${serviceName}"?`)) {
-    await deleteService(serviceCode);
+async function toggleServiceStatus(serviceCode, currentStatus) {
+  const action = currentStatus ? 'tắt' : 'bật';
+  if (!confirm(`Bạn có chắc muốn ${action} dịch vụ này?`)) {
+    return;
   }
-}
 
-async function deleteService(serviceCode) {
   try {
     const session = getSession();
     if (!session || !session.token) {
@@ -433,7 +509,7 @@ async function deleteService(serviceCode) {
     }
 
     const response = await fetch(`/api/admin/services/${serviceCode}`, {
-      method: 'DELETE',
+      method: 'DELETE', // Giữ nguyên method DELETE nhưng backend đã đổi thành toggle
       headers: {
         'Authorization': `Bearer ${session.token}`
       }
@@ -441,14 +517,15 @@ async function deleteService(serviceCode) {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error || 'Không thể xóa dịch vụ');
+      throw new Error(error.error || 'Không thể thay đổi trạng thái dịch vụ');
     }
 
-    alert('Đã xóa dịch vụ thành công');
+    const result = await response.json();
+    alert(result.message || 'Đã thay đổi trạng thái dịch vụ thành công');
     loadServices();
 
   } catch (error) {
-    console.error('Error deleting service:', error);
+    console.error('Error toggling service:', error);
     alert('Lỗi: ' + error.message);
   }
 }
@@ -461,27 +538,240 @@ function editService(serviceCode) {
 // ============== STATISTICS ==============
 async function loadStatistics() {
   try {
-    // Fake monthly data
-    const months = ['2025-05', '2025-06', '2025-07', '2025-08', '2025-09', '2025-10'];
-    const fakeMonthlyData = months.map(month => ({
+    // Fake monthly data - 6 tháng gần nhất
+    const months = ['Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10'];
+    const fakeMonthlyData = months.map((month, index) => ({
       month,
-      orders: Math.floor(Math.random() * 50) + 80,
-      revenue: (Math.random() * 15000000) + 10000000
+      orders: Math.floor(Math.random() * 50) + 80 + (index * 5), // Tăng dần theo trend
+      revenue: (Math.random() * 15000000) + 10000000 + (index * 2000000)
     }));
 
-    updateMonthlyChart(fakeMonthlyData);
+    updateMonthlyCharts(fakeMonthlyData);
 
   } catch (error) {
     console.error('Error loading statistics:', error);
   }
 }
 
-function updateMonthlyChart(monthlyData) {
-  // Fake chart implementation - chỉ log ra console
-  console.log('Thống kê theo tháng (Fake data):', monthlyData);
+function updateMonthlyCharts(monthlyData) {
+  // Revenue Line Chart
+  createRevenueChart(monthlyData);
 
-  // TODO: Có thể thêm chart visualization sau (dùng Chart.js hoặc tương tự)
-  // Hiện tại chỉ hiển thị text "Sẽ cập nhật sớm..." trong HTML
+  // Orders Line Chart
+  createOrdersChart(monthlyData);
+}
+
+function createRevenueChart(monthlyData) {
+  const ctx = document.getElementById('revenueChart');
+  if (!ctx) return;
+
+  // Destroy previous chart if exists
+  if (revenueChartInstance) {
+    revenueChartInstance.destroy();
+  }
+
+  const labels = monthlyData.map(d => d.month);
+  const data = monthlyData.map(d => d.revenue);
+
+  // Create gradient for line
+  const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, 'rgba(34, 197, 94, 0.8)');
+  gradient.addColorStop(1, 'rgba(22, 163, 74, 0.3)');
+
+  // Create gradient for area under line
+  const areaGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+  areaGradient.addColorStop(0, 'rgba(34, 197, 94, 0.4)');
+  areaGradient.addColorStop(1, 'rgba(34, 197, 94, 0.05)');
+
+  revenueChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Doanh thu (VNĐ)',
+        data: data,
+        borderColor: 'rgb(34, 197, 94)',
+        backgroundColor: areaGradient,
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        pointBackgroundColor: 'rgb(34, 197, 94)',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointHoverBackgroundColor: 'rgb(22, 163, 74)',
+        pointHoverBorderColor: '#fff',
+        pointHoverBorderWidth: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 16,
+          titleFont: {
+            size: 15,
+            weight: 'bold'
+          },
+          bodyFont: {
+            size: 14
+          },
+          callbacks: {
+            label: function(context) {
+              return 'Doanh thu: ' + formatCurrency(context.parsed.y);
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)',
+            drawBorder: false
+          },
+          ticks: {
+            font: {
+              size: 12
+            },
+            color: '#6b7280',
+            callback: function(value) {
+              return (value / 1000000).toFixed(0) + 'M';
+            }
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              size: 13,
+              weight: '500'
+            },
+            color: '#374151'
+          }
+        }
+      },
+      animation: {
+        duration: 1500,
+        easing: 'easeInOutQuart'
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      }
+    }
+  });
+}
+
+function createOrdersChart(monthlyData) {
+  const ctx = document.getElementById('ordersChart');
+  if (!ctx) return;
+
+  // Destroy previous chart if exists
+  if (ordersChartInstance) {
+    ordersChartInstance.destroy();
+  }
+
+  const labels = monthlyData.map(d => d.month);
+  const data = monthlyData.map(d => d.orders);
+
+  // Create gradient for area under line
+  const areaGradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+  areaGradient.addColorStop(0, 'rgba(0, 71, 171, 0.4)');
+  areaGradient.addColorStop(1, 'rgba(0, 71, 171, 0.05)');
+
+  ordersChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Số đơn hàng',
+        data: data,
+        borderColor: 'rgb(0, 71, 171)',
+        backgroundColor: areaGradient,
+        borderWidth: 3,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        pointBackgroundColor: 'rgb(0, 71, 171)',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointHoverBackgroundColor: 'rgb(0, 51, 128)',
+        pointHoverBorderColor: '#fff',
+        pointHoverBorderWidth: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          padding: 16,
+          titleFont: {
+            size: 15,
+            weight: 'bold'
+          },
+          bodyFont: {
+            size: 14
+          },
+          callbacks: {
+            label: function(context) {
+              return 'Đơn hàng: ' + context.parsed.y;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(0, 0, 0, 0.05)',
+            drawBorder: false
+          },
+          ticks: {
+            font: {
+              size: 12
+            },
+            color: '#6b7280',
+            stepSize: 20
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              size: 13,
+              weight: '500'
+            },
+            color: '#374151'
+          }
+        }
+      },
+      animation: {
+        duration: 1500,
+        easing: 'easeInOutQuart'
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      }
+    }
+  });
 }
 
 // ============== ADD USER MODAL ==============

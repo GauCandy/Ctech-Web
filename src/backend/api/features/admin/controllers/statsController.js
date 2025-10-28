@@ -1,5 +1,10 @@
 // Controller cho admin stats và users
 const { pool } = require('../../../../database/connection');
+const {
+  getAllUsersWithProfiles,
+  deleteUserAccount,
+  updateUserProfile,
+} = require('../services/accountService');
 
 /**
  * GET /api/admin/stats
@@ -9,7 +14,7 @@ async function getAdminStats(req, res) {
   try {
     // Lấy tổng số users
     const [usersCount] = await pool.execute(
-      'SELECT COUNT(*) as total FROM users'
+      'SELECT COUNT(*) as total FROM user_accounts'
     );
 
     // Lấy tổng số orders tháng này
@@ -92,57 +97,12 @@ async function getAllUsers(req, res) {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
-    const offset = (page - 1) * limit;
     const search = req.query.search || '';
     const role = req.query.role || '';
 
-    let whereClauses = [];
-    let params = [];
+    const result = await getAllUsersWithProfiles({ page, limit, search, role });
 
-    if (search) {
-      whereClauses.push('(user_id LIKE ? OR full_name LIKE ? OR email LIKE ? OR phone_number LIKE ?)');
-      const searchPattern = `%${search}%`;
-      params.push(searchPattern, searchPattern, searchPattern, searchPattern);
-    }
-
-    if (role) {
-      whereClauses.push('role = ?');
-      params.push(role);
-    }
-
-    const whereClause = whereClauses.length > 0 ? 'WHERE ' + whereClauses.join(' AND ') : '';
-
-    // Lấy tổng số users
-    const [countResult] = await pool.execute(
-      `SELECT COUNT(*) as total FROM users ${whereClause}`,
-      params
-    );
-
-    // Lấy danh sách users
-    const [users] = await pool.execute(
-      `SELECT
-        user_id as userId,
-        full_name as fullName,
-        email,
-        phone_number as phoneNumber,
-        role,
-        created_at as createdAt
-       FROM users
-       ${whereClause}
-       ORDER BY created_at DESC
-       LIMIT ? OFFSET ?`,
-      [...params, limit, offset]
-    );
-
-    res.json({
-      users,
-      pagination: {
-        total: countResult[0].total,
-        page,
-        limit,
-        totalPages: Math.ceil(countResult[0].total / limit),
-      },
-    });
+    res.json(result);
   } catch (error) {
     console.error('Error getting users:', error);
     res.status(500).json({ error: 'Không thể lấy danh sách người dùng' });
@@ -157,21 +117,11 @@ async function deleteUser(req, res) {
   try {
     const { userId } = req.params;
 
-    // Không cho phép xóa admin
-    const [user] = await pool.execute(
-      'SELECT role FROM users WHERE user_id = ?',
-      [userId]
-    );
+    const result = await deleteUserAccount(userId);
 
-    if (!user.length) {
-      return res.status(404).json({ error: 'Không tìm thấy người dùng' });
+    if (!result.success) {
+      return res.status(400).json({ error: result.error });
     }
-
-    if (user[0].role === 'admin') {
-      return res.status(403).json({ error: 'Không thể xóa tài khoản admin' });
-    }
-
-    await pool.execute('DELETE FROM users WHERE user_id = ?', [userId]);
 
     res.json({ message: 'Đã xóa người dùng thành công' });
   } catch (error) {
@@ -187,44 +137,16 @@ async function deleteUser(req, res) {
 async function updateUser(req, res) {
   try {
     const { userId } = req.params;
-    const { fullName, email, phoneNumber, role } = req.body;
+    const { fullName, email, phoneNumber, isActive } = req.body;
 
-    const updates = [];
-    const params = [];
-
-    if (fullName !== undefined) {
-      updates.push('full_name = ?');
-      params.push(fullName);
-    }
-
-    if (email !== undefined) {
-      updates.push('email = ?');
-      params.push(email);
-    }
-
-    if (phoneNumber !== undefined) {
-      updates.push('phone_number = ?');
-      params.push(phoneNumber);
-    }
-
-    if (role !== undefined) {
-      updates.push('role = ?');
-      params.push(role);
-    }
-
-    if (updates.length === 0) {
+    if (!fullName && !email && !phoneNumber && isActive === undefined) {
       return res.status(400).json({ error: 'Không có thông tin để cập nhật' });
     }
 
-    params.push(userId);
+    const result = await updateUserProfile(userId, { fullName, email, phoneNumber, isActive });
 
-    const [result] = await pool.execute(
-      `UPDATE users SET ${updates.join(', ')} WHERE user_id = ?`,
-      params
-    );
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'Không tìm thấy người dùng' });
+    if (!result.success) {
+      return res.status(404).json({ error: result.error || 'Không tìm thấy người dùng' });
     }
 
     res.json({ message: 'Cập nhật thông tin thành công' });

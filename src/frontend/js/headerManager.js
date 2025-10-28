@@ -143,6 +143,163 @@
   }
 
   /**
+   * Ẩn một phần email
+   */
+  function maskEmail(email) {
+    if (!email || typeof email !== 'string') return '';
+    const [local, domain] = email.split('@');
+    if (!domain) return email;
+    const maskedLocal = local.length > 2
+      ? local[0] + '*'.repeat(Math.min(local.length - 1, 5))
+      : local;
+    return `${maskedLocal}@${domain}`;
+  }
+
+  /**
+   * Ẩn một phần số điện thoại
+   */
+  function maskPhone(phone) {
+    if (!phone || typeof phone !== 'string') return '';
+    const cleaned = phone.replace(/\D/g, '');
+    if (cleaned.length < 4) return phone;
+    const lastDigits = cleaned.slice(-3);
+    return '*'.repeat(Math.min(cleaned.length - 3, 6)) + lastDigits;
+  }
+
+  /**
+   * Hiển thị modal đổi mật khẩu
+   */
+  function showChangePasswordModal() {
+    const existingModal = document.getElementById('changePasswordModal');
+    if (existingModal) {
+      existingModal.remove();
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'changePasswordModal';
+    modal.className = 'user-modal-overlay';
+    modal.innerHTML = `
+      <div class="user-modal">
+        <div class="user-modal-header">
+          <h3>Đổi mật khẩu</h3>
+          <button type="button" class="user-modal-close" data-close-modal>
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <form class="user-modal-form" data-change-password-form>
+          <div class="user-form-group">
+            <label for="currentPassword">Mật khẩu hiện tại</label>
+            <input type="password" id="currentPassword" name="currentPassword" required autocomplete="current-password">
+          </div>
+          <div class="user-form-group">
+            <label for="newPassword">Mật khẩu mới</label>
+            <input type="password" id="newPassword" name="newPassword" required autocomplete="new-password">
+          </div>
+          <div class="user-form-group">
+            <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required autocomplete="new-password">
+          </div>
+          <div class="user-modal-error" data-error-message style="display: none;"></div>
+          <div class="user-modal-actions">
+            <button type="button" class="user-modal-btn user-modal-btn-secondary" data-close-modal>Hủy</button>
+            <button type="submit" class="user-modal-btn user-modal-btn-primary">Đổi mật khẩu</button>
+          </div>
+        </form>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Close modal handlers
+    const closeButtons = modal.querySelectorAll('[data-close-modal]');
+    closeButtons.forEach(btn => {
+      btn.addEventListener('click', () => modal.remove());
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.remove();
+    });
+
+    // Form submit handler
+    const form = modal.querySelector('[data-change-password-form]');
+    form.addEventListener('submit', handleChangePassword);
+
+    // Focus first input
+    setTimeout(() => {
+      const firstInput = modal.querySelector('#currentPassword');
+      if (firstInput) firstInput.focus();
+    }, 100);
+  }
+
+  /**
+   * Xử lý đổi mật khẩu
+   */
+  async function handleChangePassword(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const currentPassword = formData.get('currentPassword');
+    const newPassword = formData.get('newPassword');
+    const confirmPassword = formData.get('confirmPassword');
+    const errorDiv = form.querySelector('[data-error-message]');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    // Validate
+    if (newPassword !== confirmPassword) {
+      errorDiv.textContent = 'Mật khẩu xác nhận không khớp';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      errorDiv.textContent = 'Mật khẩu mới phải có ít nhất 6 ký tự';
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    // Disable button
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Đang xử lý...';
+    errorDiv.style.display = 'none';
+
+    try {
+      const session = loadSession();
+      if (!session || !session.token) {
+        throw new Error('Phiên đăng nhập hết hạn');
+      }
+
+      const response = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.token}`
+        },
+        body: JSON.stringify({
+          currentPassword,
+          newPassword
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Đổi mật khẩu thất bại');
+      }
+
+      // Success
+      alert('Đổi mật khẩu thành công! Bạn sẽ được đăng xuất.');
+      handleLogout();
+
+    } catch (error) {
+      errorDiv.textContent = error.message || 'Có lỗi xảy ra, vui lòng thử lại';
+      errorDiv.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Đổi mật khẩu';
+    }
+  }
+
+  /**
    * Cập nhật user indicator
    */
   function updateIndicator(indicator) {
@@ -164,14 +321,73 @@
         normalizeNamePart(displayUserId) ||
         'bạn';
 
+      const fullName = session.user.fullName || session.user.displayName || session.user.name || 'Người dùng';
+      const email = session.user.email || '';
+      const phone = session.user.phoneNumber || session.user.phone || '';
+      const isAdmin = session.user && session.user.role === 'admin';
+
       indicator.innerHTML = `
-        <span class="user-pill">Xin chào, <strong>${escapeHtml(greetingName)}</strong></span>
-        <button type="button" class="user-logout" data-logout>Đăng xuất</button>
+        <div class="user-menu">
+          <button type="button" class="user-menu-trigger" data-user-menu-trigger>
+            <span class="material-icons">account_circle</span>
+          </button>
+          <div class="user-dropdown" data-user-dropdown hidden>
+            <div class="user-dropdown-header">
+              <div class="user-avatar">
+                <span class="material-icons">person</span>
+              </div>
+              <div class="user-info">
+                <div class="user-name">${escapeHtml(fullName)}</div>
+                ${email ? `<div class="user-contact">${escapeHtml(maskEmail(email))}</div>` : ''}
+                ${phone ? `<div class="user-contact">${escapeHtml(maskPhone(phone))}</div>` : ''}
+              </div>
+            </div>
+            <div class="user-dropdown-divider"></div>
+            <div class="user-dropdown-menu">
+              ${isAdmin ? '<a href="/admin" class="user-dropdown-item"><span class="material-icons">admin_panel_settings</span>Admin Panel</a>' : ''}
+              <button type="button" class="user-dropdown-item" data-change-password>
+                <span class="material-icons">lock</span>
+                Đổi mật khẩu
+              </button>
+              <button type="button" class="user-dropdown-item" data-logout>
+                <span class="material-icons">logout</span>
+                Đăng xuất
+              </button>
+            </div>
+          </div>
+        </div>
       `;
 
+      // Setup event listeners
+      const trigger = indicator.querySelector('[data-user-menu-trigger]');
+      const dropdown = indicator.querySelector('[data-user-dropdown]');
       const logoutBtn = indicator.querySelector('[data-logout]');
+      const changePasswordBtn = indicator.querySelector('[data-change-password]');
+
+      if (trigger && dropdown) {
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isHidden = dropdown.hasAttribute('hidden');
+          dropdown.toggleAttribute('hidden', !isHidden);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!indicator.contains(e.target)) {
+            dropdown.setAttribute('hidden', '');
+          }
+        });
+      }
+
       if (logoutBtn) {
         logoutBtn.addEventListener('click', handleLogout);
+      }
+
+      if (changePasswordBtn) {
+        changePasswordBtn.addEventListener('click', () => {
+          dropdown.setAttribute('hidden', '');
+          showChangePasswordModal();
+        });
       }
     } else {
       indicator.innerHTML = '<a class="user-link" href="/login">Đăng nhập</a>';

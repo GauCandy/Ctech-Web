@@ -119,7 +119,7 @@ async function uploadServiceImage(req, res) {
   }
 }
 
-// Xoa dich vu theo ma.
+// Toggle trang thai kich hoat dich vu (thay vi xoa).
 async function removeService(req, res) {
   try {
     const code = String(req.params.code || '').trim();
@@ -127,18 +127,37 @@ async function removeService(req, res) {
       return res.status(400).json({ error: 'Ma dich vu bat buoc.' });
     }
 
-    console.log('[DELETE SERVICE] Xoa dich vu:', code);
-    const removed = await deleteService(code);
-    if (!removed) {
-      console.log('[DELETE SERVICE] Khong tim thay dich vu:', code);
+    console.log('[TOGGLE SERVICE] Toggle trang thai dich vu:', code);
+
+    // Lay trang thai hien tai
+    const { pool } = require('../../../../database/connection');
+    const [services] = await pool.execute(
+      'SELECT is_active FROM services WHERE service_code = ?',
+      [code]
+    );
+
+    if (!services.length) {
+      console.log('[TOGGLE SERVICE] Khong tim thay dich vu:', code);
       return res.status(404).json({ error: 'Khong tim thay dich vu.' });
     }
 
-    console.log('[DELETE SERVICE] Xoa thanh cong:', code);
-    return res.status(204).send();
+    const currentStatus = services[0].is_active;
+    const newStatus = currentStatus ? 0 : 1; // Toggle: 1 -> 0, 0 -> 1
+
+    // Cap nhat trang thai
+    const updated = await updateService(code, { is_active: newStatus });
+    if (!updated) {
+      return res.status(500).json({ error: 'Khong the cap nhat trang thai dich vu.' });
+    }
+
+    console.log('[TOGGLE SERVICE] Toggle thanh cong:', code, '- Trang thai moi:', newStatus ? 'Kich hoat' : 'Tat');
+    return res.json({
+      message: newStatus ? 'Da kich hoat dich vu' : 'Da tat dich vu',
+      isActive: Boolean(newStatus)
+    });
   } catch (error) {
-    console.error('[DELETE SERVICE] Loi xoa dich vu:', error);
-    return res.status(error.status || 500).json({ error: error.message || 'Khong the xoa dich vu.' });
+    console.error('[TOGGLE SERVICE] Loi toggle dich vu:', error);
+    return res.status(error.status || 500).json({ error: error.message || 'Khong the thay doi trang thai dich vu.' });
   }
 }
 

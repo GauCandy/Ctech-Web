@@ -7,6 +7,7 @@
   <link rel="icon" type="image/webp" href="/img/logo.webp">
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -302,6 +303,11 @@
       color: #3730a3;
     }
 
+    .badge-inactive {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
     .table-actions {
       display: flex;
       gap: 8px;
@@ -333,44 +339,16 @@
 
     /* Chart */
     .chart-container {
-      height: 300px;
-      background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+      padding: 20px;
+      background: white;
       border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       position: relative;
-      overflow: hidden;
     }
 
-    .chart-bars {
-      display: flex;
-      align-items: flex-end;
-      gap: 20px;
-      height: 200px;
-    }
-
-    .chart-bar {
-      width: 60px;
-      background: linear-gradient(180deg, #0047ab, #003380);
-      border-radius: 8px 8px 0 0;
+    .chart-wrapper {
       position: relative;
-      animation: growUp 0.8s ease-out;
-    }
-
-    @keyframes growUp {
-      from { height: 0; }
-    }
-
-    .chart-label {
-      position: absolute;
-      bottom: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 12px;
-      font-weight: 600;
-      color: #6b7280;
-      white-space: nowrap;
+      height: 350px;
+      width: 100%;
     }
 
     /* Modal */
@@ -594,22 +572,8 @@
             <h2 class="card-title">Thống kê dịch vụ bán chạy</h2>
           </div>
           <div class="chart-container">
-            <div class="chart-bars">
-              <div class="chart-bar" style="height: 180px;">
-                <div class="chart-label">Vé gửi xe tháng</div>
-              </div>
-              <div class="chart-bar" style="height: 140px;">
-                <div class="chart-label">Xuất ăn căn tin</div>
-              </div>
-              <div class="chart-bar" style="height: 160px;">
-                <div class="chart-label">Vé gửi xe ngày</div>
-              </div>
-              <div class="chart-bar" style="height: 100px;">
-                <div class="chart-label">Đồ học tập</div>
-              </div>
-              <div class="chart-bar" style="height: 120px;">
-                <div class="chart-label">Khác</div>
-              </div>
+            <div class="chart-wrapper">
+              <canvas id="topServicesChart"></canvas>
             </div>
           </div>
         </div>
@@ -737,9 +701,28 @@
           <h1 class="page-title">Thống kê</h1>
           <p class="page-subtitle">Báo cáo chi tiết</p>
         </div>
+
+        <!-- Revenue Chart -->
         <div class="content-card">
           <div class="card-header">
-            <h2 class="card-title">Sẽ cập nhật sớm...</h2>
+            <h2 class="card-title">📊 Doanh thu theo tháng</h2>
+          </div>
+          <div class="chart-container">
+            <div class="chart-wrapper">
+              <canvas id="revenueChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders Chart -->
+        <div class="content-card">
+          <div class="card-header">
+            <h2 class="card-title">📦 Số lượng đơn hàng theo tháng</h2>
+          </div>
+          <div class="chart-container">
+            <div class="chart-wrapper">
+              <canvas id="ordersChart"></canvas>
+            </div>
           </div>
         </div>
       </div>
