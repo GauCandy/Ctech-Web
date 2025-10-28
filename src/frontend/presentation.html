@@ -170,17 +170,16 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 50%;
+      width: 100%;
       height: 100%;
       overflow: hidden;
+      clip-path: inset(0 0% 0 0);
     }
     .comparison-before img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: auto;
-      height: 100%;
-      max-width: none;
+      display: block;
+      width: 100%;
+      height: auto;
+      position: relative;
     }
     .comparison-slider {
       position: absolute;
@@ -445,17 +444,6 @@
         <p class="description center" id="tkb-desc" style="font-size: 18px; font-weight: 600; color: #dc2626;">
           ❌ Bảng phức tạp, nhiều thông tin • Dễ gây nhầm lẫn • Khó tra cứu nhanh
         </p>
-        <div style="display: flex; justify-content: center; gap: 16px; margin-top: 20px;">
-          <button class="nav-btn" onclick="animateTKB('before')" style="padding: 10px 20px;">
-            <span class="material-icons">arrow_back</span> Trước
-          </button>
-          <button class="nav-btn" onclick="animateTKB('compare')" style="padding: 10px 20px;">
-            <span class="material-icons">compare_arrows</span> So sánh
-          </button>
-          <button class="nav-btn" onclick="animateTKB('after')" style="padding: 10px 20px;">
-            Sau <span class="material-icons">arrow_forward</span>
-          </button>
-        </div>
       </div>
 
       <!-- Slide 10 -->
@@ -578,6 +566,8 @@
     const currentSpan = document.getElementById('current');
     const timerSpan = document.getElementById('timer');
     let startTime = Date.now();
+    let tkbAnimationState = 0; // 0: before, 1: compare, 2: after
+    const TKB_SLIDE_INDEX = 8; // Slide 9 (index 8)
 
     for (let i = 0; i < totalSlides; i++) {
       const dot = document.createElement('div');
@@ -595,20 +585,85 @@
         dot.classList.toggle('active', index === currentSlide);
       });
       currentSpan.textContent = currentSlide + 1;
-      document.getElementById('prevBtn').disabled = currentSlide === 0;
-      document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+
+      // Disable prev/next based on slide and animation state
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      if (currentSlide === TKB_SLIDE_INDEX) {
+        // On TKB slide, never disable buttons (always can navigate animation or slides)
+        prevBtn.disabled = false;
+        nextBtn.disabled = false;
+      } else {
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === totalSlides - 1;
+      }
     }
 
     function nextSlide() {
-      if (currentSlide < totalSlides - 1) { currentSlide++; updateSlides(); }
+      // If on TKB slide and not at last animation state, advance animation
+      if (currentSlide === TKB_SLIDE_INDEX && tkbAnimationState < 2) {
+        tkbAnimationState++;
+        if (tkbAnimationState === 1) {
+          animateTKB('compare');
+        } else if (tkbAnimationState === 2) {
+          animateTKB('after');
+        }
+        updateSlides(); // Update button states
+        return;
+      }
+
+      // Normal slide navigation (also handles TKB slide at state 2)
+      if (currentSlide < totalSlides - 1) {
+        // Reset TKB state when leaving slide 9
+        if (currentSlide === TKB_SLIDE_INDEX) {
+          tkbAnimationState = 0;
+        }
+
+        currentSlide++;
+
+        // Initialize TKB animation when entering slide 9 from previous slide
+        if (currentSlide === TKB_SLIDE_INDEX) {
+          tkbAnimationState = 0;
+          setTimeout(() => animateTKB('before'), 100);
+        }
+        updateSlides();
+      }
     }
 
     function prevSlide() {
-      if (currentSlide > 0) { currentSlide--; updateSlides(); }
+      // If on TKB slide and not at first animation state, go back in animation
+      if (currentSlide === TKB_SLIDE_INDEX && tkbAnimationState > 0) {
+        tkbAnimationState--;
+        if (tkbAnimationState === 0) {
+          animateTKB('before');
+        } else if (tkbAnimationState === 1) {
+          animateTKB('compare');
+        }
+        updateSlides(); // Update button states
+        return;
+      }
+
+      // Normal slide navigation (also handles TKB slide at state 0)
+      if (currentSlide > 0) {
+        // Reset TKB state when leaving slide 9
+        if (currentSlide === TKB_SLIDE_INDEX) {
+          tkbAnimationState = 0;
+        }
+
+        currentSlide--;
+        updateSlides();
+      }
     }
 
     function goToSlide(index) {
-      currentSlide = index; updateSlides();
+      currentSlide = index;
+      // Reset TKB animation when jumping to slide 9
+      if (currentSlide === TKB_SLIDE_INDEX) {
+        tkbAnimationState = 0;
+        setTimeout(() => animateTKB('before'), 100);
+      }
+      updateSlides();
     }
 
     document.addEventListener('keydown', (e) => {
@@ -664,7 +719,13 @@
       }
 
       // Animate slider
-      let currentPos = parseFloat(beforeImg.style.width) || 50;
+      const currentClip = beforeImg.style.clipPath || 'inset(0 0% 0 0)';
+      let currentPos = 100;
+      const match = currentClip.match(/inset\(0\s+(\d+(?:\.\d+)?)%/);
+      if (match) {
+        currentPos = 100 - parseFloat(match[1]);
+      }
+
       const duration = 800;
       const startTime = Date.now();
 
@@ -674,7 +735,8 @@
         const easeProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
 
         const newPos = currentPos + (targetPosition - currentPos) * easeProgress;
-        beforeImg.style.width = newPos + '%';
+        const clipRight = 100 - newPos;
+        beforeImg.style.clipPath = `inset(0 ${clipRight}% 0 0)`;
         sliderEl.style.left = newPos + '%';
 
         if (progress < 1) {
@@ -692,7 +754,7 @@
 
     if (comparison && slider && beforeImage) {
       // Initialize at 100% (showing TKB cũ full)
-      beforeImage.style.width = '100%';
+      beforeImage.style.clipPath = 'inset(0 0% 0 0)';
       slider.style.left = '100%';
 
       let isDragging = false;
@@ -702,7 +764,9 @@
         const position = ((x - rect.left) / rect.width) * 100;
         const clampedPosition = Math.max(0, Math.min(100, position));
 
-        beforeImage.style.width = clampedPosition + '%';
+        // Use clip-path instead of width to maintain image aspect ratio
+        const clipRight = 100 - clampedPosition;
+        beforeImage.style.clipPath = `inset(0 ${clipRight}% 0 0)`;
         slider.style.left = clampedPosition + '%';
       }
 

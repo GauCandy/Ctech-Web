@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "chatbot:generate": "node generate-chatbot-knowledge.js"
+  },
   "dependencies": {
     "axios": "^1.12.2",
     "cheerio": "^1.1.2",

@@ -12,30 +12,29 @@
     return;
   }
 
-  // Disable Service Worker in development (localhost)
-  const isDevelopment = window.location.hostname === 'localhost' ||
-                        window.location.hostname === '127.0.0.1' ||
-                        window.location.port === '3000';
+  // Service Worker DISABLED - Online-only mode
+  console.log('[SW] Service Worker disabled - Website works in online-only mode');
+  console.log('[SW] To enable offline support, edit swRegister.js');
 
-  if (isDevelopment) {
-    console.log('[SW] Development mode - Service Worker disabled');
-    console.log('[SW] To enable, remove the isDevelopment check in swRegister.js');
+  // Unregister any existing service workers
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(registration => {
+      registration.unregister();
+      console.log('[SW] Unregistered existing service worker');
+    });
+  });
 
-    // Unregister any existing service workers
-    navigator.serviceWorker.getRegistrations().then(registrations => {
-      registrations.forEach(registration => {
-        registration.unregister();
-        console.log('[SW] Unregistered existing service worker');
+  // Clear all caches
+  if ('caches' in window) {
+    caches.keys().then(cacheNames => {
+      cacheNames.forEach(cacheName => {
+        caches.delete(cacheName);
+        console.log('[SW] Cleared cache:', cacheName);
       });
     });
-
-    return;
   }
 
-  // Register Service Worker when page loads
-  window.addEventListener('load', () => {
-    registerServiceWorker();
-  });
+  return;
 
   async function registerServiceWorker() {
     try {

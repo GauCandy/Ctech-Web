@@ -18,7 +18,7 @@ function resolveExportPath(customPath) {
     return path.resolve(process.cwd(), customPath);
   }
 
-  const defaultRelative = 'src/backend/api/features/chatbot/services.txt';
+  const defaultRelative = 'src/backend/api/features/chatbot/services.md';
   return path.resolve(process.cwd(), defaultRelative);
 }
 
@@ -57,17 +57,39 @@ function formatDescription(description) {
 
 function buildSection(service) {
   const lines = [];
-  lines.push(`### ${service.service_code} - ${service.name}`);
-  lines.push(`Trạng thái: ${formatStatus(Boolean(service.is_active))}`);
-  lines.push(`Giá tham khảo: ${formatPrice(service.price)}`);
+  const statusIcon = service.is_active ? '✅' : '⛔';
+
+  lines.push(`### ${statusIcon} ${service.service_code} - ${service.name}`);
+  lines.push('');
+
+  // Service info table
+  lines.push('| Thông tin | Chi tiết |');
+  lines.push('|-----------|----------|');
+  lines.push(`| **Trạng thái** | ${formatStatus(Boolean(service.is_active))} |`);
+  lines.push(`| **Giá** | ${formatPrice(service.price)} |`);
 
   if (service.updated_at || service.created_at) {
     const updated = service.updated_at || service.created_at;
-    lines.push(`Cập nhật lần cuối: ${new Date(updated).toISOString()}`);
+    const dateStr = new Date(updated).toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+    lines.push(`| **Cập nhật** | ${dateStr} |`);
   }
 
-  lines.push('Mô tả:');
-  lines.push(formatDescription(service.description));
+  lines.push('');
+
+  const description = formatDescription(service.description);
+  if (description !== 'Không có mô tả chi tiết.') {
+    lines.push('**Mô tả:**');
+    lines.push('');
+    lines.push(description);
+  } else {
+    lines.push('> *Hiện nhà trường chưa cung cấp mô tả chi tiết cho dịch vụ này.*');
+  }
+
+  lines.push('');
   return lines.join('\n');
 }
 
@@ -91,7 +113,7 @@ async function collectSupplementarySections({ dataDir }) {
 
   for (const name of entriesSorted) {
     const ext = path.extname(name).toLowerCase();
-    if (ext !== '.txt') {
+    if (ext !== '.txt' && ext !== '.md') {
       continue;
     }
 
@@ -112,7 +134,8 @@ async function collectSupplementarySections({ dataDir }) {
 
     const relative = path.relative(process.cwd(), fullPath) || name;
     files.push(relative);
-    sections.push(`## ${name}`);
+    const baseName = path.basename(name, ext);
+    sections.push(`## 📄 ${baseName}`);
     sections.push(trimmed);
     sections.push('');
   }
@@ -147,11 +170,25 @@ async function exportServicesCatalog({ outputPath, connection } = {}) {
 
   const services = await fetchServices(connection);
   const timestamp = new Date().toISOString();
+  const dateFormatted = new Date().toLocaleString('vi-VN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
 
   const lines = [
-    '# Danh sách dịch vụ hiện có',
-    `# Sinh lúc: ${timestamp}`,
-    '# Ghi chú: File này được tạo tự động để hỗ trợ mô hình AI hiểu các dịch vụ của trường.',
+    '# 🤖 CTECH Chatbot Knowledge Base',
+    '',
+    '> **Tài liệu tham chiếu cho BotChat Support - Trợ lý ảo Trường Cao đẳng CTECH**',
+    '',
+    `📅 **Cập nhật:** ${dateFormatted}  `,
+    `🔄 **Trạng thái:** Tự động đồng bộ từ hệ thống  `,
+    `📊 **Tổng số dịch vụ:** ${services.length}`,
+    '',
+    '---',
     '',
   ];
 
@@ -160,18 +197,52 @@ async function exportServicesCatalog({ outputPath, connection } = {}) {
   });
 
   if (supplementSections.length) {
-    lines.push('## Tài liệu tham chiếu');
+    lines.push('# 📚 Hướng dẫn và Thông tin chung');
+    lines.push('');
     lines.push(...supplementSections);
+    lines.push('---');
+    lines.push('');
   }
 
+  lines.push('# 🛒 Danh sách dịch vụ');
+  lines.push('');
+
   if (!services.length) {
-    lines.push('Hiện chưa có dịch vụ nào trong hệ thống.');
+    lines.push('> ⚠️ Hiện chưa có dịch vụ nào trong hệ thống.');
   } else {
-    for (const service of services) {
-      lines.push(buildSection(service));
-      lines.push('---');
+    // Group services by status
+    const activeServices = services.filter(s => s.is_active);
+    const inactiveServices = services.filter(s => !s.is_active);
+
+    if (activeServices.length > 0) {
+      lines.push('## ✅ Dịch vụ đang hoạt động');
+      lines.push('');
+      for (const service of activeServices) {
+        lines.push(buildSection(service));
+        lines.push('');
+      }
+    }
+
+    if (inactiveServices.length > 0) {
+      lines.push('## ⛔ Dịch vụ ngừng cung cấp');
+      lines.push('');
+      lines.push('> **Lưu ý:** Các dịch vụ bên dưới đã ngừng hoạt động. Chỉ cung cấp thông tin khi người dùng hỏi.');
+      lines.push('');
+      for (const service of inactiveServices) {
+        lines.push(buildSection(service));
+        lines.push('');
+      }
     }
   }
+
+  lines.push('---');
+  lines.push('');
+  lines.push('## 📞 Liên hệ hỗ trợ');
+  lines.push('');
+  lines.push('- 📧 Email: contact@ctech.edu.vn');
+  lines.push('- ☎️ Hotline: 1800 6770');
+  lines.push('');
+  lines.push(`> *Tài liệu được tạo tự động lúc ${timestamp}*`);
 
   const payload = `${lines.join('\n')}`.trimEnd() + '\n';
   await ensureDirectory(targetPath);

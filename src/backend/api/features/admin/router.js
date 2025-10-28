@@ -18,9 +18,25 @@ const {
   updateVoucherHandler,
   deleteVoucherHandler,
 } = require('./controllers/voucherController');
+const {
+  getAdminStats,
+  getAllUsers,
+  deleteUser,
+  updateUser,
+} = require('./controllers/statsController');
 const { upload } = require('../../../middleware/uploadImage');
 
 const router = express.Router();
+
+// GET /api/admin/stats - Lay thong ke tong quan cho admin dashboard.
+router.get('/stats', requireAdminAuth, getAdminStats);
+
+// GET /api/admin/users - Lay danh sach tat ca users (phan trang).
+router.get('/users', requireAdminAuth, getAllUsers);
+// PUT /api/admin/users/:userId - Cap nhat thong tin user.
+router.put('/users/:userId', requireAdminAuth, updateUser);
+// DELETE /api/admin/users/:userId - Xoa user.
+router.delete('/users/:userId', requireAdminAuth, deleteUser);
 
 // POST /api/admin/accounts - Tao tai khoan moi, chi cho admin da xac thuc.
 router.post('/accounts', requireAdminAuth, createAccount);

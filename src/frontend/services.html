@@ -664,6 +664,7 @@
           const session = getSession();
           const isLoggedIn = Boolean(session && session.token);
           const role = session && session.user && session.user.role;
+          const isAdmin = role === 'admin';
           const canPurchase = isLoggedIn && service.isActive && (role === 'teacher' || role === 'student');
 
           const serviceImage = service.imageUrl
@@ -713,6 +714,15 @@
             inactiveAlert.className = 'service-alert warning';
             inactiveAlert.textContent = TEXT.inactiveNotice;
             detailEl.appendChild(inactiveAlert);
+          }
+
+          // Don't show payment section for admin users
+          if (isAdmin) {
+            const adminAlert = document.createElement('div');
+            adminAlert.className = 'service-alert info';
+            adminAlert.textContent = 'Tài khoản quản trị không thể thực hiện thanh toán. Sử dụng trang quản trị để quản lý dịch vụ.';
+            detailEl.appendChild(adminAlert);
+            return;
           }
 
           if (!isLoggedIn) {
@@ -1231,11 +1241,19 @@
           });
         }
 
-        // Show Add Service button for admin
+        // Show Add Service button for admin, hide Order History button for admin
         const session = getSession();
         const addServiceBtn = document.querySelector('[data-add-service-btn]');
-        if (addServiceBtn && session && session.user && session.user.role === 'admin') {
-          addServiceBtn.style.display = 'inline-block';
+        const orderHistoryBtn = document.querySelector('[data-order-history-btn]');
+
+        if (session && session.user && session.user.role === 'admin') {
+          if (addServiceBtn) {
+            addServiceBtn.style.display = 'inline-block';
+          }
+          // Hide order history button for admin
+          if (orderHistoryBtn) {
+            orderHistoryBtn.style.display = 'none';
+          }
         }
 
         initializeFiltersFromQuery();

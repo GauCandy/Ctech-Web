@@ -383,7 +383,13 @@
 
         const existingSession = loadSession();
         if (existingSession && existingSession.token) {
-          window.location.href = '/home';
+          // Redirect based on user role
+          const userRole = existingSession.user && existingSession.user.role;
+          if (userRole === 'admin') {
+            window.location.href = '/admin';
+          } else {
+            window.location.href = '/home';
+          }
           return;
         }
 
@@ -704,7 +710,14 @@
             }
 
             setStatus(statusElement, 'success', 'Đăng nhập thành công, đang chuyển hướng...');
-            window.location.href = '/home';
+
+            // Redirect based on user role
+            const userRole = payload.user && payload.user.role;
+            if (userRole === 'admin') {
+              window.location.href = '/admin';
+            } else {
+              window.location.href = '/home';
+            }
           } catch (error) {
             console.error('Login failed:', error);
             setStatus(statusElement, 'error', error.message || 'Không thể đăng nhập. Vui lòng thử lại.');

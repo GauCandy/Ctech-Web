@@ -2,7 +2,7 @@
 const path = require('path');
 
 const DEFAULT_DATA_DIR = 'src/backend/api/features/chatbot/data';
-const AGGREGATED_FILE = 'src/backend/api/features/chatbot/services.txt';
+const AGGREGATED_FILE = 'src/backend/api/features/chatbot/services.md';
 const parsedTtl = Number(process.env.CHATBOT_DATA_CACHE_MS);
 const CACHE_TTL_MS = Number.isFinite(parsedTtl) && parsedTtl > 0 ? parsedTtl : 30000;
 
@@ -28,10 +28,10 @@ async function loadServicesFile(filePath) {
     return raw.trim();
   } catch (error) {
     if (error && error.code === 'ENOENT') {
-      console.warn('Chưa tìm thấy file services.txt tổng hợp cho BotChat:', filePath);
+      console.warn('Chưa tìm thấy file services.md (knowledge base) cho BotChat:', filePath);
       return '';
     }
-    console.warn('Không thể đọc file services.txt:', filePath, error.message || error);
+    console.warn('Không thể đọc file services.md (knowledge base):', filePath, error.message || error);
     return '';
   }
 }
