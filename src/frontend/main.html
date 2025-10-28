@@ -1181,6 +1181,45 @@
 
     </script>
 
+    <script>
+      // Presentation remote gesture support for home page
+      (() => {
+        let lastUpArrowTime = 0;
+        let lastDownArrowTime = 0;
+        const DOUBLE_TAP_THRESHOLD = 400; // milliseconds
+
+        document.addEventListener('keydown', (e) => {
+          const currentTime = Date.now();
+
+          // Double tap up arrow -> go to services
+          if (e.key === 'ArrowUp') {
+            const timeSinceLastPress = currentTime - lastUpArrowTime;
+
+            if (timeSinceLastPress < DOUBLE_TAP_THRESHOLD && timeSinceLastPress > 0) {
+              // Double tap detected - go to services
+              e.preventDefault();
+              window.location.href = '/services';
+            }
+
+            lastUpArrowTime = currentTime;
+          }
+
+          // Double tap down arrow -> go to presentation
+          if (e.key === 'ArrowDown') {
+            const timeSinceLastPress = currentTime - lastDownArrowTime;
+
+            if (timeSinceLastPress < DOUBLE_TAP_THRESHOLD && timeSinceLastPress > 0) {
+              // Double tap detected - go to presentation
+              e.preventDefault();
+              window.location.href = '/presentation.html';
+            }
+
+            lastDownArrowTime = currentTime;
+          }
+        });
+      })();
+    </script>
+
     <!-- 5C Detail Modal -->
     <div class="c5-modal" id="c5Modal" aria-hidden="true" role="dialog" aria-modal="true">
       <div class="c5-modal__overlay" data-close-modal></div>

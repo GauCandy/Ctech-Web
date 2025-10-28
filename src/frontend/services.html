@@ -1786,5 +1786,44 @@
         });
       })();
     </script>
+
+    <script>
+      // Presentation remote gesture support for services page
+      (() => {
+        let lastUpArrowTime = 0;
+        let lastDownArrowTime = 0;
+        const DOUBLE_TAP_THRESHOLD = 400; // milliseconds
+
+        document.addEventListener('keydown', (e) => {
+          const currentTime = Date.now();
+
+          // Double tap up arrow -> go to schedule
+          if (e.key === 'ArrowUp') {
+            const timeSinceLastPress = currentTime - lastUpArrowTime;
+
+            if (timeSinceLastPress < DOUBLE_TAP_THRESHOLD && timeSinceLastPress > 0) {
+              // Double tap detected - go to schedule
+              e.preventDefault();
+              window.location.href = '/schedule';
+            }
+
+            lastUpArrowTime = currentTime;
+          }
+
+          // Double tap down arrow -> go back to home
+          if (e.key === 'ArrowDown') {
+            const timeSinceLastPress = currentTime - lastDownArrowTime;
+
+            if (timeSinceLastPress < DOUBLE_TAP_THRESHOLD && timeSinceLastPress > 0) {
+              // Double tap detected - go to home
+              e.preventDefault();
+              window.location.href = '/home';
+            }
+
+            lastDownArrowTime = currentTime;
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
