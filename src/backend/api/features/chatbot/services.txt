@@ -1,5 +1,5 @@
 # Danh sách dịch vụ hiện có
-# Sinh lúc: 2025-10-24T06:23:59.465Z
+# Sinh lúc: 2025-10-28T02:00:23.266Z
 # Ghi chú: File này được tạo tự động để hỗ trợ mô hình AI hiểu các dịch vụ của trường.
 
 ## Tài liệu tham chiếu
@@ -152,6 +152,11 @@ Có thể linh hoạt câu chữ miễn đảm bảo đầy đủ thông tin, gi
 Học Phí 1 kỳ 10-12tr
 một kỳ 5 tháng
 một số ngành được nhà nước hỗ trợ sẽ được hỗ trợ 70% học phí
+
+ktx(ký túc xá)
+giá 1tr 1 tháng
+khi mới đăng ký cần trả trước 3 tháng và 1tr tiền cọc
+để đăng ký có thể lên phòng kế toán của trường để được hỗ trợ
 
 ### DV001 - Vé Gửi Xe Oto theo tháng
 Trạng thái: Hoạt động

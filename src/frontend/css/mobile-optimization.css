@@ -1,0 +1,934 @@
+/**
+ * Mobile Optimization Styles
+ * Tối ưu hóa giao diện cho điện thoại di động
+ *
+ * Breakpoints:
+ * - Small mobile: < 480px
+ * - Mobile: < 768px
+ * - Tablet: < 1024px
+ */
+
+/* ========================================
+   Base Mobile Optimizations
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Container improvements */
+  .container {
+    max-width: 100%;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  /* Touch-friendly tap targets */
+  a, button, input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* ========================================
+   Header & Navigation - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .site-header {
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--surface);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .header-inner {
+    padding: 0 16px;
+  }
+
+  .brand img {
+    width: 48px;
+    height: 48px;
+  }
+
+  /* Mobile menu */
+  .header-actions {
+    position: relative;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    min-width: 250px;
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    flex-direction: column;
+    gap: 4px;
+    z-index: 100;
+  }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .nav-links a {
+    padding: 12px 16px;
+    border-radius: 8px;
+    display: block;
+    text-align: left;
+    transition: background 0.2s ease;
+  }
+
+  .nav-links a:hover,
+  .nav-links a.active {
+    background: var(--surface-elevated);
+  }
+}
+
+/* ========================================
+   Hero Section - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto !important;
+    height: auto !important;
+    padding: 60px 0 40px !important;
+  }
+
+  .hero-content {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+    padding: 0 !important;
+  }
+
+  .hero-intro {
+    text-align: center;
+    order: 1;
+  }
+
+  .hero-intro h1 {
+    font-size: clamp(1.75rem, 8vw, 2.5rem) !important;
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .hero-intro p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 auto 24px;
+    max-width: 100%;
+  }
+
+  .hero-intro .btn-secondary {
+    width: 100%;
+    max-width: 280px;
+    padding: 14px 24px;
+    font-size: 1rem;
+  }
+
+  .hero-highlights {
+    order: 2;
+    gap: 16px;
+  }
+
+  .highlight-card {
+    padding: 20px;
+    gap: 16px;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .highlight-icon {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+  }
+
+  .highlight-icon .material-icons {
+    font-size: 32px;
+  }
+
+  .highlight-metric {
+    font-size: 2rem;
+    margin-bottom: 4px;
+  }
+
+  .highlight-content {
+    flex: 1;
+    text-align: left;
+  }
+
+  .highlight-content strong {
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .highlight-content p {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 40px 0 32px !important;
+  }
+
+  .hero-intro h1 {
+    font-size: 1.75rem !important;
+  }
+
+  .highlight-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+  }
+
+  .highlight-content {
+    text-align: center;
+  }
+
+  .highlight-metric {
+    font-size: 1.75rem;
+  }
+}
+
+/* ========================================
+   Sections - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .section {
+    padding: 48px 0 !important;
+  }
+
+  .section-inner {
+    padding: 0;
+  }
+
+  .section-heading {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+    margin-bottom: 12px;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: 40px 0 !important;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.9375rem;
+  }
+}
+
+/* ========================================
+   Cards & Grids - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* All grids become single column */
+  .program-grid,
+  .campus-grid,
+  .services-grid,
+  .news-grid,
+  .c5-grid,
+  .department-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Card adjustments */
+  .card,
+  .c5-card,
+  .program-card,
+  .campus-card {
+    padding: 20px;
+  }
+
+  .card h3 {
+    font-size: 1.125rem;
+    margin-bottom: 8px;
+  }
+
+  .card p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  /* Department carousel */
+  .department-carousel {
+    padding: 16px 0;
+  }
+
+  .department-card {
+    min-width: 280px;
+    padding: 16px;
+  }
+
+  .department-card h3 {
+    font-size: 1rem;
+  }
+
+  .department-card p {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card,
+  .c5-card {
+    padding: 16px;
+  }
+
+  .department-card {
+    min-width: 260px;
+    padding: 14px;
+  }
+}
+
+/* ========================================
+   5C Section - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .c5-card {
+    padding: 24px;
+    text-align: center;
+  }
+
+  .c5-card-icon {
+    margin: 0 auto 16px;
+  }
+
+  .c5-card h3 {
+    font-size: 1.125rem;
+    margin-bottom: 12px;
+  }
+
+  .c5-card p {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .c5-card ul {
+    text-align: left;
+    padding-left: 24px;
+  }
+
+  .c5-card li {
+    font-size: 0.9375rem;
+    margin-bottom: 8px;
+  }
+}
+
+/* ========================================
+   Forms & Inputs - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important; /* Prevents iOS zoom */
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+
+  textarea {
+    min-height: 120px;
+  }
+
+  /* Button improvements */
+  button,
+  .btn-primary,
+  .btn-secondary {
+    padding: 14px 20px;
+    font-size: 1rem;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Service search */
+  .services-controls__row {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .services-field {
+    width: 100%;
+  }
+
+  .services-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .services-button {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 0.9375rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .services-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   Tables - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Services table */
+  .services-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -20px;
+    padding: 0 20px;
+  }
+
+  .services-table {
+    min-width: 600px;
+  }
+
+  .services-table th,
+  .services-table td {
+    padding: 12px 8px;
+    font-size: 0.875rem;
+  }
+
+  /* Schedule table */
+  .time-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 0 -20px;
+    padding: 0 20px;
+  }
+
+  .time-table {
+    min-width: 700px;
+    font-size: 0.8125rem;
+  }
+
+  .time-table th,
+  .time-table td {
+    padding: 8px 6px;
+  }
+
+  /* Calendar view for schedule */
+  .schedule-calendar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .calendar-grid {
+    min-width: 600px;
+  }
+}
+
+/* Card-based table alternative for very small screens */
+@media (max-width: 480px) {
+  .services-table-mobile-cards {
+    display: block;
+  }
+
+  .services-table-mobile-cards .service-card {
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .service-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .service-card-row:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .service-card-label {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+  }
+
+  .service-card-value {
+    color: var(--text-main);
+    font-size: 0.9375rem;
+  }
+}
+
+/* ========================================
+   File Upload - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .file-upload-zone {
+    padding: 32px 16px;
+    min-height: 200px;
+  }
+
+  .file-upload-icon {
+    font-size: 48px !important;
+    margin-bottom: 12px;
+  }
+
+  .file-upload-text {
+    font-size: 1rem;
+  }
+
+  .file-upload-hint {
+    font-size: 0.875rem;
+  }
+
+  .file-upload-button {
+    width: 100%;
+    max-width: 240px;
+  }
+}
+
+/* ========================================
+   Chat Widget - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .chat-widget__toggle {
+    right: 16px;
+    bottom: 16px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .chat-widget__toggle .material-icons {
+    font-size: 28px;
+  }
+
+  .chat-widget__panel {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+  }
+
+  .chat-widget__messages {
+    padding: 16px;
+  }
+
+  .chat-widget__message {
+    max-width: 85%;
+    font-size: 0.9375rem;
+    padding: 10px 14px;
+  }
+
+  .chat-widget__input {
+    padding: 14px 16px;
+  }
+
+  .chat-widget__input textarea {
+    font-size: 16px !important;
+    padding: 10px 12px;
+  }
+
+  .chat-widget__send-button {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-widget__toggle {
+    width: 52px;
+    height: 52px;
+  }
+
+  .chat-widget__message {
+    max-width: 90%;
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================
+   Floating Buttons - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .help-floating,
+  .back-to-top {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    bottom: 80px; /* Move up to avoid overlapping with chat */
+  }
+
+  .presentation-toggle-btn {
+    padding: 10px 16px;
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================
+   Footer - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .footer {
+    padding: 40px 0 24px;
+  }
+
+  .footer-columns {
+    grid-template-columns: 1fr !important;
+    gap: 32px;
+    text-align: center;
+  }
+
+  .footer-column h4 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .footer-column ul {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .footer-column a {
+    font-size: 0.9375rem;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    padding-top: 24px;
+  }
+
+  .footer-bottom p {
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================
+   Presentation Slides - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .presentation-slides {
+    padding: 0;
+  }
+
+  .presentation-header {
+    padding: 12px 16px;
+  }
+
+  .presentation-logo {
+    font-size: 1rem;
+  }
+
+  .presentation-logo img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .presentation-timer {
+    font-size: 0.875rem;
+  }
+
+  .slide {
+    padding: 60px 16px 80px;
+  }
+
+  .slide-content {
+    padding: 0;
+  }
+
+  .slide-title {
+    font-size: clamp(1.5rem, 6vw, 2.5rem) !important;
+  }
+
+  .slide-subtitle {
+    font-size: 1rem !important;
+  }
+
+  .slide-badge {
+    font-size: 0.75rem;
+    padding: 8px 16px;
+  }
+
+  /* Demo mockups */
+  .demo-mockup {
+    margin: 0 -16px;
+    border-radius: 0;
+  }
+
+  .demo-browser-bar {
+    padding: 8px 12px;
+  }
+
+  .demo-browser-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .demo-url-bar {
+    font-size: 0.75rem;
+    padding: 4px 10px;
+  }
+
+  .demo-content {
+    padding: 20px;
+  }
+
+  .demo-content h2 {
+    font-size: 1.25rem !important;
+  }
+
+  .demo-content p {
+    font-size: 0.875rem !important;
+  }
+
+  /* Presentation navigation */
+  .presentation-navigation {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nav-button {
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    min-width: 80px;
+  }
+
+  .slide-progress {
+    width: 100%;
+    order: -1;
+  }
+
+  .slide-dots {
+    display: none; /* Hide on mobile to save space */
+  }
+
+  .progress-text {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .slide {
+    padding: 50px 12px 70px;
+  }
+
+  .slide-title {
+    font-size: 1.5rem !important;
+  }
+
+  .demo-content {
+    padding: 16px;
+  }
+}
+
+/* ========================================
+   Modal & Overlays - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .modal,
+  .overlay {
+    padding: 0;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    margin: 0;
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .modal-body {
+    padding: 20px;
+  }
+
+  .modal-footer {
+    padding: 16px;
+  }
+}
+
+/* ========================================
+   Performance & UX - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Reduce animations on mobile for better performance */
+  * {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.2s !important;
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Prevent text size adjustment */
+  body {
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Better tap highlighting */
+  a, button, input, select, textarea {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* Improve scrolling performance */
+  .hero,
+  .section,
+  .card {
+    will-change: auto;
+  }
+}
+
+/* ========================================
+   Landscape Orientation - Mobile
+   ======================================== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero {
+    padding: 40px 0 32px !important;
+  }
+
+  .section {
+    padding: 40px 0 !important;
+  }
+
+  .hero-intro h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .highlight-card {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .highlight-content {
+    text-align: left;
+  }
+}
+
+/* ========================================
+   iOS Specific Fixes
+   ======================================== */
+
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 768px) {
+    /* Fix for iOS Safari bottom bar */
+    .chat-widget__panel {
+      height: -webkit-fill-available;
+    }
+
+    /* Fix input zoom on iOS */
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="search"],
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+
+    /* Prevent bounce scroll */
+    body {
+      position: fixed;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .site-main {
+      position: relative;
+      overflow-y: auto;
+      height: 100vh;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+}
+
+/* ========================================
+   Print - Mobile
+   ======================================== */
+
+@media print {
+  .mobile-menu-toggle,
+  .chat-widget,
+  .help-floating,
+  .back-to-top,
+  .presentation-toggle-btn {
+    display: none !important;
+  }
+
+  .site-header {
+    position: static;
+  }
+
+  .container {
+    max-width: 100%;
+  }
+}

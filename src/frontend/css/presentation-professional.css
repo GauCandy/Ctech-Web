@@ -1,0 +1,342 @@
+/* Professional Presentation Styles - Light Theme for Projectors */
+
+.presentation-slides {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%) !important;
+}
+
+/* High contrast color scheme for projectors */
+:root {
+  --primary-blue: #0047ab;
+  --primary-dark: #003380;
+  --accent-orange: #ff6600;
+  --text-dark: #1a1a1a;
+  --text-medium: #333333;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --border-color: rgba(0, 0, 0, 0.15);
+  --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Professional title - high contrast */
+.slide-title {
+  color: var(--primary-dark) !important;
+  font-size: clamp(3.5rem, 7vw, 6rem) !important;
+  font-weight: 800 !important;
+  animation: none !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1) !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  background: none !important;
+}
+
+.slide-subtitle {
+  color: var(--text-medium) !important;
+  font-size: clamp(1.4rem, 2.5vw, 2rem) !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+}
+
+.slide-badge {
+  background: var(--primary-blue) !important;
+  color: white !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  padding: 12px 32px !important;
+  border-radius: 50px !important;
+  border: 3px solid var(--primary-dark) !important;
+  animation: none !important;
+  box-shadow: 0 4px 12px var(--shadow-color) !important;
+}
+
+/* Professional cards - light theme */
+.slide-card {
+  background: var(--bg-card) !important;
+  backdrop-filter: none !important;
+  border: 3px solid var(--border-color) !important;
+  border-radius: 20px !important;
+  padding: 40px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 16px var(--shadow-color) !important;
+}
+
+.slide-card:hover {
+  transform: translateY(-8px) !important;
+  border-color: var(--primary-blue) !important;
+  box-shadow: 0 8px 24px rgba(0, 71, 171, 0.3) !important;
+}
+
+.slide-card-icon {
+  width: 100px !important;
+  height: 100px !important;
+  background: var(--primary-blue) !important;
+  border-radius: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto 24px !important;
+  font-size: 50px !important;
+  box-shadow: 0 6px 20px rgba(0, 71, 171, 0.4) !important;
+}
+
+.slide-card-icon .material-icons {
+  font-size: 50px !important;
+  color: white !important;
+}
+
+.slide-card-title {
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  color: var(--text-dark) !important;
+  margin-bottom: 16px !important;
+}
+
+.slide-card-desc {
+  font-size: 1.2rem !important;
+  color: var(--text-medium) !important;
+  line-height: 1.7 !important;
+  opacity: 1 !important;
+}
+
+/* Remove flashy animations */
+.creative-grid-diagonal,
+.creative-grid-zigzag {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  gap: 30px !important;
+  animation: none !important;
+}
+
+.feature-mega-box {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 3px solid var(--border-color) !important;
+  border-radius: 24px !important;
+  padding: 50px !important;
+  backdrop-filter: none !important;
+  animation: none !important;
+  box-shadow: 0 6px 20px var(--shadow-color) !important;
+}
+
+/* Demo mockup container */
+.demo-mockup {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  margin: 2rem auto;
+  max-width: 1200px;
+  border: 2px solid var(--border-color);
+}
+
+.demo-browser-bar {
+  background: #e0e0e0;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.demo-browser-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff5f56;
+}
+
+.demo-browser-dot:nth-child(2) {
+  background: #ffbd2e;
+}
+
+.demo-browser-dot:nth-child(3) {
+  background: #27c93f;
+}
+
+.demo-url-bar {
+  flex: 1;
+  background: white;
+  padding: 6px 16px;
+  border-radius: 6px;
+  margin-left: 12px;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.demo-content {
+  background: white;
+  padding: 40px;
+  min-height: 400px;
+  color: #333;
+}
+
+/* Professional progress bar */
+.presentation-progress {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.presentation-progress-bar {
+  background: var(--primary-blue) !important;
+}
+
+/* Simplified navigation */
+.presentation-nav-btn {
+  background: white !important;
+  border: 2px solid var(--border-color) !important;
+  transition: all 0.3s ease !important;
+  color: var(--text-dark) !important;
+  box-shadow: 0 2px 8px var(--shadow-color) !important;
+}
+
+.presentation-nav-btn:hover {
+  background: var(--primary-blue) !important;
+  border-color: var(--primary-dark) !important;
+  color: white !important;
+}
+
+/* Additional light theme elements */
+.presentation-info-box {
+  background: rgba(0, 71, 171, 0.08) !important;
+  border: 3px solid var(--primary-blue) !important;
+  box-shadow: 0 4px 16px var(--shadow-color) !important;
+  color: var(--text-dark) !important;
+}
+
+.presentation-info-box h3 {
+  color: var(--primary-dark) !important;
+}
+
+.presentation-info-box p {
+  color: var(--text-medium) !important;
+}
+
+.presentation-quote {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-left: 6px solid var(--primary-blue) !important;
+  box-shadow: 0 4px 16px var(--shadow-color) !important;
+  color: var(--text-dark) !important;
+}
+
+.presentation-quote p {
+  color: var(--text-medium) !important;
+}
+
+/* Override inline text colors for light theme */
+.slide-content p,
+.slide-content h1,
+.slide-content h2,
+.slide-content h3 {
+  color: var(--text-dark) !important;
+}
+
+/* Grid layouts */
+.presentation-grid-2,
+.presentation-grid-3 {
+  display: grid;
+  gap: clamp(20px, 3vh, 40px);
+}
+
+.presentation-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.presentation-grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* High Contrast Overrides for Projector */
+.presentation-slides p,
+.presentation-slides h1,
+.presentation-slides h2,
+.presentation-slides h3,
+.presentation-slides h4,
+.presentation-slides h5,
+.presentation-slides div,
+.presentation-slides span {
+  color: var(--text-dark) !important;
+}
+
+/* Override white text in inline styles */
+.slide-content [style*="color: white"],
+.slide-content [style*="color: #fff"],
+.slide-content [style*="color: rgb(255"],
+.slide-content [style*="color: rgba(255, 255, 255"] {
+  color: var(--text-dark) !important;
+}
+
+.slide-content strong {
+  color: var(--primary-blue) !important;
+}
+
+/* Badge and icons keep white text */
+.slide-badge,
+.material-icons,
+.nav-button,
+.nav-button * {
+  color: white !important;
+}
+
+/* Demo content dark text */
+.demo-content,
+.demo-content * {
+  color: #1a1a1a !important;
+}
+
+/* Radio buttons and checkboxes - LIGHT THEME (màu đen để thấy rõ trên nền sáng) */
+.presentation-slides input[type="radio"],
+.presentation-slides input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #1a1a1a !important;  /* Border màu đen cho theme sáng */
+  background: white !important;
+  cursor: pointer;
+  position: relative;
+  vertical-align: middle;
+  margin: 0 8px 0 0;
+  flex-shrink: 0;
+}
+
+.presentation-slides input[type="radio"] {
+  border-radius: 50%;
+}
+
+.presentation-slides input[type="checkbox"] {
+  border-radius: 4px;
+}
+
+.presentation-slides input[type="radio"]:checked,
+.presentation-slides input[type="checkbox"]:checked {
+  background: #1a1a1a !important;  /* Background đen khi checked */
+  border-color: #1a1a1a !important;
+}
+
+.presentation-slides input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;  /* Chấm trắng bên trong */
+}
+
+.presentation-slides input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;  /* Dấu tích trắng */
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* Remove excessive animations */
+@keyframes rainbowShift,
+@keyframes rotate360,
+@keyframes float,
+@keyframes pulse {
+  0%, 100% { transform: none; }
+}

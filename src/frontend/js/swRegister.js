@@ -12,6 +12,26 @@
     return;
   }
 
+  // Disable Service Worker in development (localhost)
+  const isDevelopment = window.location.hostname === 'localhost' ||
+                        window.location.hostname === '127.0.0.1' ||
+                        window.location.port === '3000';
+
+  if (isDevelopment) {
+    console.log('[SW] Development mode - Service Worker disabled');
+    console.log('[SW] To enable, remove the isDevelopment check in swRegister.js');
+
+    // Unregister any existing service workers
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      registrations.forEach(registration => {
+        registration.unregister();
+        console.log('[SW] Unregistered existing service worker');
+      });
+    });
+
+    return;
+  }
+
   // Register Service Worker when page loads
   window.addEventListener('load', () => {
     registerServiceWorker();

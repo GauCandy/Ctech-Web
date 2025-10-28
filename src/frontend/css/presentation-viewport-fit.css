@@ -1,0 +1,839 @@
+/**
+ * Presentation Viewport Fit Styles
+ * Thiết kế mới - mỗi slide vừa khít trong 1 viewport
+ */
+
+/* ========================================
+   Base Presentation Layout
+   ======================================== */
+
+.presentation-slides {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+  overflow: hidden;
+  z-index: 9999;
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.presentation-slides.active {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ========================================
+   Header - Compact
+   ======================================== */
+
+.presentation-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background: white;
+  backdrop-filter: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.presentation-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.presentation-logo img {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+}
+
+.presentation-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.presentation-timer {
+  font-size: 0.875rem;
+  color: #4b5563;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.presentation-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  border: 2px solid #e5e7eb;
+  color: #374151;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.presentation-close:hover {
+  background: #ef4444;
+  border-color: #dc2626;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* ========================================
+   Slides Container
+   ======================================== */
+
+.slides-container {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 60px;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.slide.active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 1;
+}
+
+.slide-content {
+  width: 100%;
+  height: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2vh 3vw;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.slide-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.slide-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.slide-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+
+/* ========================================
+   Typography - Compact
+   ======================================== */
+
+.slide-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: #0047ab;
+  border: 2px solid #003380;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: white;
+  margin-bottom: 1vh;
+  box-shadow: 0 2px 8px rgba(0, 71, 171, 0.3);
+}
+
+.slide-title {
+  font-size: clamp(1.8rem, 4vh, 3rem);
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1.2;
+  margin-bottom: 0.5vh;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background: none;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.slide-subtitle {
+  font-size: clamp(0.9rem, 1.8vh, 1.2rem);
+  color: #4b5563;
+  line-height: 1.5;
+  margin-bottom: 2vh;
+  font-weight: 600;
+}
+
+/* ========================================
+   Cards - Compact
+   ======================================== */
+
+.slide-card {
+  background: white;
+  backdrop-filter: none;
+  border: 2px solid rgba(0, 0, 0, 0.12);
+  border-radius: 12px;
+  padding: clamp(12px, 1.5vh, 20px);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.slide-card:hover {
+  background: #f9fafb;
+  border-color: #0047ab;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 71, 171, 0.2);
+}
+
+.slide-card-icon {
+  width: clamp(50px, 6vh, 70px);
+  height: clamp(50px, 6vh, 70px);
+  background: #0047ab;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1vh;
+  box-shadow: 0 4px 12px rgba(0, 71, 171, 0.3);
+}
+
+.slide-card-icon .material-icons {
+  font-size: clamp(24px, 3vh, 36px);
+  color: white;
+}
+
+.slide-card-title {
+  font-size: clamp(0.95rem, 1.8vh, 1.2rem);
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.5vh;
+  text-align: center;
+}
+
+.slide-card-desc {
+  font-size: clamp(0.8rem, 1.4vh, 0.95rem);
+  color: #4b5563;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ========================================
+   Demo Mockup - Phone Style
+   ======================================== */
+
+.demo-mockup {
+  background: white;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  margin: 1vh auto;
+  max-width: 400px;
+  width: 90%;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-browser-bar {
+  background: #e5e7eb;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid #d1d5db;
+  flex-shrink: 0;
+}
+
+.demo-browser-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+
+.demo-browser-dot:nth-child(2) {
+  background: #f59e0b;
+}
+
+.demo-browser-dot:nth-child(3) {
+  background: #10b981;
+}
+
+.demo-url-bar {
+  flex: 1;
+  background: white;
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-left: 8px;
+  font-size: 0.7rem;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.demo-content {
+  background: white;
+  padding: clamp(12px, 2vh, 20px);
+  overflow-y: auto;
+  flex: 1;
+  color: #1f2937;
+  font-size: clamp(0.7rem, 1.2vh, 0.85rem);
+}
+
+.demo-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.demo-content::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.demo-content::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+
+.demo-content h2 {
+  font-size: clamp(1rem, 2vh, 1.3rem) !important;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5vh;
+}
+
+.demo-content p {
+  font-size: clamp(0.75rem, 1.3vh, 0.9rem) !important;
+  color: #4b5563;
+  line-height: 1.5;
+  margin-bottom: 1vh;
+}
+
+.demo-content input,
+.demo-content button {
+  font-size: clamp(0.7rem, 1.2vh, 0.85rem) !important;
+  padding: clamp(6px, 1vh, 10px) clamp(8px, 1.5vh, 12px);
+}
+
+.demo-content button {
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* ========================================
+   Grid Layouts - Compact
+   ======================================== */
+
+.presentation-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(12px, 2vh, 20px);
+  margin: 2vh 0;
+}
+
+.presentation-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(16px, 2.5vh, 24px);
+  margin: 2vh 0;
+}
+
+/* ========================================
+   Quote Box
+   ======================================== */
+
+.presentation-quote {
+  background: white;
+  border-left: 4px solid #0047ab;
+  padding: clamp(16px, 2vh, 24px);
+  border-radius: 8px;
+  margin: 2vh 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.presentation-quote p {
+  font-size: clamp(0.9rem, 1.6vh, 1.1rem);
+  color: #1a1a1a;
+  line-height: 1.6;
+  font-style: italic;
+  margin: 0;
+}
+
+.presentation-quote strong {
+  color: #0047ab;
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* ========================================
+   Info Box
+   ======================================== */
+
+.presentation-info-box {
+  background: rgba(0, 71, 171, 0.08);
+  border: 2px solid #0047ab;
+  border-radius: 12px;
+  padding: clamp(16px, 2.5vh, 28px);
+  margin: 2vh 0;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 71, 171, 0.15);
+}
+
+.presentation-info-box h3 {
+  font-size: clamp(1.2rem, 2.5vh, 1.8rem);
+  font-weight: 800;
+  color: #1a1a1a;
+  margin-bottom: 1vh;
+}
+
+.presentation-info-box p {
+  font-size: clamp(0.85rem, 1.5vh, 1rem);
+  color: #374151;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ========================================
+   Navigation - Compact
+   ======================================== */
+
+.presentation-navigation {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: white;
+  backdrop-filter: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  z-index: 100;
+  border-top: 2px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.nav-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: #0047ab;
+  border: 2px solid #003380;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 71, 171, 0.2);
+}
+
+.nav-button:hover {
+  background: #003380;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 71, 171, 0.3);
+}
+
+.nav-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.nav-button .material-icons {
+  font-size: 18px;
+}
+
+.slide-progress {
+  flex: 1;
+  max-width: 600px;
+  margin: 0 24px;
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.progress-text {
+  font-size: 0.8rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.slide-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.slide-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.slide-dot.active {
+  background: #0047ab;
+  width: 20px;
+  border-radius: 3px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #0047ab;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* ========================================
+   High Contrast Overrides for Projector
+   ======================================== */
+
+/* Force all text to dark color for projector */
+.presentation-slides p,
+.presentation-slides h1,
+.presentation-slides h2,
+.presentation-slides h3,
+.presentation-slides h4,
+.presentation-slides h5,
+.presentation-slides div,
+.presentation-slides span {
+  color: #1a1a1a !important;
+}
+
+/* Override white text in inline styles */
+.slide-content [style*="color: white"],
+.slide-content [style*="color: #fff"],
+.slide-content [style*="color: rgb(255"],
+.slide-content [style*="color: rgba(255, 255, 255"] {
+  color: #1a1a1a !important;
+}
+
+/* Specific overrides for common elements */
+.slide-content strong {
+  color: #0047ab !important;
+}
+
+/* Card title specific */
+.slide-card-title {
+  color: #1a1a1a !important;
+}
+
+/* Info box and quote overrides */
+.presentation-info-box *,
+.presentation-quote * {
+  color: #1a1a1a !important;
+}
+
+.presentation-info-box strong,
+.presentation-quote strong {
+  color: #0047ab !important;
+}
+
+/* Badge text should be white (on dark background) */
+.slide-badge {
+  color: white !important;
+}
+
+/* Icons should remain white (on colored backgrounds) */
+.material-icons {
+  color: white !important;
+}
+
+/* Navigation and controls */
+.nav-button,
+.nav-button * {
+  color: white !important;
+}
+
+.presentation-timer,
+.progress-text {
+  color: #4b5563 !important;
+}
+
+/* Demo mockup text */
+.demo-content,
+.demo-content * {
+  color: #1a1a1a !important;
+}
+
+.demo-url-bar {
+  color: #6b7280 !important;
+}
+
+/* ========================================
+   Responsive - Mobile
+   ======================================== */
+
+@media (max-width: 768px) {
+  .presentation-header {
+    height: 44px;
+    padding: 0 12px;
+  }
+
+  .presentation-logo {
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+
+  .presentation-logo img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .presentation-timer {
+    display: none;
+  }
+
+  .slides-container {
+    top: 44px;
+    bottom: 56px;
+  }
+
+  .slide-content {
+    padding: 1.5vh 4vw;
+  }
+
+  .slide-title {
+    font-size: clamp(1.3rem, 5vw, 2rem);
+  }
+
+  .slide-subtitle {
+    font-size: clamp(0.8rem, 3vw, 1rem);
+  }
+
+  .presentation-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .presentation-grid-2 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .demo-mockup {
+    max-width: 100%;
+    max-height: 60vh;
+  }
+
+  .presentation-navigation {
+    height: 56px;
+    padding: 0 12px;
+  }
+
+  .nav-button {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    gap: 4px;
+  }
+
+  .nav-button span:not(.material-icons) {
+    display: none;
+  }
+
+  .slide-progress {
+    margin: 0 12px;
+  }
+
+  .slide-dots {
+    display: none;
+  }
+
+  .progress-text {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .slide-content {
+    padding: 1vh 3vw;
+  }
+
+  .slide-badge {
+    font-size: 0.65rem;
+    padding: 4px 12px;
+  }
+
+  .demo-mockup {
+    max-height: 55vh;
+  }
+}
+
+/* ========================================
+   Landscape Orientation
+   ======================================== */
+
+@media (max-height: 600px) {
+  .slide-content {
+    padding: 1vh 3vw;
+  }
+
+  .slide-title {
+    font-size: clamp(1.3rem, 4vh, 2rem);
+    margin-bottom: 0.3vh;
+  }
+
+  .slide-subtitle {
+    font-size: clamp(0.8rem, 1.5vh, 1rem);
+    margin-bottom: 1vh;
+  }
+
+  .presentation-grid-3,
+  .presentation-grid-2 {
+    gap: 10px;
+    margin: 1vh 0;
+  }
+
+  .slide-card {
+    padding: 10px;
+  }
+
+  .slide-card-icon {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0.5vh;
+  }
+
+  .slide-card-icon .material-icons {
+    font-size: 20px;
+  }
+
+  .demo-mockup {
+    max-height: 65vh;
+  }
+
+  .presentation-info-box {
+    padding: 12px;
+    margin: 1vh 0;
+  }
+}
+
+/* ========================================
+   Radio Buttons & Checkboxes
+   ======================================== */
+
+/* Radio buttons and checkboxes - LIGHT THEME (màu đen để thấy rõ trên nền sáng) */
+.presentation-slides input[type="radio"],
+.presentation-slides input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 3px solid #1a1a1a !important;  /* Border màu đen cho theme sáng */
+  background: white !important;
+  cursor: pointer;
+  position: relative;
+  vertical-align: middle;
+  margin: 0 8px 0 0;
+  flex-shrink: 0;
+}
+
+.presentation-slides input[type="radio"] {
+  border-radius: 50%;
+}
+
+.presentation-slides input[type="checkbox"] {
+  border-radius: 4px;
+}
+
+.presentation-slides input[type="radio"]:checked,
+.presentation-slides input[type="checkbox"]:checked {
+  background: #1a1a1a !important;  /* Background đen khi checked */
+  border-color: #1a1a1a !important;
+}
+
+.presentation-slides input[type="radio"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;  /* Chấm trắng bên trong */
+}
+
+.presentation-slides input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;  /* Dấu tích trắng */
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+/* ========================================
+   Print Styles
+   ======================================== */
+
+@media print {
+  .presentation-header,
+  .presentation-navigation {
+    display: none !important;
+  }
+
+  .slides-container {
+    top: 0;
+    bottom: 0;
+  }
+
+  .slide {
+    page-break-after: always;
+  }
+
+  .slide-content {
+    overflow: visible;
+  }
+}

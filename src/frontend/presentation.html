@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài thuyết trình - Website Học Vụ CTECH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .presentation { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+
+    /* Header */
+    .header {
+      background: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #e5e7eb;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .logo { font-size: 20px; font-weight: 700; color: #1a1a1a; }
+    .timer { font-size: 18px; color: #4b5563; font-weight: 600; }
+    .close-btn {
+      background: #f3f4f6; border: 2px solid #e5e7eb; color: #374151;
+      width: 40px; height: 40px; border-radius: 8px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .close-btn:hover { background: #ef4444; border-color: #dc2626; color: white; }
+
+    /* Slides */
+    .slides-container {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 20px; overflow: hidden;
+    }
+    .slide {
+      display: none; width: 100%; max-width: 100%; height: 100%;
+      background: transparent; padding: 60px 80px;
+      overflow-y: auto;
+      flex-direction: column; justify-content: center;
+    }
+    .slide.active { display: flex; animation: fadeIn 0.5s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Typography */
+    .badge {
+      display: inline-block; background: #0047ab; color: white; padding: 8px 24px;
+      border-radius: 50px; font-weight: 700; font-size: 13px; margin-bottom: 12px;
+      border: 3px solid #003380;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .title { font-size: 38px; font-weight: 800; color: #1a1a1a; margin-bottom: 12px; line-height: 1.2; transition: color 0.3s ease; }
+    .subtitle { font-size: 18px; color: #4b5563; font-weight: 600; margin-bottom: 20px; transition: color 0.3s ease; }
+    .greeting { font-size: 16px; color: #1a1a1a; margin-bottom: 12px; font-weight: 600; }
+    .description { font-size: 15px; color: #1a1a1a; line-height: 1.6; margin-bottom: 12px; transition: color 0.3s ease; }
+
+    /* Cards */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 20px 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+    .card {
+      background: white; border: 3px solid rgba(0,0,0,0.12); border-radius: 12px;
+      padding: 20px; text-align: center; transition: all 0.3s;
+    }
+    .card:hover { border-color: #0047ab; box-shadow: 0 8px 24px rgba(0,71,171,0.2); transform: translateY(-5px); }
+    .card-icon {
+      width: 50px; height: 50px; background: #0047ab; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;
+    }
+    .card-icon .material-icons { font-size: 28px; color: white; }
+    .card-title { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+    .card-desc { font-size: 13px; color: #4b5563; line-height: 1.5; }
+
+    /* Card variants */
+    .card-problem { background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.3); }
+    .card-problem .card-icon { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .card-solution { background: rgba(34, 197, 94, 0.05); border-color: rgba(34, 197, 94, 0.3); }
+    .card-solution .card-icon { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .card-solution .card-title { color: #22c55e; }
+
+    /* Info box */
+    .info-box {
+      background: white; border: 3px solid #0047ab; border-radius: 12px;
+      padding: 20px; margin: 20px auto; max-width: 700px; text-align: center;
+    }
+    .info-box h3 { font-size: 20px; color: #1a1a1a; margin-bottom: 8px; }
+    .info-box p { font-size: 15px; color: #4b5563; }
+
+    /* Student info */
+    .student-info {
+      background: rgba(59, 130, 246, 0.1); padding: 30px; border-radius: 16px;
+      max-width: 600px; margin: 20px auto;
+    }
+    .avatar {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .avatar .material-icons { font-size: 40px; color: white; }
+    .student-name { font-size: 28px; font-weight: 700; color: #1a1a1a; margin-bottom: 16px; text-align: center; }
+    .student-details { text-align: left; font-size: 15px; color: #1a1a1a; }
+    .student-details p { margin-bottom: 8px; }
+    .student-details strong { color: #0047ab; }
+
+    /* Navigation */
+    .navigation {
+      background: white; padding: 20px 30px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 2px solid #e5e7eb; box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    }
+    .nav-btn {
+      background: #0047ab; color: white; border: 2px solid #003380;
+      padding: 12px 24px; border-radius: 8px; cursor: pointer;
+      font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover { background: #003380; box-shadow: 0 4px 12px rgba(0,71,171,0.3); }
+    .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .progress { display: flex; align-items: center; gap: 20px; }
+    .slide-counter { font-size: 18px; color: #4b5563; font-weight: 600; }
+    .dots { display: flex; gap: 8px; }
+    .dot {
+      width: 10px; height: 10px; background: rgba(0,0,0,0.2); border-radius: 50%;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .dot.active { background: #0047ab; width: 30px; border-radius: 5px; }
+
+    /* Utilities */
+    .center { text-align: center; }
+    .demo {
+      background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 12px;
+      padding: 16px; margin: 16px 0;
+    }
+    .demo h4 { color: #1a1a1a; margin-bottom: 12px; font-size: 16px; }
+    .demo p { color: #4b5563; font-size: 13px; line-height: 1.5; }
+    .quote {
+      background: white; border-left: 4px solid #0047ab; padding: 16px 24px;
+      margin: 16px auto; max-width: 700px; border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .quote p { font-size: 15px; color: #1a1a1a; font-style: italic; }
+    .quote strong { color: #0047ab; font-weight: 700; }
+
+    /* Image Comparison Slider */
+    .comparison-container {
+      position: relative;
+      width: 98%;
+      max-width: 1400px;
+      margin: 20px auto;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      user-select: none;
+    }
+    .comparison-container img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .comparison-before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+    }
+    .comparison-before img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: auto;
+      height: 100%;
+      max-width: none;
+    }
+    .comparison-slider {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 4px;
+      height: 100%;
+      background: #0047ab;
+      cursor: ew-resize;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+    .comparison-slider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 48px;
+      height: 48px;
+      background: #0047ab;
+      border: 4px solid white;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .comparison-slider::after {
+      content: '⇔';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      z-index: 1;
+    }
+    .comparison-label {
+      position: absolute;
+      top: 20px;
+      padding: 8px 16px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 6px;
+      z-index: 5;
+    }
+    .comparison-label.before {
+      left: 20px;
+    }
+    .comparison-label.after {
+      right: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="presentation">
+    <div class="header">
+      <div class="logo">Website Học Vụ CTECH</div>
+      <div class="timer" id="timer">00:00</div>
+      <button class="close-btn" onclick="window.location.href='/'">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div class="slides-container">
+      <!-- Slide 1 -->
+      <div class="slide active center">
+        <p class="greeting">Kính chào quý thầy cô và hội đồng giám khảo</p>
+        <div class="badge">BÀI THI KỸ NĂNG NGHỀ</div>
+        <h1 class="title">Website Học Vụ CTECH</h1>
+        <p class="subtitle">Bài thi kỹ năng nghề</p>
+        <div class="quote">
+          <p>Nền tảng quản lý học vụ và dịch vụ sinh viên<br>tích hợp thời khóa biểu, thanh toán và chatbot AI</p>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">THỰC TRẠNG</div>
+          <h2 class="title">Những khó khăn hiện tại</h2>
+          <p class="subtitle">Học sinh - sinh viên đang gặp phải</p>
+        </div>
+        <div class="grid-3">
+          <div class="card card-problem">
+            <div class="card-icon"><span class="material-icons">description</span></div>
+            <h3 class="card-title">TKB của Sở khó đọc</h3>
+            <p class="card-desc">Thời khóa biểu từ Sở GD phức tạp, khó tra cứu cho người mới</p>
+          </div>
+          <div class="card card-problem">
+            <div class="card-icon"><span class="material-icons">price_check</span></div>
+            <h3 class="card-title">Không có nơi tra cứu giá</h3>
+            <p class="card-desc">Học sinh không biết được giá dịch vụ để cân đối chi tiêu</p>
+          </div>
+          <div class="card card-problem">
+            <div class="card-icon"><span class="material-icons">help_outline</span></div>
+            <h3 class="card-title">Thiếu hỗ trợ</h3>
+            <p class="card-desc">Không có kênh hỏi đáp tự động 24/7</p>
+          </div>
+        </div>
+        <div class="info-box">
+          <p>Làm sao để <strong>giải quyết</strong> những vấn đề này?</p>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide center">
+        <div class="badge">SINH VIÊN THỰC HIỆN</div>
+        <h2 class="title">Thông Tin Đề Tài</h2>
+        <p class="subtitle">Bài thi kỹ năng nghề</p>
+        <div class="student-info">
+          <div class="avatar"><span class="material-icons">person</span></div>
+          <h3 class="student-name">Trần Tuấn Tú</h3>
+          <div class="student-details">
+            <p><strong>Mã sinh viên:</strong> 6160285</p>
+            <p><strong>Lớp:</strong> CNTT K20</p>
+            <p><strong>Giáo viên hướng dẫn:</strong> Vũ Quốc Cường</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">GIẢI PHÁP ĐỀ XUẤT</div>
+          <h2 class="title">Ý Tưởng Giải Quyết</h2>
+          <p class="subtitle">Một nền tảng tích hợp tất cả</p>
+        </div>
+        <div class="grid-2">
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">lightbulb</span></div>
+            <h3 class="card-title">Tập trung mọi thứ</h3>
+            <p class="card-desc">Một trang web duy nhất cho: Dịch vụ • Lịch học • Hỗ trợ</p>
+          </div>
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">auto_awesome</span></div>
+            <h3 class="card-title">Tự động hóa</h3>
+            <p class="card-desc">Chuyển đổi file PDF tự động, Chatbot AI thông minh</p>
+          </div>
+        </div>
+        <div class="info-box">
+          <h3>Website Học Vụ CTECH</h3>
+          <p>Nền tảng quản lý học vụ và dịch vụ sinh viên</p>
+        </div>
+      </div>
+
+      <!-- Slide 5 -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">TỔNG QUAN</div>
+          <h2 class="title">3 Tính Năng Chính</h2>
+          <p class="subtitle">Hướng đến học sinh - sinh viên</p>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">store</span></div>
+            <h3 class="card-title">Dịch Vụ</h3>
+            <p class="card-desc">Tra cứu • Thanh toán<br>Quản lý dịch vụ SV</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">calendar_month</span></div>
+            <h3 class="card-title">Lịch Trình</h3>
+            <p class="card-desc">Upload PDF → Web<br>Giao diện trực quan</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">support_agent</span></div>
+            <h3 class="card-title">Hỗ Trợ</h3>
+            <p class="card-desc">Chatbot AI 24/7<br>Trả lời tự động</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6 -->
+      <div class="slide center">
+        <div class="badge">TÍNH NĂNG #1</div>
+        <h2 class="title">Dịch Vụ Online</h2>
+        <p class="subtitle">Quản lý tập trung các dịch vụ sinh viên</p>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">directions_bike</span></div>
+            <h3 class="card-title">Gửi Xe</h3>
+            <p class="card-desc">Vé gửi xe ngày và tháng</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">restaurant</span></div>
+            <h3 class="card-title">Căn Tin</h3>
+            <p class="card-desc">Xuất ăn căn tin</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">school</span></div>
+            <h3 class="card-title">Đồ Học Tập</h3>
+            <p class="card-desc">Mượn thiết bị, dụng cụ</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">admin_panel_settings</span></div>
+            <h3 class="card-title">Quản Trị</h3>
+            <p class="card-desc">Thêm, sửa, xóa dịch vụ</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7 -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">DEMO #1</div>
+          <h2 class="title">Giao Diện Dịch Vụ</h2>
+          <p class="subtitle">Phân loại rõ ràng, dễ sử dụng</p>
+        </div>
+        <div class="demo">
+          <h4>Danh sách dịch vụ</h4>
+          <p><strong>SV001</strong> - Vé gửi xe ngày (Hoạt động)</p>
+          <p><strong>SV002</strong> - Vé gửi xe tháng (Hoạt động)</p>
+          <p><strong>SV003</strong> - Xuất ăn căn tin (Hoạt động)</p>
+        </div>
+        <p class="description">Sinh viên có thể tra cứu, xem giá và thanh toán trực tuyến</p>
+      </div>
+
+      <!-- Slide 8 -->
+      <div class="slide center">
+        <div class="badge">TÍNH NĂNG #2</div>
+        <h2 class="title">Lịch Trình TKB</h2>
+        <p class="subtitle">Chuyển đổi file PDF thành giao diện đẹp</p>
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">upload_file</span></div>
+            <h3 class="card-title">Upload File</h3>
+            <p class="card-desc">PDF từ Sở GD</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">auto_fix_high</span></div>
+            <h3 class="card-title">Tự Động</h3>
+            <p class="card-desc">Parse và chuyển đổi</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">calendar_view_week</span></div>
+            <h3 class="card-title">Hiển Thị</h3>
+            <p class="card-desc">Giao diện trực quan</p>
+          </div>
+        </div>
+        <div class="quote">
+          <p>File PDF khó đọc <strong>→</strong> Web đẹp, dễ dùng</p>
+        </div>
+      </div>
+
+      <!-- Slide 9 - Demo TKB (With Animation) -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge" id="tkb-badge">VẤN ĐỀ</div>
+          <h2 class="title" id="tkb-title">TKB Của Sở GD</h2>
+          <p class="subtitle" id="tkb-subtitle">Khó tra cứu cho người mới</p>
+        </div>
+        <div class="comparison-container" id="comparison">
+          <div class="comparison-label before">TKB Sở GD (Trước)</div>
+          <div class="comparison-label after">TKB Website (Sau)</div>
+          <img src="/img/TKB/tkb-moi.png" alt="TKB mới" style="display: block;">
+          <div class="comparison-before">
+            <img src="/img/TKB/tkb-cu.png" alt="TKB cũ">
+          </div>
+          <div class="comparison-slider" id="slider"></div>
+        </div>
+        <p class="description center" id="tkb-desc" style="font-size: 18px; font-weight: 600; color: #dc2626;">
+          ❌ Bảng phức tạp, nhiều thông tin • Dễ gây nhầm lẫn • Khó tra cứu nhanh
+        </p>
+        <div style="display: flex; justify-content: center; gap: 16px; margin-top: 20px;">
+          <button class="nav-btn" onclick="animateTKB('before')" style="padding: 10px 20px;">
+            <span class="material-icons">arrow_back</span> Trước
+          </button>
+          <button class="nav-btn" onclick="animateTKB('compare')" style="padding: 10px 20px;">
+            <span class="material-icons">compare_arrows</span> So sánh
+          </button>
+          <button class="nav-btn" onclick="animateTKB('after')" style="padding: 10px 20px;">
+            Sau <span class="material-icons">arrow_forward</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Slide 10 -->
+      <div class="slide center">
+        <div class="badge">TÍNH NĂNG #3</div>
+        <h2 class="title">Chatbot AI</h2>
+        <p class="subtitle">Trợ lý ảo thông minh 24/7</p>
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">psychology</span></div>
+            <h3 class="card-title">AI Thông Minh</h3>
+            <p class="card-desc">Hiểu ngữ cảnh, trả lời chính xác</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">schedule</span></div>
+            <h3 class="card-title">24/7</h3>
+            <p class="card-desc">Luôn trực, không bao giờ ngủ</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">forum</span></div>
+            <h3 class="card-title">Đa Năng</h3>
+            <p class="card-desc">Tuyển sinh • Học phí • Dịch vụ</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 11 -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">DEMO #3</div>
+          <h2 class="title">Giao Diện Chatbot</h2>
+          <p class="subtitle">Hỏi đáp tự động</p>
+        </div>
+        <div class="demo">
+          <h4>Ví dụ hội thoại:</h4>
+          <p><strong>Học sinh:</strong> Học phí học kỳ này là bao nhiêu?</p>
+          <p><strong>Chatbot:</strong> Học phí 1 kỳ là 10.000.000đ (5 tháng). Bạn có thể thanh toán qua trang Dịch vụ.</p>
+          <br>
+          <p><strong>Học sinh:</strong> Làm sao để xem lịch học?</p>
+          <p><strong>Chatbot:</strong> Vào trang Lịch trình, upload file TKB từ Sở GD. Hệ thống sẽ tự động hiển thị lịch học.</p>
+        </div>
+      </div>
+
+      <!-- Slide 12 -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">TÁC ĐỘNG</div>
+          <h2 class="title">Lợi Ích Mang Lại</h2>
+          <p class="subtitle">Cho học sinh - sinh viên</p>
+        </div>
+        <div class="grid-2">
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">speed</span></div>
+            <h3 class="card-title">Tiết Kiệm Thời Gian</h3>
+            <p class="card-desc">Tra cứu nhanh, không phải đi nhiều nơi</p>
+          </div>
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">visibility</span></div>
+            <h3 class="card-title">Dễ Sử Dụng</h3>
+            <p class="card-desc">Giao diện trực quan, thân thiện</p>
+          </div>
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">devices</span></div>
+            <h3 class="card-title">Đa Nền Tảng</h3>
+            <p class="card-desc">Hoạt động tốt trên PC và điện thoại</p>
+          </div>
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">palette</span></div>
+            <h3 class="card-title">Tùy Chỉnh Theme</h3>
+            <p class="card-desc">Hỗ trợ giao diện sáng/tối</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 13 -->
+      <div class="slide center">
+        <div class="badge">KẾT THÚC BÀI THUYẾT TRÌNH</div>
+        <h2 class="title">Trân Trọng Cảm Ơn!</h2>
+        <p class="subtitle">Quý thầy cô và hội đồng giám khảo đã theo dõi</p>
+        <div class="avatar" style="margin: 20px auto;">
+          <span class="material-icons">done_all</span>
+        </div>
+        <p class="description">
+          Em xin chân thành cảm ơn quý thầy cô<br>
+          và hội đồng giám khảo đã dành thời gian<br>
+          theo dõi và đánh giá bài thi của em
+        </p>
+        <div class="student-info" style="max-width: 500px;">
+          <div class="student-details center">
+            <p><strong>Giáo viên hướng dẫn:</strong> Vũ Quốc Cường</p>
+            <p><strong>Sinh viên thực hiện:</strong> Trần Tuấn Tú</p>
+          </div>
+        </div>
+        <div class="info-box">
+          <h3>Phần Hỏi Đáp</h3>
+          <p>Kính mời quý thầy cô và hội đồng giám khảo đặt câu hỏi</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <button class="nav-btn" id="prevBtn" onclick="prevSlide()">
+        <span class="material-icons">navigate_before</span> Trước
+      </button>
+      <div class="progress">
+        <div class="slide-counter"><span id="current">1</span> / <span id="total">13</span></div>
+        <div class="dots" id="dots"></div>
+      </div>
+      <button class="nav-btn" id="nextBtn" onclick="nextSlide()">
+        Tiếp <span class="material-icons">navigate_next</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const dotsContainer = document.getElementById('dots');
+    const currentSpan = document.getElementById('current');
+    const timerSpan = document.getElementById('timer');
+    let startTime = Date.now();
+
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      dot.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+
+    function updateSlides() {
+      slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+      });
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+      });
+      currentSpan.textContent = currentSlide + 1;
+      document.getElementById('prevBtn').disabled = currentSlide === 0;
+      document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) { currentSlide++; updateSlides(); }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) { currentSlide--; updateSlides(); }
+    }
+
+    function goToSlide(index) {
+      currentSlide = index; updateSlides();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const minutes = Math.floor(elapsed / 60);
+      const seconds = elapsed % 60;
+      timerSpan.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }, 1000);
+
+    // TKB Animation Function
+    function animateTKB(mode) {
+      const badge = document.getElementById('tkb-badge');
+      const title = document.getElementById('tkb-title');
+      const subtitle = document.getElementById('tkb-subtitle');
+      const desc = document.getElementById('tkb-desc');
+      const beforeImg = document.querySelector('.comparison-before');
+      const sliderEl = document.getElementById('slider');
+
+      let targetPosition = 50;
+
+      if (mode === 'before') {
+        // Show TKB cũ (full left)
+        targetPosition = 100;
+        badge.textContent = 'VẤN ĐỀ';
+        badge.style.background = '#dc2626';
+        title.textContent = 'TKB Của Sở GD';
+        subtitle.textContent = 'Khó tra cứu cho người mới';
+        desc.innerHTML = '❌ Bảng phức tạp, nhiều thông tin • Dễ gây nhầm lẫn • Khó tra cứu nhanh';
+        desc.style.color = '#dc2626';
+      } else if (mode === 'compare') {
+        // Show comparison (middle)
+        targetPosition = 50;
+        badge.textContent = 'GIẢI PHÁP';
+        badge.style.background = '#0047ab';
+        title.textContent = 'Công Cụ Chuyển Đổi TKB';
+        subtitle.textContent = 'Tự động chuyển đổi từ PDF của Sở GD';
+        desc.innerHTML = '🔄 Kéo thanh để so sánh • Chuyển đổi tự động từ file PDF';
+        desc.style.color = '#0047ab';
+      } else if (mode === 'after') {
+        // Show TKB mới (full right)
+        targetPosition = 0;
+        badge.textContent = 'KẾT QUẢ';
+        badge.style.background = '#22c55e';
+        title.textContent = 'TKB Sau Chuyển Đổi';
+        subtitle.textContent = 'Trực quan, dễ sử dụng';
+        desc.innerHTML = '✅ Giao diện trực quan • Màu sắc phân biệt • Dễ tra cứu môn học';
+        desc.style.color = '#22c55e';
+      }
+
+      // Animate slider
+      let currentPos = parseFloat(beforeImg.style.width) || 50;
+      const duration = 800;
+      const startTime = Date.now();
+
+      function animate() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+
+        const newPos = currentPos + (targetPosition - currentPos) * easeProgress;
+        beforeImg.style.width = newPos + '%';
+        sliderEl.style.left = newPos + '%';
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      animate();
+    }
+
+    // Image Comparison Slider
+    const comparison = document.getElementById('comparison');
+    const slider = document.getElementById('slider');
+    const beforeImage = comparison?.querySelector('.comparison-before');
+
+    if (comparison && slider && beforeImage) {
+      // Initialize at 100% (showing TKB cũ full)
+      beforeImage.style.width = '100%';
+      slider.style.left = '100%';
+
+      let isDragging = false;
+
+      function updateSlider(x) {
+        const rect = comparison.getBoundingClientRect();
+        const position = ((x - rect.left) / rect.width) * 100;
+        const clampedPosition = Math.max(0, Math.min(100, position));
+
+        beforeImage.style.width = clampedPosition + '%';
+        slider.style.left = clampedPosition + '%';
+      }
+
+      // Mouse events
+      slider.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        updateSlider(e.clientX);
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // Touch events for mobile
+      slider.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        e.preventDefault();
+      });
+
+      document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        updateSlider(touch.clientX);
+      });
+
+      document.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+
+      // Click anywhere on comparison to move slider
+      comparison.addEventListener('click', (e) => {
+        updateSlider(e.clientX);
+      });
+    }
+
+    updateSlides();
+    document.getElementById('total').textContent = totalSlides;
+  </script>
+</body>
+</html>
