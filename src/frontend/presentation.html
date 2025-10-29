@@ -1447,97 +1447,39 @@
           </div>
 
           <!-- Hero Section -->
-          <div style="background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); padding: 32px 40px; border-bottom: 2px solid #e0e7ff;">
+          <div style="background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); padding: 28px 40px 20px; border-bottom: none;">
             <div style="max-width: 1400px; margin: 0 auto;">
-              <h1 style="font-size: 36px; font-weight: 700; color: #0f172a; margin: 0 0 12px 0;">Dịch Vụ Sinh Viên</h1>
-              <p style="font-size: 17px; color: #64748b; margin: 0 0 24px 0;">Tra cứu và thanh toán các dịch vụ một cách nhanh chóng, tiện lợi</p>
-
-              <!-- Search Bar -->
-              <div style="display: flex; gap: 12px; max-width: 700px;">
-                <div style="flex: 1; background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                  <span class="material-icons" style="color: #94a3b8; font-size: 24px;">search</span>
-                  <span style="color: #94a3b8; font-size: 16px;">Tìm kiếm dịch vụ...</span>
-                </div>
-                <button style="background: linear-gradient(135deg, #0047ab, #003380); color: white; border: none; padding: 14px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 71, 171, 0.3);">Tìm kiếm</button>
-              </div>
+              <h1 style="font-size: 32px; font-weight: 800; color: #0f172a; margin: 0 0 8px 0; background: linear-gradient(135deg, #0047ab, #003380); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Truy cập kho dịch vụ số của CTECH</h1>
+              <p style="font-size: 15px; color: #64748b; margin: 0 0 20px 0;">Đồng bộ dữ liệu trực tiếp từ API dịch vụ để tra cứu, theo dõi và nhận mã thanh toán một cách minh bạch.</p>
 
               <!-- Category Tabs -->
-              <div style="display: flex; gap: 12px; margin-top: 24px;">
-                <div style="padding: 10px 20px; background: linear-gradient(135deg, #0047ab, #003380); color: white; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 71, 171, 0.3);">Tất cả</div>
-                <div style="padding: 10px 20px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;">Gửi xe</div>
-                <div style="padding: 10px 20px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;">Căn tin</div>
-                <div style="padding: 10px 20px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;">Học tập</div>
+              <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <div style="padding: 8px 16px; background: linear-gradient(135deg, #0047ab, #003380); color: white; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 71, 171, 0.3);">Tất cả</div>
+                <div style="padding: 8px 16px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">Canteen</div>
+                <div style="padding: 8px 16px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">Gửi Xe</div>
               </div>
             </div>
           </div>
 
+          <!-- Controls Section -->
+          <div style="background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); padding: 20px 40px 28px; border-bottom: 2px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+            <div style="max-width: 1400px; margin: 0 auto; display: flex; gap: 12px; align-items: center;">
+              <div style="flex: 1; background: white; border: 2px solid #e2e8f0; border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <span class="material-icons" style="color: #94a3b8; font-size: 20px;">search</span>
+                <span style="color: #94a3b8; font-size: 15px;">Nhập mã, tên hoặc mô tả dịch vụ...</span>
+              </div>
+              <button style="background: linear-gradient(135deg, #0047ab, #003380); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 71, 171, 0.15);">Tìm dịch vụ</button>
+              <button style="background: white; color: #64748b; border: 2px solid #e2e8f0; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;">Tải lại</button>
+              <div style="color: #64748b; font-size: 14px; margin-left: 12px;">Đã tải <strong style="color: #0047ab;" id="services-count">0</strong> dịch vụ từ API.</div>
+            </div>
+          </div>
+
           <!-- Services Grid -->
-          <div style="flex: 1; overflow-y: auto; padding: 32px 40px; background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);">
-            <div style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
-              <!-- Service Card 1 -->
-              <div class="web-service-card" onclick="openServiceModal('SV001', 'Vé gửi xe ngày', '5.000đ', 'Hoạt động', 'Vé gửi xe một ngày cho học sinh, sinh viên. Giá cả phải chăng, thuận tiện cho việc đi lại hàng ngày.', 'Gửi xe', '20/01/2025', '')">
-                <div class="web-service-header">
-                  <div class="web-service-code">SV001</div>
-                  <div class="web-service-status">Hoạt động</div>
-                </div>
-                <div class="web-service-name">Vé gửi xe ngày</div>
-                <div class="web-service-price">5.000đ</div>
-                <div class="web-service-desc">Vé gửi xe một ngày cho học sinh, sinh viên</div>
-              </div>
-
-              <!-- Service Card 2 -->
-              <div class="web-service-card" onclick="openServiceModal('SV002', 'Vé gửi xe tháng', '100.000đ', 'Hoạt động', 'Vé gửi xe trọn tháng tiết kiệm hơn. Chỉ 100.000đ cho cả tháng, tiết kiệm 33% so với mua vé ngày.', 'Gửi xe', '20/01/2025', '')">
-                <div class="web-service-header">
-                  <div class="web-service-code">SV002</div>
-                  <div class="web-service-status">Hoạt động</div>
-                </div>
-                <div class="web-service-name">Vé gửi xe tháng</div>
-                <div class="web-service-price">100.000đ</div>
-                <div class="web-service-desc">Vé gửi xe trọn tháng tiết kiệm hơn</div>
-              </div>
-
-              <!-- Service Card 3 -->
-              <div class="web-service-card" onclick="openServiceModal('SV003', 'Xuất ăn căn tin', '35.000đ', 'Hoạt động', 'Bao gồm 1 xuất ăn tại căn tin trường vào buổi trưa hoặc tối. Thực đơn đa dạng, đảm bảo dinh dưỡng cho sinh viên.', 'Căn tin', '20/01/2025', '')">
-                <div class="web-service-header">
-                  <div class="web-service-code">SV003</div>
-                  <div class="web-service-status">Hoạt động</div>
-                </div>
-                <div class="web-service-name">Xuất ăn căn tin</div>
-                <div class="web-service-price">35.000đ</div>
-                <div class="web-service-desc">Suất ăn trưa hoặc tối tại căn tin trường</div>
-              </div>
-
-              <!-- Service Card 4 -->
-              <div class="web-service-card" onclick="openServiceModal('SV004', 'Mượn thiết bị', 'Miễn phí', 'Hoạt động', 'Mượn dụng cụ học tập, thiết bị thí nghiệm. Hoàn toàn miễn phí cho sinh viên đang học.', 'Học tập', '20/01/2025', '')">
-                <div class="web-service-header">
-                  <div class="web-service-code">SV004</div>
-                  <div class="web-service-status">Hoạt động</div>
-                </div>
-                <div class="web-service-name">Mượn thiết bị</div>
-                <div class="web-service-price">0đ</div>
-                <div class="web-service-desc">Mượn dụng cụ học tập, thí nghiệm</div>
-              </div>
-
-              <!-- Service Card 5 -->
-              <div class="web-service-card" onclick="openServiceModal('SV005', 'Đăng ký thư viện', '50.000đ', 'Hoạt động', 'Thẻ thư viện năm học. Truy cập hàng nghìn đầu sách, tài liệu học tập và nghiên cứu.', 'Học tập', '20/01/2025', '')">
-                <div class="web-service-header">
-                  <div class="web-service-code">SV005</div>
-                  <div class="web-service-status">Hoạt động</div>
-                </div>
-                <div class="web-service-name">Đăng ký thư viện</div>
-                <div class="web-service-price">50.000đ</div>
-                <div class="web-service-desc">Thẻ thư viện năm học</div>
-              </div>
-
-              <!-- Service Card 6 -->
-              <div class="web-service-card" onclick="openServiceModal('SV006', 'In ấn tài liệu', '2.000đ/trang', 'Hoạt động', 'In tài liệu học tập, báo cáo. Chất lượng tốt, giá cả hợp lý cho sinh viên.', 'Học tập', '20/01/2025', '')">
-                <div class="web-service-header">
-                  <div class="web-service-code">SV006</div>
-                  <div class="web-service-status">Hoạt động</div>
-                </div>
-                <div class="web-service-name">In ấn tài liệu</div>
-                <div class="web-service-price">2.000đ/trang</div>
-                <div class="web-service-desc">In tài liệu học tập, báo cáo</div>
+          <div style="flex: 1; overflow-y: auto; padding: 28px 40px; background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);">
+            <div id="services-grid-container" style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+              <!-- Services will be loaded from API -->
+              <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #94a3b8; font-size: 16px;">
+                <div style="margin-bottom: 12px;">⏳ Đang tải dịch vụ từ API...</div>
               </div>
             </div>
           </div>
@@ -2262,6 +2204,85 @@
       }
     });
 
+    // ==================== SERVICE API & DATA ====================
+    let servicesData = [];
+
+    async function fetchServicesFromAPI() {
+      try {
+        const response = await fetch('/api/services');
+        if (!response.ok) {
+          throw new Error('Failed to fetch services');
+        }
+        const data = await response.json();
+        servicesData = Array.isArray(data.services) ? data.services : [];
+        return servicesData;
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        return [];
+      }
+    }
+
+    function renderServiceCards() {
+      const gridContainer = document.getElementById('services-grid-container');
+      if (!gridContainer) return;
+
+      // Clear existing cards
+      gridContainer.innerHTML = '';
+
+      // Render services from API
+      servicesData.forEach((service) => {
+        const card = document.createElement('div');
+        card.className = 'web-service-card';
+        card.setAttribute('data-service-code', service.serviceCode);
+
+        const hasImage = service.imageUrl && service.imageUrl.trim() !== '';
+        const imageHtml = hasImage
+          ? `<img src="${service.imageUrl}" alt="${service.name}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;" onerror="this.onerror=null; this.src='/img/services/placeholder-ticket.svg';">`
+          : `<img src="/img/services/placeholder-ticket.svg" alt="Service placeholder" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">`;
+
+        const statusText = service.isActive ? 'Hoạt động' : 'Tạm dừng';
+        const price = service.price != null ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price) : 'Liên hệ';
+        const categoryBadge = service.category ? `<div style="display: inline-block; margin-top: 4px; padding: 4px 10px; font-size: 12px; font-weight: 700; color: #0047ab; background: #eff6ff; border-radius: 6px;">${service.category}</div>` : '';
+
+        card.innerHTML = `
+          ${imageHtml}
+          <div class="web-service-header">
+            <div>
+              <div class="web-service-name">${service.name}</div>
+              ${categoryBadge}
+            </div>
+            <div class="web-service-status">${statusText}</div>
+          </div>
+          <div class="web-service-desc">${service.description || 'Chưa có mô tả'}</div>
+          <div style="margin-top: 8px;">
+            <div style="font-size: 13px; color: #64748b;">Mã: ${service.serviceCode}</div>
+            <div class="web-service-price" style="font-size: 18px; font-weight: 800; color: #0047ab; background: linear-gradient(135deg, #0047ab, #003380); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Giá: ${price}</div>
+          </div>
+        `;
+
+        card.onclick = () => {
+          openServiceModal(
+            service.serviceCode,
+            service.name,
+            price,
+            statusText,
+            service.description || 'Chưa có mô tả',
+            service.category || '',
+            new Date(service.updatedAt || service.createdAt).toLocaleDateString('vi-VN'),
+            service.imageUrl || ''
+          );
+        };
+
+        gridContainer.appendChild(card);
+      });
+
+      // Update service count
+      const countElement = document.getElementById('services-count');
+      if (countElement) {
+        countElement.textContent = servicesData.length;
+      }
+    }
+
     // ==================== SERVICE DEMO ANIMATION ====================
     const SERVICE_SLIDE_INDEX = 6; // Slide 7 (index 6)
     let serviceAnimationRunning = false;
@@ -2273,9 +2294,12 @@
 
       const cursor = document.getElementById('fakeCursor');
       const serviceCards = document.querySelectorAll('.web-service-card');
-      const canteenCard = serviceCards[2]; // Third card - Xuất ăn căn tin
 
-      if (!cursor || !canteenCard) {
+      // Randomly select a service card from the first row
+      const randomIndex = Math.floor(Math.random() * Math.min(serviceCards.length, 4));
+      const selectedCard = serviceCards[randomIndex];
+
+      if (!cursor || !selectedCard) {
         serviceAnimationRunning = false;
         return;
       }
@@ -2293,8 +2317,8 @@
         cursor.classList.add('active');
         await delay(500);
 
-        // Step 2: Move cursor to canteen card
-        const cardRect = canteenCard.getBoundingClientRect();
+        // Step 2: Move cursor to selected card
+        const cardRect = selectedCard.getBoundingClientRect();
         const targetX = cardRect.left + cardRect.width / 2;
         const targetY = cardRect.top + cardRect.height / 2;
 
@@ -2306,17 +2330,8 @@
         await delay(300);
         cursor.classList.remove('clicking');
 
-        // Step 4: Open modal (Xuất ăn căn tin - SV003)
-        openServiceModal(
-          'SV003',
-          'Xuất ăn căn tin',
-          '35.000đ',
-          'Hoạt động',
-          'Bao gồm 1 xuất ăn tại căn tin trường vào buổi trưa hoặc tối. Thực đơn đa dạng, đảm bảo dinh dưỡng cho sinh viên.',
-          'Căn tin',
-          '20/01/2025',
-          ''
-        );
+        // Step 4: Open modal for selected card (trigger click)
+        selectedCard.click();
 
         await delay(800);
 
@@ -2785,7 +2800,12 @@
 
       // Start service animation when entering slide 7
       if (currentSlide === SERVICE_SLIDE_INDEX) {
-        setTimeout(() => {
+        setTimeout(async () => {
+          // Load services from API if not already loaded
+          if (servicesData.length === 0) {
+            await fetchServicesFromAPI();
+            renderServiceCards();
+          }
           runServiceDemoAnimation();
         }, 500);
       }
@@ -2801,7 +2821,10 @@
 
     // Start animation if already on service slide
     if (currentSlide === SERVICE_SLIDE_INDEX) {
-      setTimeout(() => {
+      setTimeout(async () => {
+        // Load services from API
+        await fetchServicesFromAPI();
+        renderServiceCards();
         runServiceDemoAnimation();
       }, 500);
     }

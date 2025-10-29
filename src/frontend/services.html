@@ -574,8 +574,8 @@
               : '';
 
             const serviceImage = service.imageUrl
-              ? `<img src="${escapeHtml(service.imageUrl)}" alt="${escapeHtml(service.name)}" class="service-card__image" />`
-              : '';
+              ? `<img src="${escapeHtml(service.imageUrl)}" alt="${escapeHtml(service.name)}" class="service-card__image" onerror="this.onerror=null; this.src='/img/services/placeholder-ticket.svg';" />`
+              : `<img src="/img/services/placeholder-ticket.svg" alt="Service placeholder" class="service-card__image" />`;
 
             button.innerHTML = `
               ${editButton}
@@ -670,8 +670,8 @@
           const canPurchase = isLoggedIn && service.isActive && (role === 'teacher' || role === 'student');
 
           const serviceImage = service.imageUrl
-            ? `<img src="${escapeHtml(service.imageUrl)}" alt="${escapeHtml(service.name)}" class="service-detail__image" />`
-            : '';
+            ? `<img src="${escapeHtml(service.imageUrl)}" alt="${escapeHtml(service.name)}" class="service-detail__image" onerror="this.onerror=null; this.src='/img/services/placeholder-ticket.svg';" />`
+            : `<img src="/img/services/placeholder-ticket.svg" alt="Service placeholder" class="service-detail__image" />`;
 
           detailEl.innerHTML = `
             <header class="service-detail__header">
