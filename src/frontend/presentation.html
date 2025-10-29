@@ -487,6 +487,9 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.3);
       animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
+    .service-modal-content.wide {
+      max-width: 1100px;
+    }
     @keyframes slideUp {
       from {
         opacity: 0;
@@ -525,6 +528,17 @@
     }
     .service-modal-body {
       padding: 24px;
+    }
+    .service-modal-body.has-image {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .service-modal-body.has-image {
+        grid-template-columns: 1fr;
+      }
     }
     .service-detail-code {
       background: #eff6ff;
@@ -569,6 +583,17 @@
       border-radius: 12px;
       margin-top: 20px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .service-modal-body.has-image .service-detail-image {
+      margin-top: 0;
+      position: sticky;
+      top: 0;
+      height: fit-content;
+      grid-column: 1;
+      grid-row: 1 / -1;
+    }
+    .service-modal-body.has-image .service-detail-content {
+      grid-column: 2;
     }
     .service-detail-info {
       background: #f8fafc;
@@ -1045,7 +1070,7 @@
     }
     @keyframes confetti-fall {
       0% {
-        transform: translateY(-100vh) rotate(0deg);
+        transform: translateY(-150vh) rotate(0deg);
         opacity: 1;
       }
       100% {
@@ -1500,56 +1525,58 @@
               </button>
             </div>
             <div class="service-modal-body">
-              <p class="service-detail-desc" id="modalDesc">Mô tả dịch vụ</p>
-
-              <div class="service-detail-info">
-                <div class="service-detail-info-item">
-                  <span class="material-icons">category</span>
-                  <span><strong>Danh mục:</strong> <span id="modalCategory">Gửi xe</span></span>
-                </div>
-                <div class="service-detail-info-item">
-                  <span class="material-icons">schedule</span>
-                  <span><strong>Cập nhật:</strong> <span id="modalDate">20/01/2025</span></span>
-                </div>
-                <div class="service-detail-info-item">
-                  <span class="material-icons">info</span>
-                  <span><strong>Trạng thái:</strong> Đang hoạt động</span>
-                </div>
-              </div>
-
               <img id="modalImage" class="service-detail-image" src="" alt="Service Image" style="display: none;">
 
-              <!-- Payment Button -->
-              <button class="payment-button" id="paymentButton" style="display: none;">
-                <span class="material-icons">payment</span>
-                <span>Thanh toán</span>
-              </button>
+              <div class="service-detail-content">
+                <p class="service-detail-desc" id="modalDesc">Mô tả dịch vụ</p>
 
-              <!-- Payment Section -->
-              <div class="payment-section" id="paymentSection">
-                <div class="payment-qr-container">
-                  <h3 class="payment-qr-title">Quét mã QR để thanh toán</h3>
-                  <div class="payment-qr-code">
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=CTECH-PAY-SV003-35000-CANTEEN" alt="QR Code">
-                    <!-- Loading Spinner -->
-                    <div class="payment-loading" id="paymentLoading">
-                      <div class="payment-spinner"></div>
-                    </div>
-                    <!-- Success Check Mark -->
-                    <div class="payment-success" id="paymentSuccess">
-                      <span class="material-icons">check_circle</span>
-                    </div>
+                <div class="service-detail-info">
+                  <div class="service-detail-info-item">
+                    <span class="material-icons">category</span>
+                    <span><strong>Danh mục:</strong> <span id="modalCategory">Gửi xe</span></span>
                   </div>
-                  <p style="color: #64748b; font-size: 14px;">Sử dụng ứng dụng ngân hàng để quét mã</p>
+                  <div class="service-detail-info-item">
+                    <span class="material-icons">schedule</span>
+                    <span><strong>Cập nhật:</strong> <span id="modalDate">20/01/2025</span></span>
+                  </div>
+                  <div class="service-detail-info-item">
+                    <span class="material-icons">info</span>
+                    <span><strong>Trạng thái:</strong> Đang hoạt động</span>
+                  </div>
                 </div>
 
-                <!-- Payment Code -->
-                <div class="payment-code-display" id="paymentCode">
-                  <div class="payment-code-label">Mã thanh toán</div>
-                  <div class="payment-code-value">PAY-2025-CT-035</div>
-                  <div class="payment-status">
-                    <span class="material-icons">check_circle</span>
-                    <span>Thanh toán thành công</span>
+                <!-- Payment Button -->
+                <button class="payment-button" id="paymentButton" style="display: none;">
+                  <span class="material-icons">payment</span>
+                  <span>Thanh toán</span>
+                </button>
+
+                <!-- Payment Section -->
+                <div class="payment-section" id="paymentSection">
+                  <div class="payment-qr-container">
+                    <h3 class="payment-qr-title">Quét mã QR để thanh toán</h3>
+                    <div class="payment-qr-code">
+                      <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=CTECH-PAY-SV003-35000-CANTEEN" alt="QR Code">
+                      <!-- Loading Spinner -->
+                      <div class="payment-loading" id="paymentLoading">
+                        <div class="payment-spinner"></div>
+                      </div>
+                      <!-- Success Check Mark -->
+                      <div class="payment-success" id="paymentSuccess">
+                        <span class="material-icons">check_circle</span>
+                      </div>
+                    </div>
+                    <p style="color: #64748b; font-size: 14px;">Sử dụng ứng dụng ngân hàng để quét mã</p>
+                  </div>
+
+                  <!-- Payment Code -->
+                  <div class="payment-code-display" id="paymentCode">
+                    <div class="payment-code-label">Mã thanh toán</div>
+                    <div class="payment-code-value">PAY-2025-CT-035</div>
+                    <div class="payment-status">
+                      <span class="material-icons">check_circle</span>
+                      <span>Thanh toán thành công</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2159,6 +2186,8 @@
     // Service Modal Functions
     function openServiceModal(code, name, price, status, desc, category, date, imageUrl) {
       const modal = document.getElementById('serviceModal');
+      const modalContent = modal.querySelector('.service-modal-content');
+      const modalBody = modal.querySelector('.service-modal-body');
 
       // Update modal content
       document.getElementById('modalCode').textContent = code;
@@ -2169,13 +2198,19 @@
       document.getElementById('modalCategory').textContent = category;
       document.getElementById('modalDate').textContent = date;
 
-      // Handle image
+      // Handle image and 2-column layout
       const imageEl = document.getElementById('modalImage');
-      if (imageUrl && imageUrl.trim() !== '') {
+      const hasImage = imageUrl && imageUrl.trim() !== '';
+
+      if (hasImage) {
         imageEl.src = imageUrl;
         imageEl.style.display = 'block';
+        modalBody.classList.add('has-image');
+        modalContent.classList.add('wide');
       } else {
         imageEl.style.display = 'none';
+        modalBody.classList.remove('has-image');
+        modalContent.classList.remove('wide');
       }
 
       // Show modal
@@ -2237,8 +2272,8 @@
 
         const hasImage = service.imageUrl && service.imageUrl.trim() !== '';
         const imageHtml = hasImage
-          ? `<img src="${service.imageUrl}" alt="${service.name}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;" onerror="this.onerror=null; this.src='/img/services/placeholder-ticket.svg';">`
-          : `<img src="/img/services/placeholder-ticket.svg" alt="Service placeholder" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;">`;
+          ? `<img src="${service.imageUrl}" alt="${service.name}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;" onerror="this.onerror=null; this.src='/img/services/placeholder-ticket.svg'; this.style.objectFit='contain'; this.style.padding='20px'; this.style.background='linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(22, 163, 74, 0.05))';">`
+          : `<img src="/img/services/placeholder-ticket.svg" alt="Service placeholder" style="width: 100%; height: 160px; object-fit: contain; padding: 20px; background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(22, 163, 74, 0.05)); border-radius: 8px; margin-bottom: 10px;">`;
 
         const statusText = service.isActive ? 'Hoạt động' : 'Tạm dừng';
         const price = service.price != null ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price) : 'Liên hệ';
@@ -2313,7 +2348,9 @@
         document.getElementById('paymentCode').classList.remove('active');
         document.getElementById('confettiContainer').classList.remove('active');
 
-        // Step 1: Show cursor
+        // Step 1: Position cursor at bottom-right corner and show it
+        cursor.style.left = window.innerWidth + 'px';
+        cursor.style.top = window.innerHeight + 'px';
         cursor.classList.add('active');
         await delay(500);
 
@@ -2397,8 +2434,8 @@
         confetti.className = 'confetti';
         confetti.style.left = Math.random() * 100 + '%';
         confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.animationDelay = Math.random() * 0.5 + 's';
-        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        confetti.style.animationDelay = Math.random() * 0.1 + 's';
+        confetti.style.animationDuration = (Math.random() * 1.5 + 2.5) + 's';
         container.appendChild(confetti);
       }
 
