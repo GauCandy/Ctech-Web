@@ -987,6 +987,14 @@
         <div class="quote">
           <p>Nền tảng quản lý học vụ và dịch vụ sinh viên<br>tích hợp thời khóa biểu, thanh toán và chatbot AI</p>
         </div>
+        <div class="info-box" style="max-width: 800px; margin: 32px auto 0;">
+          <h3>Giới thiệu đề tài</h3>
+          <p style="font-size: 18px; line-height: 1.6;">
+            Đề tài hướng đến việc xây dựng một nền tảng web tích hợp,<br>
+            giúp học sinh - sinh viên dễ dàng tra cứu thông tin học vụ,<br>
+            thanh toán dịch vụ và nhận hỗ trợ tự động qua AI
+          </p>
+        </div>
       </div>
 
       <!-- Slide 2 -->
@@ -1019,17 +1027,39 @@
       </div>
 
       <!-- Slide 3 -->
-      <div class="slide center">
-        <div class="badge">SINH VIÊN THỰC HIỆN</div>
-        <h2 class="title">Thông Tin Đề Tài</h2>
-        <p class="subtitle">Bài thi kỹ năng nghề</p>
-        <div class="student-info">
-          <div class="avatar"><span class="material-icons">person</span></div>
-          <h3 class="student-name">Trần Tuấn Tú</h3>
-          <div class="student-details">
-            <p><strong>Mã sinh viên:</strong> 6160285</p>
-            <p><strong>Lớp:</strong> TT601-K16</p>
-            <p><strong>Giáo viên hướng dẫn:</strong> Vũ Quốc Cường</p>
+      <div class="slide">
+        <div class="center" style="margin-bottom: 32px;">
+          <div class="badge">SINH VIÊN THỰC HIỆN</div>
+          <h2 class="title">Thông Tin Đề Tài</h2>
+          <p class="subtitle">Bài thi kỹ năng nghề</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; width: 100%; max-width: 1300px; margin: 0 auto;">
+          <!-- Left - Student Info -->
+          <div class="student-info" style="margin: 0;">
+            <div class="avatar"><span class="material-icons">person</span></div>
+            <h3 class="student-name">Trần Tuấn Tú</h3>
+            <div class="student-details" style="font-size: 18px;">
+              <p style="white-space: nowrap;"><strong>Mã sinh viên:</strong> 6160285</p>
+              <p style="white-space: nowrap;"><strong>Lớp:</strong> TT601-K16</p>
+              <p style="white-space: nowrap;"><strong>Giáo viên hướng dẫn:</strong> Vũ Quốc Cường</p>
+            </div>
+          </div>
+
+          <!-- Right - Project Info -->
+          <div style="display: flex; flex-direction: column; justify-content: center; gap: 24px;">
+            <div class="info-box" style="min-height: 85px; display: flex; flex-direction: column; justify-content: center;">
+              <h3>Loại đề tài</h3>
+              <p>Đề tài mở • Chủ đề: Hỗ trợ học vụ sinh viên</p>
+            </div>
+            <div class="info-box" style="min-height: 85px; display: flex; flex-direction: column; justify-content: center;">
+              <h3>Tên sản phẩm</h3>
+              <p>Website Học Vụ CTECH</p>
+            </div>
+            <div class="info-box" style="min-height: 85px; display: flex; flex-direction: column; justify-content: center;">
+              <h3>Công nghệ</h3>
+              <p>Node.js • Express • OpenAI GPT-4 • MySQL</p>
+            </div>
           </div>
         </div>
       </div>
@@ -1390,7 +1420,7 @@
             </div>
 
             <div class="quote" style="margin-top: 24px;">
-              <p style="font-size: 18px;"><strong>Animation thực tế</strong><br>Xem chatbot hoạt động như thế nào!</p>
+              <p style="font-size: 18px;"><strong>Demo thực tế</strong><br>Xem chatbot hoạt động như thế nào!</p>
             </div>
           </div>
 
@@ -1925,38 +1955,32 @@
       {
         type: 'user',
         name: 'Bạn',
-        message: 'Học phí học kỳ này là bao nhiêu?',
-        delay: 2000
+        message: 'Học phí học kỳ này là bao nhiêu?'
       },
       {
         type: 'bot',
         name: 'CTECH Bot',
-        message: 'Học phí 1 học kỳ là <strong>10.000.000đ</strong> (5 tháng). Bạn có thể lên phòng kế toán để thanh toán nhé! 💳',
-        delay: 2500
+        message: 'Học phí 1 học kỳ là <strong>10.000.000đ</strong> (5 tháng). Bạn có thể lên phòng kế toán để thanh toán nhé! 💳'
       },
       {
         type: 'user',
         name: 'Bạn',
-        message: 'Vé gửi xe giá bao nhiêu?',
-        delay: 2000
+        message: 'Vé gửi xe giá bao nhiêu?'
       },
       {
         type: 'bot',
         name: 'CTECH Bot',
-        message: 'Vé gửi xe có 2 loại:<br>🚲 Vé ngày: <strong>3.000đ</strong><br>🚲 Vé tháng: <strong>50.000đ</strong> (tiết kiệm 44%)<br>Bạn có thể thanh toán online!',
-        delay: 2500
+        message: 'Vé gửi xe có 2 loại:<br>🚲 Vé ngày: <strong>3.000đ</strong><br>🚲 Vé tháng: <strong>50.000đ</strong> (tiết kiệm 44%)<br>Bạn có thể thanh toán online!'
       },
       {
         type: 'user',
         name: 'Bạn',
-        message: 'Làm sao để xem lịch học?',
-        delay: 2000
+        message: 'Làm sao để xem lịch học?'
       },
       {
         type: 'bot',
         name: 'CTECH Bot',
-        message: 'Để xem lịch học, bạn làm như sau:<br>📅 Vào trang <strong>Lịch trình</strong><br>📄 Upload file TKB từ Bộ GD<br>✨ Hệ thống sẽ hiển thị tkb đã được biên dịch!',
-        delay: 2500
+        message: 'Để xem lịch học, bạn làm như sau:<br>📅 Vào trang <strong>Lịch trình</strong><br>📄 Upload file TKB từ Bộ GD<br>✨ Hệ thống sẽ hiển thị tkb đã được biên dịch!'
       }
     ];
 
@@ -2067,40 +2091,41 @@
       for (let i = 1; i < chatConversation.length; i++) {
         const conv = chatConversation[i];
 
-        // Wait for delay
-        await new Promise(resolve => {
-          chatAnimationTimeout = setTimeout(resolve, conv.delay);
-        });
-
-        // Show typing indicator for bot messages
-        if (conv.type === 'bot') {
-          const typingIndicator = createTypingIndicator();
-          chatMessages.appendChild(typingIndicator);
-
-          // Animate typing indicator
-          setTimeout(() => {
-            typingIndicator.classList.add('show');
-            scrollChatToBottom();
-          }, 50);
-
-          // Wait for typing duration
-          await new Promise(resolve => {
-            chatAnimationTimeout = setTimeout(resolve, 1500);
-          });
-
-          // Remove typing indicator
-          typingIndicator.remove();
-        }
-
-        // Add message
-        const messageElement = createChatMessage(conv.type, conv.name, conv.message);
-        chatMessages.appendChild(messageElement);
-
-        // Animate message
-        setTimeout(() => {
+        if (conv.type === 'user') {
+          // Show user message immediately
+          const messageElement = createChatMessage(conv.type, conv.name, conv.message);
+          chatMessages.appendChild(messageElement);
           messageElement.classList.add('show');
           scrollChatToBottom();
-        }, 50);
+
+          // Wait 400ms before showing typing indicator (realistic delay)
+          await new Promise(resolve => {
+            chatAnimationTimeout = setTimeout(resolve, 400);
+          });
+        } else {
+          // For bot messages: show typing indicator first
+          const typingIndicator = createTypingIndicator();
+          chatMessages.appendChild(typingIndicator);
+          typingIndicator.classList.add('show');
+          scrollChatToBottom();
+
+          // Wait 1800ms while AI is "thinking"
+          await new Promise(resolve => {
+            chatAnimationTimeout = setTimeout(resolve, 1800);
+          });
+
+          // Remove typing indicator and show bot message
+          typingIndicator.remove();
+          const messageElement = createChatMessage(conv.type, conv.name, conv.message);
+          chatMessages.appendChild(messageElement);
+          messageElement.classList.add('show');
+          scrollChatToBottom();
+
+          // Wait 2500ms for user to "read" the response before next question
+          await new Promise(resolve => {
+            chatAnimationTimeout = setTimeout(resolve, 2500);
+          });
+        }
       }
 
       chatAnimationRunning = false;
@@ -2151,13 +2176,11 @@
         scrollChatToBottom();
       }, 50);
 
-      // Show typing indicator
+      // Show typing indicator immediately
       const typingIndicator = createTypingIndicator();
       chatMessages.appendChild(typingIndicator);
-      setTimeout(() => {
-        typingIndicator.classList.add('show');
-        scrollChatToBottom();
-      }, 50);
+      typingIndicator.classList.add('show');
+      scrollChatToBottom();
 
       // Call API
       try {
