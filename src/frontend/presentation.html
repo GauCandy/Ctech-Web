@@ -679,9 +679,9 @@
     .chat-demo-messages {
       padding: 24px;
       background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-      height: 500px;
-      min-height: 500px;
-      max-height: 500px;
+      height: 620px;
+      min-height: 620px;
+      max-height: 620px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -847,12 +847,34 @@
     .chat-demo-send .material-icons {
       font-size: 24px;
     }
+    .chat-demo-input.disabled .chat-demo-input-field {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .chat-demo-input.disabled .chat-demo-send {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .chat-demo-input-field input {
+      background: transparent;
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 15px;
+      color: #1a1a1a;
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+    .chat-demo-input-field input::placeholder {
+      color: #94a3b8;
+    }
 
     /* Image Comparison Slider */
     .comparison-container {
       position: relative;
-      width: 98%;
-      max-width: 1400px;
+      width: 100%;
+      max-width: none;
+      max-height: 70vh;
       margin: 20px auto;
       overflow: hidden;
       border-radius: 12px;
@@ -863,6 +885,8 @@
       display: block;
       width: 100%;
       height: auto;
+      max-height: 70vh;
+      object-fit: contain;
     }
     .comparison-before {
       position: absolute;
@@ -877,19 +901,21 @@
       display: block;
       width: 100%;
       height: auto;
+      max-height: 70vh;
+      object-fit: contain;
       position: relative;
     }
     .comparison-slider {
       position: absolute;
       top: 0;
       left: 50%;
-      width: 5px;
+      width: 4px;
       height: 100%;
       background: linear-gradient(180deg, #0047ab 0%, #003380 100%);
       cursor: ew-resize;
       transform: translateX(-50%);
       z-index: 10;
-      box-shadow: 0 0 20px rgba(0,71,171,0.5);
+      box-shadow: 0 0 12px rgba(0, 71, 171, 0.8), 0 0 4px rgba(255, 255, 255, 0.8);
     }
     .comparison-slider::before {
       content: '';
@@ -897,13 +923,12 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 56px;
-      height: 56px;
+      width: 32px;
+      height: 32px;
       background: linear-gradient(135deg, #0047ab, #003380);
-      border: 5px solid white;
+      border: 3px solid white;
       border-radius: 50%;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-      animation: sliderPulse 2s ease-in-out infinite;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 8px rgba(0, 71, 171, 0.6);
     }
     .comparison-slider::after {
       content: '⇔';
@@ -912,19 +937,12 @@
       left: 50%;
       transform: translate(-50%, -50%);
       color: white;
-      font-size: 24px;
+      font-size: 16px;
       font-weight: bold;
       z-index: 1;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
-    @keyframes sliderPulse {
-      0%, 100% {
-        box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 0 0 rgba(0,71,171,0.7);
-      }
-      50% {
-        box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 0 15px rgba(0,71,171,0);
-      }
-    }
     .comparison-label {
       position: absolute;
       top: 24px;
@@ -937,6 +955,7 @@
       z-index: 5;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       backdrop-filter: blur(4px);
+      display: none;
     }
     .comparison-label.before {
       left: 24px;
@@ -1292,23 +1311,29 @@
 
       <!-- Slide 9 - Demo TKB (With Animation) -->
       <div class="slide">
-        <div class="center">
-          <div class="badge" id="tkb-badge">VẤN ĐỀ</div>
-          <h2 class="title" id="tkb-title">Thời Khóa Biểu Của Bộ GD</h2>
-          <p class="subtitle" id="tkb-subtitle">Khó tra cứu cho người mới</p>
-        </div>
-        <div class="comparison-container" id="comparison">
-          <div class="comparison-label before">TKB Bộ GD (Trước)</div>
-          <div class="comparison-label after">TKB Website (Sau)</div>
-          <img src="/img/TKB/tkb-moi.png" alt="TKB mới" style="display: block;">
-          <div class="comparison-before">
-            <img src="/img/TKB/tkb-cu.png" alt="TKB cũ">
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; width: 100%; height: 100%;">
+          <!-- Left Side - Comparison Image -->
+          <div class="comparison-container" id="comparison">
+            <div class="comparison-label before">TKB Bộ GD (Trước)</div>
+            <div class="comparison-label after">TKB Website (Sau)</div>
+            <img src="/img/TKB/tkb-moi.png" alt="TKB mới" style="display: block;">
+            <div class="comparison-before">
+              <img src="/img/TKB/tkb-cu.png" alt="TKB cũ">
+            </div>
+            <div class="comparison-slider" id="slider"></div>
           </div>
-          <div class="comparison-slider" id="slider"></div>
+
+          <!-- Right Side - Info -->
+          <div>
+            <div class="badge" id="tkb-badge">VẤN ĐỀ</div>
+            <h2 class="title" id="tkb-title" style="text-align: left;">Thời Khóa Biểu Của Bộ GD</h2>
+            <p class="subtitle" id="tkb-subtitle" style="text-align: left;">Khó tra cứu cho người mới</p>
+
+            <p class="description" id="tkb-desc" style="font-size: 18px; font-weight: 600; color: #dc2626; margin-top: 24px; text-align: left;">
+              ❌ Bảng phức tạp, nhiều thông tin • Dễ gây nhầm lẫn • Khó tra cứu nhanh
+            </p>
+          </div>
         </div>
-        <p class="description center" id="tkb-desc" style="font-size: 18px; font-weight: 600; color: #dc2626;">
-          ❌ Bảng phức tạp, nhiều thông tin • Dễ gây nhầm lẫn • Khó tra cứu nhanh
-        </p>
       </div>
 
       <!-- Slide 10: Tính năng #3 - Chatbot AI -->
@@ -1387,16 +1412,31 @@
 
             <!-- Chat Messages Container -->
             <div class="chat-demo-messages" id="chatMessages">
-              <!-- Messages will be added dynamically via JavaScript -->
+              <!-- Initial bot greeting (static) -->
+              <div class="chat-message bot-message" id="staticGreeting" style="opacity: 1;">
+                <div class="chat-message-avatar">
+                  <span class="material-icons">smart_toy</span>
+                </div>
+                <div class="chat-message-content">
+                  <div class="chat-message-name">CTECH Bot</div>
+                  <div class="chat-message-text">Xin chào! Tôi có thể giúp gì cho bạn? 👋</div>
+                </div>
+              </div>
+              <!-- Animated messages will be added here -->
             </div>
 
             <!-- Chat Input -->
-            <div class="chat-demo-input">
+            <div class="chat-demo-input disabled" id="chatDemoInput">
               <div class="chat-demo-input-field">
                 <span class="material-icons">edit</span>
-                <span>Nhập câu hỏi của bạn...</span>
+                <input
+                  type="text"
+                  id="chatDemoInputField"
+                  placeholder="Nhập câu hỏi của bạn..."
+                  disabled
+                />
               </div>
-              <button class="chat-demo-send">
+              <button class="chat-demo-send" id="chatDemoSend">
                 <span class="material-icons">send</span>
               </button>
             </div>
@@ -1436,27 +1476,37 @@
       </div>
 
       <!-- Slide 13 -->
-      <div class="slide center">
-        <div class="badge">KẾT THÚC BÀI THUYẾT TRÌNH</div>
-        <h2 class="title">Trân Trọng Cảm Ơn!</h2>
-        <p class="subtitle">Quý thầy cô và hội đồng giám khảo đã theo dõi</p>
-        <div class="avatar" style="margin: 20px auto;">
-          <span class="material-icons">done_all</span>
-        </div>
-        <p class="description">
-          Em xin chân thành cảm ơn quý thầy cô<br>
-          và hội đồng giám khảo đã dành thời gian<br>
-          theo dõi và đánh giá bài thi của em
-        </p>
-        <div class="student-info" style="max-width: 500px;">
-          <div class="student-details center">
-            <p><strong>Giáo viên hướng dẫn:</strong> Vũ Quốc Cường</p>
-            <p><strong>Sinh viên thực hiện:</strong> Trần Tuấn Tú</p>
+      <div class="slide">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; width: 100%; height: 100%;">
+          <!-- Left Side -->
+          <div style="text-align: center;">
+            <div class="avatar" style="margin: 20px auto; width: 180px; height: 180px; font-size: 80px;">
+              <span class="material-icons" style="font-size: 80px;">done_all</span>
+            </div>
+            <h2 class="title" style="font-size: 48px; margin: 24px 0;">Trân Trọng Cảm Ơn!</h2>
+            <p class="description" style="font-size: 20px; line-height: 1.8;">
+              Em xin chân thành cảm ơn quý thầy cô<br>
+              và hội đồng giám khảo đã dành thời gian<br>
+              theo dõi và đánh giá bài thi của em
+            </p>
           </div>
-        </div>
-        <div class="info-box">
-          <h3>Phần Hỏi Đáp</h3>
-          <p>Kính mời quý thầy cô và hội đồng giám khảo đặt câu hỏi</p>
+
+          <!-- Right Side -->
+          <div>
+            <div class="badge" style="margin-bottom: 24px;">KẾT THÚC BÀI THUYẾT TRÌNH</div>
+
+            <div class="student-info" style="margin-bottom: 32px;">
+              <div class="student-details" style="text-align: left;">
+                <p style="font-size: 20px; margin-bottom: 16px;"><strong>Giáo viên hướng dẫn:</strong> Vũ Quốc Cường</p>
+                <p style="font-size: 20px; margin-bottom: 16px;"><strong>Sinh viên thực hiện:</strong> Trần Tuấn Tú</p>
+              </div>
+            </div>
+
+            <div class="info-box">
+              <h3>Phần Hỏi Đáp</h3>
+              <p>Kính mời quý thầy cô và hội đồng giám khảo đặt câu hỏi</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1627,8 +1677,8 @@
     const TAP_THRESHOLD = 500;
 
     document.addEventListener('keydown', (e) => {
-      // Support right arrow, down arrow, and space for next
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+      // Support right arrow and down arrow for next
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         e.preventDefault();
         nextSlide();
       }
@@ -1877,7 +1927,7 @@
       {
         type: 'bot',
         name: 'CTECH Bot',
-        message: 'Học phí 1 học kỳ là <strong>10.000.000đ</strong> (5 tháng). Bạn có thể thanh toán qua trang Dịch vụ nhé! 💳',
+        message: 'Học phí 1 học kỳ là <strong>10.000.000đ</strong> (5 tháng). Bạn có thể lên phòng kế toán để thanh toán nhé! 💳',
         delay: 2500
       },
       {
@@ -1889,7 +1939,7 @@
       {
         type: 'bot',
         name: 'CTECH Bot',
-        message: 'Vé gửi xe có 2 loại:<br>🚲 Vé ngày: <strong>5.000đ</strong><br>🚲 Vé tháng: <strong>100.000đ</strong> (tiết kiệm 33%)<br>Bạn có thể thanh toán online!',
+        message: 'Vé gửi xe có 2 loại:<br>🚲 Vé ngày: <strong>3.000đ</strong><br>🚲 Vé tháng: <strong>50.000đ</strong> (tiết kiệm 44%)<br>Bạn có thể thanh toán online!',
         delay: 2500
       },
       {
@@ -1901,7 +1951,7 @@
       {
         type: 'bot',
         name: 'CTECH Bot',
-        message: 'Để xem lịch học, bạn làm như sau:<br>📅 Vào trang <strong>Lịch trình</strong><br>📄 Upload file TKB từ Bộ GD<br>✨ Hệ thống sẽ tự động hiển thị lịch đẹp!',
+        message: 'Để xem lịch học, bạn làm như sau:<br>📅 Vào trang <strong>Lịch trình</strong><br>📄 Upload file TKB từ Bộ GD<br>✨ Hệ thống sẽ hiển thị tkb đã được biên dịch!',
         delay: 2500
       }
     ];
@@ -1990,10 +2040,27 @@
         return;
       }
 
-      // Clear previous messages
-      chatMessages.innerHTML = '';
+      // Clear only animated messages, keep the static greeting message
+      const staticGreeting = document.getElementById('staticGreeting');
+      if (!staticGreeting) {
+        // If static greeting doesn't exist, recreate it
+        const greeting = createChatMessage('bot', 'CTECH Bot', 'Xin chào! Tôi có thể giúp gì cho bạn? 👋');
+        greeting.id = 'staticGreeting';
+        greeting.style.opacity = '1';
+        chatMessages.innerHTML = '';
+        chatMessages.appendChild(greeting);
+      } else {
+        // Remove all messages except the static greeting
+        const allMessages = chatMessages.querySelectorAll('.chat-message');
+        allMessages.forEach(msg => {
+          if (msg.id !== 'staticGreeting') {
+            msg.remove();
+          }
+        });
+      }
 
-      for (let i = 0; i < chatConversation.length; i++) {
+      // Start from index 1 to skip the first greeting message (already static in HTML)
+      for (let i = 1; i < chatConversation.length; i++) {
         const conv = chatConversation[i];
 
         // Wait for delay
@@ -2033,7 +2100,122 @@
       }
 
       chatAnimationRunning = false;
+
+      // Enable input after animation completes
+      enableChatInput();
     }
+
+    function enableChatInput() {
+      const inputContainer = document.getElementById('chatDemoInput');
+      const inputField = document.getElementById('chatDemoInputField');
+
+      if (inputContainer && inputField) {
+        inputContainer.classList.remove('disabled');
+        inputField.disabled = false;
+        inputField.focus();
+      }
+    }
+
+    function disableChatInput() {
+      const inputContainer = document.getElementById('chatDemoInput');
+      const inputField = document.getElementById('chatDemoInputField');
+
+      if (inputContainer && inputField) {
+        inputContainer.classList.add('disabled');
+        inputField.disabled = true;
+        inputField.value = '';
+      }
+    }
+
+    async function sendUserMessage() {
+      const inputField = document.getElementById('chatDemoInputField');
+      const chatMessages = document.getElementById('chatMessages');
+
+      if (!inputField || !chatMessages) return;
+
+      const userMessage = inputField.value.trim();
+      if (!userMessage) return;
+
+      // Clear input
+      inputField.value = '';
+
+      // Add user message
+      const userMessageEl = createChatMessage('user', 'Bạn', userMessage);
+      chatMessages.appendChild(userMessageEl);
+      setTimeout(() => {
+        userMessageEl.classList.add('show');
+        scrollChatToBottom();
+      }, 50);
+
+      // Show typing indicator
+      const typingIndicator = createTypingIndicator();
+      chatMessages.appendChild(typingIndicator);
+      setTimeout(() => {
+        typingIndicator.classList.add('show');
+        scrollChatToBottom();
+      }, 50);
+
+      // Call API
+      try {
+        const response = await fetch('/api/chatbot/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: userMessage })
+        });
+
+        const data = await response.json();
+
+        // Remove typing indicator
+        typingIndicator.remove();
+
+        // Add bot response
+        const botMessage = data.reply || 'Xin lỗi, tôi không thể trả lời câu hỏi này.';
+        const botMessageEl = createChatMessage('bot', 'CTECH Bot', botMessage);
+        chatMessages.appendChild(botMessageEl);
+        setTimeout(() => {
+          botMessageEl.classList.add('show');
+          scrollChatToBottom();
+        }, 50);
+
+      } catch (error) {
+        console.error('Chat API error:', error);
+
+        // Remove typing indicator
+        typingIndicator.remove();
+
+        // Show error message
+        const errorMessageEl = createChatMessage('bot', 'CTECH Bot', 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.');
+        chatMessages.appendChild(errorMessageEl);
+        setTimeout(() => {
+          errorMessageEl.classList.add('show');
+          scrollChatToBottom();
+        }, 50);
+      }
+    }
+
+    // Setup event listeners for chat input
+    document.addEventListener('DOMContentLoaded', () => {
+      const inputField = document.getElementById('chatDemoInputField');
+      const sendBtn = document.getElementById('chatDemoSend');
+
+      if (inputField) {
+        inputField.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' && !inputField.disabled) {
+            sendUserMessage();
+          }
+        });
+      }
+
+      if (sendBtn) {
+        sendBtn.addEventListener('click', () => {
+          if (!inputField.disabled) {
+            sendUserMessage();
+          }
+        });
+      }
+    });
 
     function stopChatAnimation() {
       if (chatAnimationTimeout) {
@@ -2046,6 +2228,9 @@
       if (chatMessages) {
         chatMessages.innerHTML = '';
       }
+
+      // Disable input when leaving slide
+      disableChatInput();
     }
 
     // Override updateSlides to handle chat animation
