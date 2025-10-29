@@ -16,7 +16,7 @@ Trước khi bắt đầu, đảm bảo máy tính đã cài đặt:
 
 ```bash
 # Nếu dùng Git
-git clone <repository-url>
+git clone https://github.com/GauCandy/Ctech-Web
 cd "Api Web"
 
 # Hoặc download ZIP và giải nén
@@ -349,4 +349,4 @@ node index.js
 # http://localhost:3000
 ```
 
-**Chúc bạn setup thành công! 🎉**
+**Tới đây là hết rồi bạn đã có thể thiết lập thành công demo! 🎉**
