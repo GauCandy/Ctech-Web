@@ -618,6 +618,236 @@
       font-size: 24px;
     }
 
+    /* Chat Demo Styles */
+    .chat-demo-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      overflow: hidden;
+      width: 100%;
+      min-width: 650px;
+      max-width: 100%;
+      margin: 0;
+      border: 3px solid #e2e8f0;
+    }
+    .chat-demo-header {
+      background: linear-gradient(135deg, #0047ab 0%, #003380 100%);
+      color: white;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 3px solid #002d6b;
+    }
+    .chat-demo-avatar {
+      width: 48px;
+      height: 48px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .chat-demo-avatar .material-icons {
+      color: #0047ab;
+      font-size: 32px;
+    }
+    .chat-demo-info h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 4px 0;
+    }
+    .chat-demo-status {
+      font-size: 14px;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chat-demo-status-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.9); }
+    }
+    .chat-demo-messages {
+      padding: 24px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      height: 500px;
+      min-height: 500px;
+      max-height: 500px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .chat-message {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    .chat-message.show {
+      animation: chatMessageIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes chatMessageIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .chat-message.user {
+      flex-direction: row-reverse;
+      align-self: flex-end;
+    }
+    .chat-message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .chat-message.user .chat-message-avatar {
+      background: linear-gradient(135deg, #0047ab, #0056d6);
+    }
+    .chat-message.bot .chat-message-avatar {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+    .chat-message-avatar .material-icons {
+      color: white;
+      font-size: 24px;
+    }
+    .chat-message-content {
+      max-width: 75%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .chat-message.user .chat-message-content {
+      align-items: flex-end;
+    }
+    .chat-message-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      padding: 0 4px;
+    }
+    .chat-message-bubble {
+      padding: 14px 18px;
+      border-radius: 18px;
+      font-size: 16px;
+      line-height: 1.6;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      word-wrap: break-word;
+    }
+    .chat-message.user .chat-message-bubble {
+      background: linear-gradient(135deg, #0047ab, #0056d6);
+      color: white;
+      border-bottom-right-radius: 6px;
+    }
+    .chat-message.bot .chat-message-bubble {
+      background: white;
+      color: #1a1a1a;
+      border: 2px solid #e2e8f0;
+      border-bottom-left-radius: 6px;
+    }
+    .chat-message-time {
+      font-size: 12px;
+      color: #94a3b8;
+      padding: 0 4px;
+    }
+    .chat-typing {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      opacity: 0;
+    }
+    .chat-typing.show {
+      animation: chatMessageIn 0.3s ease-out forwards;
+    }
+    .chat-typing-bubble {
+      background: white;
+      border: 2px solid #e2e8f0;
+      padding: 14px 18px;
+      border-radius: 18px;
+      border-bottom-left-radius: 6px;
+      display: flex;
+      gap: 6px;
+    }
+    .chat-typing-dot {
+      width: 8px;
+      height: 8px;
+      background: #0047ab;
+      border-radius: 50%;
+      animation: typingDotBounce 1.4s ease-in-out infinite;
+    }
+    .chat-typing-dot:nth-child(1) { animation-delay: 0s; }
+    .chat-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .chat-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingDotBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+    .chat-demo-input {
+      padding: 18px 24px;
+      background: white;
+      border-top: 2px solid #e2e8f0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .chat-demo-input-field {
+      flex: 1;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 12px 20px;
+      font-size: 15px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .chat-demo-input-field .material-icons {
+      color: #94a3b8;
+      font-size: 20px;
+    }
+    .chat-demo-send {
+      background: #0047ab;
+      color: white;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,71,171,0.3);
+      transition: all 0.2s;
+    }
+    .chat-demo-send:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0,71,171,0.4);
+    }
+    .chat-demo-send .material-icons {
+      font-size: 24px;
+    }
+
     /* Image Comparison Slider */
     .comparison-container {
       position: relative;
@@ -1119,40 +1349,57 @@
 
       <!-- Slide 11: Demo Chatbot -->
       <div class="slide">
-        <div class="center">
-          <div class="badge">DEMO #3</div>
-          <h2 class="title">Giao Diện Chatbot</h2>
-          <p class="subtitle">Hỏi đáp tự động với AI</p>
-        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; width: 100%; height: 100%;">
+          <!-- Left Side - Info -->
+          <div>
+            <div class="badge">DEMO #3</div>
+            <h2 class="title" style="text-align: left;">Giao Diện Chatbot</h2>
+            <p class="subtitle" style="text-align: left;">Hỏi đáp tự động với AI</p>
 
-        <div class="info-box" style="margin-bottom: 24px;">
-          <h3>Ví dụ hội thoại thực tế</h3>
-          <p>Chatbot trả lời các câu hỏi phổ biến của sinh viên</p>
-        </div>
+            <div class="info-box" style="margin-top: 32px; text-align: left;">
+              <h3>✨ Tính năng nổi bật</h3>
+              <p style="margin-bottom: 12px;">• Trả lời tự động 24/7</p>
+              <p style="margin-bottom: 12px;">• Hỗ trợ đa dạng câu hỏi</p>
+              <p style="margin-bottom: 12px;">• Giao diện thân thiện</p>
+              <p>• Tích hợp OpenAI GPT-4</p>
+            </div>
 
-        <div class="grid-2">
-          <div class="demo">
-            <h4>💬 Câu hỏi về học phí</h4>
-            <p><strong>Học sinh:</strong> Học phí học kỳ này là bao nhiêu?</p>
-            <p><strong>Chatbot:</strong> Học phí 1 kỳ là 10.000.000đ (5 tháng). Bạn có thể thanh toán qua trang Dịch vụ nhé!</p>
+            <div class="quote" style="margin-top: 24px;">
+              <p style="font-size: 18px;"><strong>Animation thực tế</strong><br>Xem chatbot hoạt động như thế nào!</p>
+            </div>
           </div>
 
-          <div class="demo">
-            <h4>📅 Câu hỏi về lịch học</h4>
-            <p><strong>Học sinh:</strong> Làm sao để xem lịch học?</p>
-            <p><strong>Chatbot:</strong> Vào trang Lịch trình, upload file TKB từ Bộ GD. Hệ thống sẽ tự động hiển thị lịch học cho bạn.</p>
-          </div>
+          <!-- Right Side - Chat Demo -->
+          <div class="chat-demo-container">
+            <!-- Chat Header -->
+            <div class="chat-demo-header">
+              <div class="chat-demo-avatar">
+                <span class="material-icons">smart_toy</span>
+              </div>
+              <div class="chat-demo-info">
+                <h3>CTECH Assistant</h3>
+                <div class="chat-demo-status">
+                  <span class="chat-demo-status-dot"></span>
+                  <span>Đang hoạt động</span>
+                </div>
+              </div>
+            </div>
 
-          <div class="demo">
-            <h4>🚲 Câu hỏi về dịch vụ</h4>
-            <p><strong>Học sinh:</strong> Vé gửi xe giá bao nhiêu?</p>
-            <p><strong>Chatbot:</strong> Vé gửi xe ngày 5.000đ, vé tháng 100.000đ (tiết kiệm 33%). Bạn có thể thanh toán online.</p>
-          </div>
+            <!-- Chat Messages Container -->
+            <div class="chat-demo-messages" id="chatMessages">
+              <!-- Messages will be added dynamically via JavaScript -->
+            </div>
 
-          <div class="demo">
-            <h4>🎓 Câu hỏi về tuyển sinh</h4>
-            <p><strong>Học sinh:</strong> Điểm chuẩn ngành CNTT là bao nhiêu?</p>
-            <p><strong>Chatbot:</strong> Điểm chuẩn CNTT năm 2024 là 22 điểm. Bạn quan tâm đến ngành nào để em tư vấn thêm nhé?</p>
+            <!-- Chat Input -->
+            <div class="chat-demo-input">
+              <div class="chat-demo-input-field">
+                <span class="material-icons">edit</span>
+                <span>Nhập câu hỏi của bạn...</span>
+              </div>
+              <button class="chat-demo-send">
+                <span class="material-icons">send</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1607,6 +1854,226 @@
         }
       }
     });
+
+    // ==================== CHAT ANIMATION ====================
+    const CHATBOT_SLIDE_INDEX = 10; // Slide 11 (index 10)
+    let chatAnimationRunning = false;
+    let chatAnimationTimeout = null;
+
+    // Chat conversation data
+    const chatConversation = [
+      {
+        type: 'bot',
+        name: 'CTECH Bot',
+        message: 'Xin chào! Tôi có thể giúp gì cho bạn? 👋',
+        delay: 0
+      },
+      {
+        type: 'user',
+        name: 'Bạn',
+        message: 'Học phí học kỳ này là bao nhiêu?',
+        delay: 2000
+      },
+      {
+        type: 'bot',
+        name: 'CTECH Bot',
+        message: 'Học phí 1 học kỳ là <strong>10.000.000đ</strong> (5 tháng). Bạn có thể thanh toán qua trang Dịch vụ nhé! 💳',
+        delay: 2500
+      },
+      {
+        type: 'user',
+        name: 'Bạn',
+        message: 'Vé gửi xe giá bao nhiêu?',
+        delay: 2000
+      },
+      {
+        type: 'bot',
+        name: 'CTECH Bot',
+        message: 'Vé gửi xe có 2 loại:<br>🚲 Vé ngày: <strong>5.000đ</strong><br>🚲 Vé tháng: <strong>100.000đ</strong> (tiết kiệm 33%)<br>Bạn có thể thanh toán online!',
+        delay: 2500
+      },
+      {
+        type: 'user',
+        name: 'Bạn',
+        message: 'Làm sao để xem lịch học?',
+        delay: 2000
+      },
+      {
+        type: 'bot',
+        name: 'CTECH Bot',
+        message: 'Để xem lịch học, bạn làm như sau:<br>📅 Vào trang <strong>Lịch trình</strong><br>📄 Upload file TKB từ Bộ GD<br>✨ Hệ thống sẽ tự động hiển thị lịch đẹp!',
+        delay: 2500
+      }
+    ];
+
+    function getCurrentTime() {
+      const now = new Date();
+      return now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function createChatMessage(type, name, message) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `chat-message ${type}`;
+
+      const avatarDiv = document.createElement('div');
+      avatarDiv.className = 'chat-message-avatar';
+      const avatarIcon = document.createElement('span');
+      avatarIcon.className = 'material-icons';
+      avatarIcon.textContent = type === 'user' ? 'person' : 'smart_toy';
+      avatarDiv.appendChild(avatarIcon);
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'chat-message-content';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'chat-message-name';
+      nameSpan.textContent = name;
+
+      const bubbleDiv = document.createElement('div');
+      bubbleDiv.className = 'chat-message-bubble';
+      bubbleDiv.innerHTML = message;
+
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'chat-message-time';
+      timeSpan.textContent = getCurrentTime();
+
+      contentDiv.appendChild(nameSpan);
+      contentDiv.appendChild(bubbleDiv);
+      contentDiv.appendChild(timeSpan);
+
+      messageDiv.appendChild(avatarDiv);
+      messageDiv.appendChild(contentDiv);
+
+      return messageDiv;
+    }
+
+    function createTypingIndicator() {
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'chat-typing';
+
+      const avatarDiv = document.createElement('div');
+      avatarDiv.className = 'chat-message-avatar';
+      avatarDiv.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+      const avatarIcon = document.createElement('span');
+      avatarIcon.className = 'material-icons';
+      avatarIcon.textContent = 'smart_toy';
+      avatarDiv.appendChild(avatarIcon);
+
+      const bubbleDiv = document.createElement('div');
+      bubbleDiv.className = 'chat-typing-bubble';
+      for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'chat-typing-dot';
+        bubbleDiv.appendChild(dot);
+      }
+
+      typingDiv.appendChild(avatarDiv);
+      typingDiv.appendChild(bubbleDiv);
+
+      return typingDiv;
+    }
+
+    function scrollChatToBottom() {
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }
+
+    async function runChatAnimation() {
+      if (chatAnimationRunning) return;
+      chatAnimationRunning = true;
+
+      const chatMessages = document.getElementById('chatMessages');
+      if (!chatMessages) {
+        chatAnimationRunning = false;
+        return;
+      }
+
+      // Clear previous messages
+      chatMessages.innerHTML = '';
+
+      for (let i = 0; i < chatConversation.length; i++) {
+        const conv = chatConversation[i];
+
+        // Wait for delay
+        await new Promise(resolve => {
+          chatAnimationTimeout = setTimeout(resolve, conv.delay);
+        });
+
+        // Show typing indicator for bot messages
+        if (conv.type === 'bot') {
+          const typingIndicator = createTypingIndicator();
+          chatMessages.appendChild(typingIndicator);
+
+          // Animate typing indicator
+          setTimeout(() => {
+            typingIndicator.classList.add('show');
+            scrollChatToBottom();
+          }, 50);
+
+          // Wait for typing duration
+          await new Promise(resolve => {
+            chatAnimationTimeout = setTimeout(resolve, 1500);
+          });
+
+          // Remove typing indicator
+          typingIndicator.remove();
+        }
+
+        // Add message
+        const messageElement = createChatMessage(conv.type, conv.name, conv.message);
+        chatMessages.appendChild(messageElement);
+
+        // Animate message
+        setTimeout(() => {
+          messageElement.classList.add('show');
+          scrollChatToBottom();
+        }, 50);
+      }
+
+      chatAnimationRunning = false;
+    }
+
+    function stopChatAnimation() {
+      if (chatAnimationTimeout) {
+        clearTimeout(chatAnimationTimeout);
+        chatAnimationTimeout = null;
+      }
+      chatAnimationRunning = false;
+
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) {
+        chatMessages.innerHTML = '';
+      }
+    }
+
+    // Override updateSlides to handle chat animation
+    const originalUpdateSlides = updateSlides;
+    window.updateSlides = function(direction) {
+      // Stop chat animation when leaving slide 11
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        stopChatAnimation();
+      }
+
+      // Call original function
+      originalUpdateSlides(direction);
+
+      // Start chat animation when entering slide 11
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        setTimeout(() => {
+          runChatAnimation();
+        }, 500);
+      }
+    };
+    updateSlides = window.updateSlides;
+
+    // Start animation if already on chatbot slide
+    if (currentSlide === CHATBOT_SLIDE_INDEX) {
+      setTimeout(() => {
+        runChatAnimation();
+      }, 500);
+    }
   </script>
 </body>
 </html>
