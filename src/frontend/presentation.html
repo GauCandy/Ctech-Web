@@ -965,6 +965,272 @@
       right: 24px;
       background: linear-gradient(135deg, rgba(34, 197, 94, 0.9), rgba(22, 163, 74, 0.9));
     }
+
+    /* Fake Cursor */
+    .fake-cursor {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      pointer-events: none;
+      z-index: 99999;
+      display: none;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+    }
+    .fake-cursor.active {
+      display: block;
+    }
+    .fake-cursor svg {
+      width: 100%;
+      height: 100%;
+    }
+    .fake-cursor.clicking {
+      animation: cursorClick 0.3s ease;
+    }
+    @keyframes cursorClick {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.9); }
+    }
+
+    /* Payment Button */
+    .payment-button {
+      width: 100%;
+      padding: 16px 24px;
+      margin-top: 24px;
+      background: linear-gradient(135deg, #0047ab 0%, #003380 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 71, 171, 0.3);
+    }
+    .payment-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 71, 171, 0.4);
+    }
+    .payment-button:active {
+      transform: translateY(0);
+    }
+    .payment-button .material-icons {
+      font-size: 24px;
+    }
+
+    /* Confetti Animation */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99998;
+      overflow: hidden;
+      display: none;
+    }
+    .confetti-container.active {
+      display: block;
+    }
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #f0f;
+      animation: confetti-fall 3s linear forwards;
+    }
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* QR Code Payment Section */
+    .payment-section {
+      margin-top: 32px;
+      padding: 24px;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border-radius: 16px;
+      border: 2px solid #0ea5e9;
+      display: none;
+      animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .payment-section.active {
+      display: block;
+    }
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .payment-qr-container {
+      text-align: center;
+      position: relative;
+    }
+    .payment-qr-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 16px;
+    }
+    .payment-qr-code {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 20px;
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .payment-qr-code img {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+    }
+
+    /* Success Check Animation */
+    .payment-success {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      background: rgba(22, 163, 74, 0.95);
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: successPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 10;
+    }
+    .payment-success.active {
+      display: flex;
+    }
+    .payment-success .material-icons {
+      color: white;
+      font-size: 60px;
+      animation: checkDraw 0.4s 0.2s ease forwards;
+      opacity: 0;
+    }
+    @keyframes successPop {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+      }
+      70% {
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+    @keyframes checkDraw {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Loading Spinner */
+    .payment-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+      z-index: 5;
+    }
+    .payment-loading.active {
+      display: block;
+    }
+    .payment-spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid #e0e7ff;
+      border-top: 5px solid #0047ab;
+      border-radius: 50%;
+      animation: spinRotate 1s linear infinite;
+    }
+    @keyframes spinRotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Payment Code Display */
+    .payment-code-display {
+      margin-top: 24px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      border: 2px dashed #0ea5e9;
+      text-align: center;
+      display: none;
+      animation: fadeInScale 0.5s ease;
+    }
+    .payment-code-display.active {
+      display: block;
+    }
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .payment-code-label {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .payment-code-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0369a1;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 2px;
+    }
+    .payment-status {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #16a34a;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .payment-status .material-icons {
+      font-size: 20px;
+    }
   </style>
 </head>
 <body>
@@ -1152,50 +1418,62 @@
         </div>
       </div>
 
-      <!-- Slide 7 -->
-      <div class="slide">
-        <div class="center">
-          <div class="badge">DEMO #1</div>
-          <h2 class="title">Giao Diện Dịch Vụ</h2>
-          <p class="subtitle">Mô phỏng giao diện web thực tế</p>
-        </div>
+      <!-- Slide 7 - Full Page Service Demo -->
+      <div class="slide" style="background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%); padding: 0; overflow: hidden;">
 
-        <div class="web-mockup">
-          <!-- Header -->
-          <div class="web-header">
-            <div class="web-header-left">
-              <div class="web-logo">
-                <span class="material-icons">school</span>
+        <!-- Full Page Web Design -->
+        <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+
+          <!-- Top Navigation Bar -->
+          <div style="background: linear-gradient(135deg, #0047ab 0%, #003380 100%); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 48px; height: 48px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                <span class="material-icons" style="font-size: 32px; color: #0047ab;">school</span>
               </div>
-              <div class="web-title">Dịch Vụ CTECH</div>
+              <div>
+                <div style="font-size: 22px; font-weight: 700; color: white;">CTECH Services</div>
+                <div style="font-size: 13px; color: rgba(255,255,255,0.8);">Dịch vụ sinh viên</div>
+              </div>
             </div>
-            <div class="web-user">
-              <span class="material-icons">account_circle</span>
-              <span>Trần Tuấn Tú</span>
+            <div style="display: flex; align-items: center; gap: 24px;">
+              <div style="color: white; font-size: 15px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Trang chủ</div>
+              <div style="color: white; font-size: 15px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; background: rgba(255,255,255,0.2);">Dịch vụ</div>
+              <div style="color: white; font-size: 15px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Lịch trình</div>
+              <div style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 10px;">
+                <span class="material-icons" style="color: white; font-size: 24px;">account_circle</span>
+                <span style="color: white; font-size: 14px; font-weight: 600;">Trần Tuấn Tú</span>
+              </div>
             </div>
           </div>
 
-          <!-- Content -->
-          <div class="web-content">
-            <!-- Search Bar -->
-            <div class="web-search-bar">
-              <div class="web-input">
-                <span class="material-icons">search</span>
-                <span>Nhập mã, tên hoặc mô tả dịch vụ...</span>
+          <!-- Hero Section -->
+          <div style="background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); padding: 32px 40px; border-bottom: 2px solid #e0e7ff;">
+            <div style="max-width: 1400px; margin: 0 auto;">
+              <h1 style="font-size: 36px; font-weight: 700; color: #0f172a; margin: 0 0 12px 0;">Dịch Vụ Sinh Viên</h1>
+              <p style="font-size: 17px; color: #64748b; margin: 0 0 24px 0;">Tra cứu và thanh toán các dịch vụ một cách nhanh chóng, tiện lợi</p>
+
+              <!-- Search Bar -->
+              <div style="display: flex; gap: 12px; max-width: 700px;">
+                <div style="flex: 1; background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 14px 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                  <span class="material-icons" style="color: #94a3b8; font-size: 24px;">search</span>
+                  <span style="color: #94a3b8; font-size: 16px;">Tìm kiếm dịch vụ...</span>
+                </div>
+                <button style="background: linear-gradient(135deg, #0047ab, #003380); color: white; border: none; padding: 14px 32px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 71, 171, 0.3);">Tìm kiếm</button>
               </div>
-              <div class="web-button">Tìm kiếm</div>
-            </div>
 
-            <!-- Categories -->
-            <div class="web-categories">
-              <div class="web-category-btn active">Tất cả</div>
-              <div class="web-category-btn">Gửi xe</div>
-              <div class="web-category-btn">Căn tin</div>
-              <div class="web-category-btn">Học tập</div>
+              <!-- Category Tabs -->
+              <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <div style="padding: 10px 20px; background: linear-gradient(135deg, #0047ab, #003380); color: white; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 71, 171, 0.3);">Tất cả</div>
+                <div style="padding: 10px 20px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;">Gửi xe</div>
+                <div style="padding: 10px 20px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;">Căn tin</div>
+                <div style="padding: 10px 20px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer;">Học tập</div>
+              </div>
             </div>
+          </div>
 
-            <!-- Services Grid -->
-            <div class="web-services-grid">
+          <!-- Services Grid -->
+          <div style="flex: 1; overflow-y: auto; padding: 32px 40px; background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);">
+            <div style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
               <!-- Service Card 1 -->
               <div class="web-service-card" onclick="openServiceModal('SV001', 'Vé gửi xe ngày', '5.000đ', 'Hoạt động', 'Vé gửi xe một ngày cho học sinh, sinh viên. Giá cả phải chăng, thuận tiện cho việc đi lại hàng ngày.', 'Gửi xe', '20/01/2025', '')">
                 <div class="web-service-header">
@@ -1219,14 +1497,14 @@
               </div>
 
               <!-- Service Card 3 -->
-              <div class="web-service-card" onclick="openServiceModal('SV003', 'Xuất ăn căn tin', '25.000đ', 'Hoạt động', 'Suất ăn trưa tại căn tin trường. Thực đơn đa dạng, đảm bảo dinh dưỡng cho sinh viên.', 'Căn tin', '20/01/2025', '')">
+              <div class="web-service-card" onclick="openServiceModal('SV003', 'Xuất ăn căn tin', '35.000đ', 'Hoạt động', 'Bao gồm 1 xuất ăn tại căn tin trường vào buổi trưa hoặc tối. Thực đơn đa dạng, đảm bảo dinh dưỡng cho sinh viên.', 'Căn tin', '20/01/2025', '')">
                 <div class="web-service-header">
                   <div class="web-service-code">SV003</div>
                   <div class="web-service-status">Hoạt động</div>
                 </div>
                 <div class="web-service-name">Xuất ăn căn tin</div>
-                <div class="web-service-price">25.000đ</div>
-                <div class="web-service-desc">Suất ăn trưa tại căn tin trường</div>
+                <div class="web-service-price">35.000đ</div>
+                <div class="web-service-desc">Suất ăn trưa hoặc tối tại căn tin trường</div>
               </div>
 
               <!-- Service Card 4 -->
@@ -1298,9 +1576,54 @@
               </div>
 
               <img id="modalImage" class="service-detail-image" src="" alt="Service Image" style="display: none;">
+
+              <!-- Payment Button -->
+              <button class="payment-button" id="paymentButton" style="display: none;">
+                <span class="material-icons">payment</span>
+                <span>Thanh toán</span>
+              </button>
+
+              <!-- Payment Section -->
+              <div class="payment-section" id="paymentSection">
+                <div class="payment-qr-container">
+                  <h3 class="payment-qr-title">Quét mã QR để thanh toán</h3>
+                  <div class="payment-qr-code">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=CTECH-PAY-SV003-35000-CANTEEN" alt="QR Code">
+                    <!-- Loading Spinner -->
+                    <div class="payment-loading" id="paymentLoading">
+                      <div class="payment-spinner"></div>
+                    </div>
+                    <!-- Success Check Mark -->
+                    <div class="payment-success" id="paymentSuccess">
+                      <span class="material-icons">check_circle</span>
+                    </div>
+                  </div>
+                  <p style="color: #64748b; font-size: 14px;">Sử dụng ứng dụng ngân hàng để quét mã</p>
+                </div>
+
+                <!-- Payment Code -->
+                <div class="payment-code-display" id="paymentCode">
+                  <div class="payment-code-label">Mã thanh toán</div>
+                  <div class="payment-code-value">PAY-2025-CT-035</div>
+                  <div class="payment-status">
+                    <span class="material-icons">check_circle</span>
+                    <span>Thanh toán thành công</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- Fake Cursor -->
+        <div class="fake-cursor" id="fakeCursor">
+          <svg viewBox="0 0 24 24" fill="black" stroke="white" stroke-width="0.5">
+            <path d="M3 3 L3 17 L8 12 L11 18 L13 17 L10 11 L17 11 Z"/>
+          </svg>
+        </div>
+
+        <!-- Confetti Container -->
+        <div class="confetti-container" id="confettiContainer"></div>
       </div>
 
       <!-- Slide 8: Tính năng #2 - Lịch trình TKB -->
@@ -1939,6 +2262,190 @@
       }
     });
 
+    // ==================== SERVICE DEMO ANIMATION ====================
+    const SERVICE_SLIDE_INDEX = 6; // Slide 7 (index 6)
+    let serviceAnimationRunning = false;
+    let serviceAnimationTimeout = null;
+
+    async function runServiceDemoAnimation() {
+      if (serviceAnimationRunning) return;
+      serviceAnimationRunning = true;
+
+      const cursor = document.getElementById('fakeCursor');
+      const serviceCards = document.querySelectorAll('.web-service-card');
+      const canteenCard = serviceCards[2]; // Third card - Xuất ăn căn tin
+
+      if (!cursor || !canteenCard) {
+        serviceAnimationRunning = false;
+        return;
+      }
+
+      try {
+        // Reset payment elements
+        document.getElementById('paymentButton').style.display = 'none';
+        document.getElementById('paymentSection').classList.remove('active');
+        document.getElementById('paymentLoading').classList.remove('active');
+        document.getElementById('paymentSuccess').classList.remove('active');
+        document.getElementById('paymentCode').classList.remove('active');
+        document.getElementById('confettiContainer').classList.remove('active');
+
+        // Step 1: Show cursor
+        cursor.classList.add('active');
+        await delay(500);
+
+        // Step 2: Move cursor to canteen card
+        const cardRect = canteenCard.getBoundingClientRect();
+        const targetX = cardRect.left + cardRect.width / 2;
+        const targetY = cardRect.top + cardRect.height / 2;
+
+        await moveCursor(cursor, targetX, targetY, 1000);
+        await delay(300);
+
+        // Step 3: Click animation on card
+        cursor.classList.add('clicking');
+        await delay(300);
+        cursor.classList.remove('clicking');
+
+        // Step 4: Open modal (Xuất ăn căn tin - SV003)
+        openServiceModal(
+          'SV003',
+          'Xuất ăn căn tin',
+          '35.000đ',
+          'Hoạt động',
+          'Bao gồm 1 xuất ăn tại căn tin trường vào buổi trưa hoặc tối. Thực đơn đa dạng, đảm bảo dinh dưỡng cho sinh viên.',
+          'Căn tin',
+          '20/01/2025',
+          ''
+        );
+
+        await delay(800);
+
+        // Step 5: Show payment button
+        document.getElementById('paymentButton').style.display = 'flex';
+        await delay(500);
+
+        // Step 6: Move cursor to payment button
+        const paymentBtn = document.getElementById('paymentButton');
+        const btnRect = paymentBtn.getBoundingClientRect();
+        const btnX = btnRect.left + btnRect.width / 2;
+        const btnY = btnRect.top + btnRect.height / 2;
+
+        await moveCursor(cursor, btnX, btnY, 800);
+        await delay(300);
+
+        // Step 7: Click payment button
+        cursor.classList.add('clicking');
+        await delay(300);
+        cursor.classList.remove('clicking');
+
+        // Hide payment button
+        paymentBtn.style.display = 'none';
+
+        // Step 8: Hide cursor and show QR with loading spinner
+        cursor.classList.remove('active');
+        document.getElementById('paymentSection').classList.add('active');
+        await delay(500);
+
+        // Show loading spinner - checking payment
+        document.getElementById('paymentLoading').classList.add('active');
+        await delay(3500);
+
+        // Step 9: Hide spinner and show success check
+        document.getElementById('paymentLoading').classList.remove('active');
+        await delay(200);
+        document.getElementById('paymentSuccess').classList.add('active');
+
+        // Launch confetti!
+        launchConfetti();
+        await delay(1000);
+
+        // Step 10: Show payment code
+        document.getElementById('paymentCode').classList.add('active');
+
+      } catch (error) {
+        console.error('Service animation error:', error);
+      }
+
+      serviceAnimationRunning = false;
+    }
+
+    function launchConfetti() {
+      const container = document.getElementById('confettiContainer');
+      container.classList.add('active');
+      container.innerHTML = ''; // Clear previous confetti
+
+      const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8800', '#ff0088'];
+      const confettiCount = 100;
+
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        container.appendChild(confetti);
+      }
+
+      // Remove confetti after animation
+      setTimeout(() => {
+        container.classList.remove('active');
+        container.innerHTML = '';
+      }, 4000);
+    }
+
+    function delay(ms) {
+      return new Promise(resolve => {
+        serviceAnimationTimeout = setTimeout(resolve, ms);
+      });
+    }
+
+    async function moveCursor(cursor, targetX, targetY, duration) {
+      const startX = parseFloat(cursor.style.left) || 0;
+      const startY = parseFloat(cursor.style.top) || 0;
+      const startTime = Date.now();
+
+      return new Promise(resolve => {
+        function animate() {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Easing function (ease-in-out)
+          const eased = progress < 0.5
+            ? 2 * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+          const currentX = startX + (targetX - startX) * eased;
+          const currentY = startY + (targetY - startY) * eased;
+
+          cursor.style.left = currentX + 'px';
+          cursor.style.top = currentY + 'px';
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            resolve();
+          }
+        }
+        animate();
+      });
+    }
+
+    function stopServiceAnimation() {
+      if (serviceAnimationTimeout) {
+        clearTimeout(serviceAnimationTimeout);
+        serviceAnimationTimeout = null;
+      }
+      serviceAnimationRunning = false;
+
+      // Hide cursor
+      const cursor = document.getElementById('fakeCursor');
+      if (cursor) cursor.classList.remove('active');
+
+      // Close modal
+      closeServiceModal();
+    }
+
     // ==================== CHAT ANIMATION ====================
     const CHATBOT_SLIDE_INDEX = 10; // Slide 11 (index 10)
     let chatAnimationRunning = false;
@@ -2260,9 +2767,14 @@
       disableChatInput();
     }
 
-    // Override updateSlides to handle chat animation
+    // Override updateSlides to handle animations
     const originalUpdateSlides = updateSlides;
     window.updateSlides = function(direction) {
+      // Stop service animation when leaving slide 7
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        stopServiceAnimation();
+      }
+
       // Stop chat animation when leaving slide 11
       if (currentSlide === CHATBOT_SLIDE_INDEX) {
         stopChatAnimation();
@@ -2270,6 +2782,13 @@
 
       // Call original function
       originalUpdateSlides(direction);
+
+      // Start service animation when entering slide 7
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        setTimeout(() => {
+          runServiceDemoAnimation();
+        }, 500);
+      }
 
       // Start chat animation when entering slide 11
       if (currentSlide === CHATBOT_SLIDE_INDEX) {
@@ -2279,6 +2798,13 @@
       }
     };
     updateSlides = window.updateSlides;
+
+    // Start animation if already on service slide
+    if (currentSlide === SERVICE_SLIDE_INDEX) {
+      setTimeout(() => {
+        runServiceDemoAnimation();
+      }, 500);
+    }
 
     // Start animation if already on chatbot slide
     if (currentSlide === CHATBOT_SLIDE_INDEX) {
