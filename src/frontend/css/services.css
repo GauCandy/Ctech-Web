@@ -88,27 +88,34 @@
 }
 
 .services-hero {
-  padding: 48px 20px;
+  padding: 40px 20px 24px;
   background: var(--services-hero-bg);
-  border-bottom: 2px solid var(--services-border);
+  border-bottom: none;
   position: relative;
   z-index: 1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: none;
 }
 
 .services-hero__content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
   align-items: flex-start;
   max-width: none;
   margin: 0;
   width: 100%;
 }
 
+/* Override container for hero content */
+.services-hero__content.container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0 20px;
+}
+
 .services-hero__title {
   margin: 0;
-  font-size: 42px;
+  font-size: 32px;
   font-weight: 800;
   color: var(--services-text-main);
   line-height: 1.2;
@@ -132,9 +139,9 @@
 
 .services-hero__subtitle {
   margin: 0;
-  font-size: 18px;
+  font-size: 15px;
   color: var(--services-text-muted);
-  line-height: 1.6;
+  line-height: 1.5;
   animation: subtitleSlideIn 0.6s ease-out 0.1s backwards;
 }
 
@@ -174,6 +181,13 @@
   flex-direction: column;
 }
 
+/* Override container constraints for full viewport width */
+.services-shell.container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+}
+
 .services-panel {
   background: transparent;
   border-radius: 0;
@@ -188,7 +202,7 @@
 
 /* Categories Filter */
 .services-categories {
-  padding: 24px 20px;
+  padding: 20px 20px 0;
   border-bottom: none;
   background: var(--services-hero-bg);
   position: relative;
@@ -224,12 +238,12 @@
 }
 
 .services-category-btn {
-  padding: 10px 20px;
+  padding: 8px 16px;
   border: 2px solid var(--services-border);
   background: var(--services-card-bg);
   color: var(--services-text-muted);
-  border-radius: 10px;
-  font-size: 15px;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -271,11 +285,12 @@
 .services-controls {
   display: grid;
   gap: 20px;
-  padding: 24px 20px;
+  padding: 20px 20px 32px;
   border-bottom: 2px solid var(--services-border);
   background: var(--services-hero-bg);
   position: relative;
   z-index: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .services-controls > * {
@@ -311,13 +326,13 @@
 .services-field select,
 .services-field textarea {
   font: inherit;
-  padding: 14px 20px;
-  border-radius: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
   border: 2px solid var(--services-border);
   background: var(--services-card-bg);
   color: var(--services-text-main);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  font-size: 16px;
+  font-size: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
@@ -359,11 +374,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   font-weight: 600;
-  font-size: 16px;
-  border-radius: 12px;
-  padding: 14px 32px;
+  font-size: 14px;
+  border-radius: 10px;
+  padding: 12px 24px;
   cursor: pointer;
   border: none;
   background: var(--services-primary);
@@ -415,7 +430,7 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding: 40px 20px 80px;
+  padding: 32px 20px 60px;
   flex: 1;
   background: var(--services-main-bg);
   position: relative;
