@@ -1185,37 +1185,66 @@
     <script>
       // Presentation remote gesture support for home page
       (() => {
-        let lastUpArrowTime = 0;
-        let lastDownArrowTime = 0;
-        const DOUBLE_TAP_THRESHOLD = 400; // milliseconds
+        let upTapCount = 0;
+        let upTapTimer = null;
+        let enterTapCount = 0;
+        let enterTapTimer = null;
+        const TAP_THRESHOLD = 500; // milliseconds
 
         document.addEventListener('keydown', (e) => {
-          const currentTime = Date.now();
-
-          // Double tap up arrow -> go to services
+          // Up arrow taps (2x = services)
           if (e.key === 'ArrowUp') {
-            const timeSinceLastPress = currentTime - lastUpArrowTime;
+            upTapCount++;
 
-            if (timeSinceLastPress < DOUBLE_TAP_THRESHOLD && timeSinceLastPress > 0) {
-              // Double tap detected - go to services
+            if (upTapTimer) {
+              clearTimeout(upTapTimer);
+            }
+
+            if (upTapCount === 2) {
               e.preventDefault();
               window.location.href = '/services';
+              upTapCount = 0;
+              return;
             }
 
-            lastUpArrowTime = currentTime;
+            upTapTimer = setTimeout(() => {
+              upTapCount = 0;
+            }, TAP_THRESHOLD);
           }
 
-          // Double tap down arrow -> go to presentation
-          if (e.key === 'ArrowDown') {
-            const timeSinceLastPress = currentTime - lastDownArrowTime;
+          // Enter taps (2x = theme, 3x = presentation)
+          if (e.key === 'Enter') {
+            enterTapCount++;
 
-            if (timeSinceLastPress < DOUBLE_TAP_THRESHOLD && timeSinceLastPress > 0) {
-              // Double tap detected - go to presentation
-              e.preventDefault();
-              window.location.href = '/presentation.html';
+            if (enterTapTimer) {
+              clearTimeout(enterTapTimer);
             }
 
-            lastDownArrowTime = currentTime;
+            // Triple tap = presentation
+            if (enterTapCount === 3) {
+              e.preventDefault();
+              window.location.href = '/presentation.html';
+              enterTapCount = 0;
+              return;
+            }
+
+            // Double tap = theme
+            if (enterTapCount === 2) {
+              e.preventDefault();
+              if (window.ThemeManager && typeof window.ThemeManager.cycleTheme === 'function') {
+                window.ThemeManager.cycleTheme();
+              }
+              // Don't reset yet, wait for possible 3rd tap
+              enterTapTimer = setTimeout(() => {
+                enterTapCount = 0;
+              }, TAP_THRESHOLD);
+              return;
+            }
+
+            // First tap, wait for more
+            enterTapTimer = setTimeout(() => {
+              enterTapCount = 0;
+            }, TAP_THRESHOLD);
           }
         });
       })();

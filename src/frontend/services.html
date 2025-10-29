@@ -1791,37 +1791,70 @@
     <script>
       // Presentation remote gesture support for services page
       (() => {
-        let lastUpArrowTime = 0;
-        let lastDownArrowTime = 0;
-        const DOUBLE_TAP_THRESHOLD = 400; // milliseconds
+        let upTapCount = 0;
+        let upTapTimer = null;
+        let enterTapCount = 0;
+        let enterTapTimer = null;
+        const TAP_THRESHOLD = 500; // milliseconds
 
         document.addEventListener('keydown', (e) => {
-          const currentTime = Date.now();
-
-          // Double tap up arrow -> go to schedule
+          // Up arrow taps (2x = schedule, 3x = home)
           if (e.key === 'ArrowUp') {
-            const timeSinceLastPress = currentTime - lastUpArrowTime;
+            upTapCount++;
 
-            if (timeSinceLastPress < DOUBLE_TAP_THRESHOLD && timeSinceLastPress > 0) {
-              // Double tap detected - go to schedule
-              e.preventDefault();
-              window.location.href = '/schedule';
+            if (upTapTimer) {
+              clearTimeout(upTapTimer);
             }
 
-            lastUpArrowTime = currentTime;
-          }
-
-          // Double tap down arrow -> go back to home
-          if (e.key === 'ArrowDown') {
-            const timeSinceLastPress = currentTime - lastDownArrowTime;
-
-            if (timeSinceLastPress < DOUBLE_TAP_THRESHOLD && timeSinceLastPress > 0) {
-              // Double tap detected - go to home
+            // Triple tap = home
+            if (upTapCount === 3) {
               e.preventDefault();
               window.location.href = '/home';
+              upTapCount = 0;
+              return;
             }
 
-            lastDownArrowTime = currentTime;
+            // Double tap = schedule
+            if (upTapCount === 2) {
+              e.preventDefault();
+              // Wait a bit to see if there's a 3rd tap
+              upTapTimer = setTimeout(() => {
+                if (upTapCount === 2) {
+                  window.location.href = '/schedule';
+                }
+                upTapCount = 0;
+              }, TAP_THRESHOLD);
+              return;
+            }
+
+            // First tap, wait for more
+            upTapTimer = setTimeout(() => {
+              upTapCount = 0;
+            }, TAP_THRESHOLD);
+          }
+
+          // Enter taps (2x = theme)
+          if (e.key === 'Enter') {
+            enterTapCount++;
+
+            if (enterTapTimer) {
+              clearTimeout(enterTapTimer);
+            }
+
+            // Double tap = theme
+            if (enterTapCount === 2) {
+              e.preventDefault();
+              if (window.ThemeManager && typeof window.ThemeManager.cycleTheme === 'function') {
+                window.ThemeManager.cycleTheme();
+              }
+              enterTapCount = 0;
+              return;
+            }
+
+            // First tap, wait for more
+            enterTapTimer = setTimeout(() => {
+              enterTapCount = 0;
+            }, TAP_THRESHOLD);
           }
         });
       })();

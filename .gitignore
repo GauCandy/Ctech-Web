@@ -24,6 +24,11 @@ yarn-error.log*
 # IDE / Editor
 .vscode/
 .idea/
+.vs/
+
+# claude
+.claude/
+
 
 # System
 Thumbs.db

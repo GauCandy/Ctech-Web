@@ -12,7 +12,8 @@
       "Bash(npm install multer)",
       "Bash(npm run dev:*)",
       "Bash(npm run:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(tree:*)"
     ],
     "deny": [],
     "ask": []

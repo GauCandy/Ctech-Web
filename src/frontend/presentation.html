@@ -1318,6 +1318,11 @@
       updateSlides(direction);
     }
 
+    // Gesture support
+    let enterTapCount = 0;
+    let enterTapTimer = null;
+    const TAP_THRESHOLD = 500;
+
     document.addEventListener('keydown', (e) => {
       // Support right arrow, down arrow, and space for next
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
@@ -1329,10 +1334,27 @@
         e.preventDefault();
         prevSlide();
       }
-      // Support Enter key to exit presentation and go back to home
+      // Enter double tap to exit presentation
       if (e.key === 'Enter') {
         e.preventDefault();
-        window.location.href = '/home';
+
+        enterTapCount++;
+
+        if (enterTapTimer) {
+          clearTimeout(enterTapTimer);
+        }
+
+        // Double tap = exit to home
+        if (enterTapCount === 2) {
+          window.location.href = '/home';
+          enterTapCount = 0;
+          return;
+        }
+
+        // First tap, wait for second
+        enterTapTimer = setTimeout(() => {
+          enterTapCount = 0;
+        }, TAP_THRESHOLD);
       }
     });
 

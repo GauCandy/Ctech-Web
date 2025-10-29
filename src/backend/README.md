@@ -1,218 +1,525 @@
-# Backend - CTECH API Server
+# Backend Architecture
 
-## Tổng Quan
+Backend API server cho CTECH Web System sử dụng Node.js + Express.js với MySQL database.
 
-Backend server cho CTECH website, sử dụng Node.js + Express.js và MySQL database.
-
-## Cấu Trúc Thư Mục
+## Cấu trúc thư mục
 
 ```
-backend/
-├── api/              # API endpoints & routes
-│   ├── auth/        # Authentication routes
-│   ├── features/    # Feature-specific APIs
-│   └── routes/      # Route definitions
-├── database/        # Database configuration
-│   └── db.js       # MySQL connection
-├── middleware/      # Express middleware
-│   ├── auth.js     # JWT authentication
-│   └── upload.js   # File upload handling
-└── server/          # Server setup
-    └── server.js   # Main server file
+src/backend/
+├── api/                      # API layer
+│   ├── features/            # Feature modules (domain-driven design)
+│   │   ├── auth/           # Authentication (login, JWT)
+│   │   ├── admin/          # Admin management (users)
+│   │   ├── services/       # Services catalog (CRUD)
+│   │   ├── chatbot/        # AI chatbot với OpenAI
+│   │   ├── timetable/      # Timetable upload/parse
+│   │   ├── orders/         # Order management
+│   │   └── vouchers/       # Voucher system
+│   │
+│   └── shared/             # Shared middleware và utilities
+│       ├── cacheMiddleware.js    # Cache middleware
+│       ├── cacheService.js       # In-memory cache service
+│       └── authMiddleware.js     # JWT authentication (if exists)
+│
+├── database/               # Database layer
+│   ├── connection.js      # MySQL connection pool
+│   ├── setupdb.js         # Database setup và initialization
+│   └── serviceExporter.js # Export services catalog
+│
+└── server/                # Server configuration
+    └── app.js            # Express app setup, routing, middleware
 ```
 
-## API Endpoints
+## Feature Module Pattern
 
-### 🔐 Authentication
-- `POST /api/auth/register` - Đăng ký tài khoản mới
-- `POST /api/auth/login` - Đăng nhập
-- `POST /api/auth/refresh` - Refresh access token
-- `GET /api/auth/profile` - Lấy thông tin user (protected)
+Mỗi feature được tổ chức theo pattern:
 
-### 💬 Chatbot
-- `POST /api/chatbot/message` - Gửi message tới AI chatbot
-- `GET /api/chatbot/history` - Lấy lịch sử chat (protected)
-
-### 📅 Schedule (Thời Khóa Biểu)
-- `GET /api/schedule` - Lấy thời khóa biểu
-- `POST /api/schedule` - Tạo lịch mới (admin)
-- `PUT /api/schedule/:id` - Cập nhật lịch (admin)
-- `DELETE /api/schedule/:id` - Xóa lịch (admin)
-
-### 🛍️ Services
-- `GET /api/services` - Lấy danh sách dịch vụ
-- `GET /api/services/:id` - Chi tiết dịch vụ
-- `POST /api/services/purchase` - Mua dịch vụ (protected)
-- `GET /api/services/history` - Lịch sử mua hàng (protected)
-
-### 📤 Upload
-- `POST /api/upload/qr` - Upload QR code image
-- `POST /api/upload/avatar` - Upload avatar
-
-## Database Schema
-
-### Users Table
-```sql
-users (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  username VARCHAR(50) UNIQUE,
-  email VARCHAR(100) UNIQUE,
-  password VARCHAR(255),
-  role ENUM('user', 'admin'),
-  created_at TIMESTAMP
-)
+```
+features/<feature-name>/
+├── router.js              # Express router với routes
+├── controller.js          # Business logic (optional)
+├── service.js             # Database queries (optional)
+└── middleware.js          # Feature-specific middleware (optional)
 ```
 
-### Services Table
-```sql
-services (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(100),
-  description TEXT,
-  price DECIMAL(10,2),
-  category VARCHAR(50),
-  qr_code_url VARCHAR(255),
-  created_at TIMESTAMP
-)
+### Example: Services Feature
+```
+features/services/
+├── router.js              # Routes: GET/POST/PUT/DELETE /api/services
+└── (logic inline hoặc trong controller)
 ```
 
-### Schedule Table
-```sql
-schedule (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  user_id INT,
-  subject VARCHAR(100),
-  day_of_week INT,
-  start_time TIME,
-  end_time TIME,
-  room VARCHAR(50),
-  teacher VARCHAR(100)
-)
+## Core Components
+
+### 1. Express App (`server/app.js`)
+
+Main application setup:
+
+```javascript
+const app = express();
+
+// CORS configuration
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Admin-Token');
+  next();
+});
+
+// Body parser
+app.use(express.json());
+
+// Static files
+app.use(express.static(frontendDir));
+app.use('/uploads', express.static(uploadsDir));
+
+// Routes
+app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/services', cacheMiddleware({ ttl: 300 }), servicesRouter);
+app.use('/api/chatbot', cacheMiddleware({ ttl: 600 }), chatbotRouter);
+app.use('/api/timetable', timetableRouter);
+app.use('/api/orders', ordersRouter);
+app.use('/api/vouchers', vouchersRouter);
 ```
+
+**Key Features:**
+- CORS enabled cho tất cả origins
+- Static file serving cho frontend
+- Cache middleware cho services và chatbot
+- Error handling middleware
+
+### 2. Database Connection (`database/connection.js`)
+
+MySQL2 connection pool:
+
+```javascript
+const mysql = require('mysql2/promise');
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+```
+
+**Connection Pool Benefits:**
+- Reuse connections
+- Auto-reconnect on failure
+- Connection queueing
+
+### 3. Cache System (`api/shared/`)
+
+#### Cache Service (`cacheService.js`)
+In-memory cache với TTL:
+
+```javascript
+class CacheService {
+  constructor() {
+    this.cache = new Map();
+  }
+
+  get(key) { /* ... */ }
+  set(key, value, ttl) { /* ... */ }
+  delete(key) { /* ... */ }
+  clear() { /* ... */ }
+}
+```
+
+#### Cache Middleware (`cacheMiddleware.js`)
+Intercepts Express responses:
+
+```javascript
+function cacheMiddleware(options = {}) {
+  const { ttl = 300, fallbackOnError = true } = options;
+
+  return (req, res, next) => {
+    if (req.method !== 'GET') return next();
+
+    const cachedData = cacheService.get(cacheKey);
+    if (cachedData) {
+      console.log(`[Cache] HIT: ${cacheKey}`);
+      return res.json(cachedData);
+    }
+
+    console.log(`[Cache] MISS: ${cacheKey}`);
+    // Cache response before sending
+    next();
+  };
+}
+```
+
+**Features:**
+- Only caches GET requests
+- TTL-based expiration
+- Fallback on 5xx errors
+- Console logging (MISS/HIT/CACHED/FALLBACK)
+
+### 4. Database Setup (`database/setupdb.js`)
+
+Auto-creates tables on first run:
+
+- `users` table với username, password, role
+- `services` table với serviceCode, name, price, category
+- `orders` table với userId, serviceId, quantity, status
+- `vouchers` table với code, discount, validity
+- `timetables` table với userId, fileName, parsedData
+
+**Setup Flow:**
+1. Connect to database
+2. Check if tables exist
+3. Create tables if missing
+4. Insert default data (admin user, sample services)
+
+### 5. Service Exporter (`database/serviceExporter.js`)
+
+Exports services catalog cho chatbot:
+
+```javascript
+async function exportServicesCatalog() {
+  const services = await queryDatabase('SELECT * FROM services');
+  const catalog = JSON.stringify(services, null, 2);
+  fs.writeFileSync('services_catalog.json', catalog);
+  return { servicesCount: services.length };
+}
+```
+
+## API Features
+
+### Authentication (`features/auth/`)
+
+**Routes:**
+- `POST /api/auth/login` - Login với username/password
+- `GET /api/auth/me` - Get current user info
+- `POST /api/auth/change-password` - Change password
+
+**Authentication Flow:**
+1. User sends credentials
+2. Validate against database
+3. Generate JWT token
+4. Return token + user info
+5. Client stores token in localStorage
+6. Client sends token in `Authorization: Bearer <token>` header
+
+**Security:**
+- JWT tokens với expiration
+- Password hashing (recommended: bcrypt)
+- Token validation middleware
+
+### Admin (`features/admin/`)
+
+**Routes:**
+- `GET /api/admin/users` - List all users
+- `POST /api/admin/users` - Create new user
+- `PUT /api/admin/users/:userId` - Update user
+- `DELETE /api/admin/users/:userId` - Delete user
+
+**Authorization:**
+- Requires `X-Admin-Token` header
+- Validates admin role
+- Only accessible by admins
+
+### Services (`features/services/`)
+
+**Routes:**
+- `GET /api/services` - List services (cached 5 min)
+- `GET /api/services/categories` - List categories (cached 5 min)
+- `GET /api/services/:serviceId` - Get service details
+- `POST /api/services` - Create service (admin only, multipart/form-data)
+- `PUT /api/services/:serviceId` - Update service (admin only)
+- `DELETE /api/services/:serviceId` - Delete service (admin only)
+
+**Features:**
+- Query params: `category`, `status`, `search`
+- Image upload với Multer
+- Cache với 5 phút TTL
+- Fallback cache on error
+
+**Cache Behavior:**
+```
+Request 1: MISS → Query DB → CACHED (TTL: 300s)
+Request 2 (within 5 min): HIT → Return cached
+Request 3 (after 5 min): MISS → Query DB → CACHED
+```
+
+### Chatbot (`features/chatbot/`)
+
+**Routes:**
+- `POST /api/chatbot/chat` - Send message to AI
+
+**Request:**
+```json
+{
+  "message": "Học phí học kỳ này là bao nhiêu?",
+  "history": [
+    { "role": "user", "content": "Xin chào" },
+    { "role": "assistant", "content": "Xin chào!" }
+  ]
+}
+```
+
+**Implementation:**
+- OpenAI API integration
+- Conversation history support
+- Knowledge base từ services catalog
+- Cache responses (10 min TTL)
+
+### Timetable (`features/timetable/`)
+
+**Routes:**
+- `POST /api/timetable/upload` - Upload PDF timetable (multipart/form-data)
+- `GET /api/timetable` - Get user's timetable
+- `DELETE /api/timetable/:timetableId` - Delete timetable
+
+**Features:**
+- PDF upload với Multer
+- PDF parsing với pdfjs-dist
+- Extract schedule data (subject, teacher, room, time)
+- Store parsed data as JSON
+
+### Orders (`features/orders/`)
+
+**Routes:**
+- `GET /api/orders` - List user's orders
+- `POST /api/orders` - Create new order
+- `GET /api/orders/:orderId` - Get order details
+
+**Business Logic:**
+- Calculate total price (quantity × service price)
+- Apply voucher discount if provided
+- Support payment methods: cash, bank_transfer
+- Order statuses: pending, completed, cancelled
+
+### Vouchers (`features/vouchers/`)
+
+**Routes:**
+- `GET /api/vouchers` - List available vouchers
+- `POST /api/vouchers/validate` - Validate voucher code
+
+**Validation:**
+- Check voucher code exists
+- Check valid date range
+- Check usage limit not exceeded
+- Check minimum order value
+- Calculate discount amount
+
+**Discount Types:**
+- `percentage` - Discount % (e.g., 10%)
+- `fixed` - Fixed amount (e.g., 20,000đ)
 
 ## Middleware
 
-### Authentication (auth.js)
-```javascript
-// Verify JWT token
-verifyToken(req, res, next)
+### Cache Middleware
+- Applied to: Services, Chatbot
+- TTL: 300s (services), 600s (chatbot)
+- Fallback on 5xx errors
+- Logging: MISS/HIT/CACHED/FALLBACK
 
-// Check admin role
-isAdmin(req, res, next)
+### CORS Middleware
+- Allow all origins: `*`
+- Allow methods: GET, POST, PUT, DELETE, OPTIONS
+- Allow headers: Content-Type, Authorization, X-Admin-Token
+- Handle preflight requests
+
+### Auth Middleware (if implemented)
+- Validate JWT token from `Authorization: Bearer` header
+- Decode token to get userId and role
+- Attach `req.user` for downstream use
+- Return 401 if invalid/missing token
+
+### Admin Middleware
+- Validate `X-Admin-Token` header
+- Check admin role
+- Return 403 if not admin
+
+### Multer Middleware (File Upload)
+- Services: Accept images (jpg, png, gif, webp), max 5MB
+- Timetable: Accept PDF, max 10MB
+- Store in `uploads/` directory
+
+## Database Queries
+
+### Connection Pattern
+```javascript
+let connection;
+try {
+  connection = await pool.getConnection();
+  const [rows] = await connection.query('SELECT * FROM services WHERE status = ?', ['active']);
+  return rows;
+} catch (error) {
+  console.error('Database error:', error);
+  throw error;
+} finally {
+  if (connection) connection.release();
+}
 ```
 
-### File Upload (upload.js)
+### Prepared Statements
+Always use prepared statements để prevent SQL injection:
+
 ```javascript
-// Multer configuration
-uploadQR.single('qrCode')
-uploadAvatar.single('avatar')
+// Good
+await connection.query('SELECT * FROM users WHERE username = ?', [username]);
+
+// Bad
+await connection.query(`SELECT * FROM users WHERE username = '${username}'`);
+```
+
+## Error Handling
+
+### Standard Error Responses
+
+```javascript
+// 400 Bad Request
+res.status(400).json({ error: 'Thiếu thông tin bắt buộc' });
+
+// 401 Unauthorized
+res.status(401).json({ error: 'Chưa đăng nhập' });
+
+// 403 Forbidden
+res.status(403).json({ error: 'Không có quyền truy cập' });
+
+// 404 Not Found
+res.status(404).json({ error: 'Không tìm thấy' });
+
+// 500 Internal Server Error
+res.status(500).json({ error: 'Lỗi hệ thống' });
+```
+
+### Global Error Handler
+```javascript
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error.' });
+});
 ```
 
 ## Environment Variables
 
+Required in `.env`:
+
 ```env
-# MySQL Database
-DB_HOST=vn1.whitecat.cloud
-DB_PORT=3307
-DB_USER=your_user
+# Database
+DB_HOST=localhost
+DB_USER=root
 DB_PASSWORD=your_password
-DB_NAME=ctech
-DB_POOL_SIZE=10
-DB_CONNECT_TIMEOUT=20000
-DB_SSL=false
+DB_NAME=ctech_db
 
 # Server
 PORT=3000
-NODE_ENV=development
 
-# OpenAI Chatbot API
-OPENAI_API_KEY=your_openai_api_key
+# Authentication
+JWT_SECRET=your_jwt_secret_key
+ADMIN_TOKEN=your_admin_token
 
-# Admin Credentials
-ADMIN_USER=admin
-ADMIN_PASSWORD=admin123
-
-# Session & Security
-SESSION_TIMEOUT=300
-AUTH=your_auth_token
-
-# Bank Info (for payment services)
-BANK_NAME=MB Bank
-BANK_OWNER=Your Name
-BANK_NUMBER=0372360619
-BANK_BIN=970422
-
-# Debug
-DEBUG=false
+# OpenAI
+OPENAI_API_KEY=sk-...
 ```
 
-## Chạy Backend
+## Performance Optimization
 
-### Development mode
+### 1. Connection Pooling
+- Reuse database connections
+- Limit: 10 concurrent connections
+- Auto-reconnect on failure
+
+### 2. Caching
+- In-memory cache với TTL
+- Reduce database queries
+- Fallback on errors
+
+### 3. Async/Await
+- Non-blocking I/O
+- Parallel requests handled efficiently
+
+### 4. Prepared Statements
+- Query plan caching
+- Prevent SQL injection
+
+## Testing
+
+### Manual Testing với curl
+
+**Login:**
 ```bash
-npm run dev
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"student01","password":"password123"}'
 ```
 
-### Production mode
+**Get Services:**
 ```bash
-npm start
+curl http://localhost:3000/api/services
 ```
 
-## Testing API
-
-Sử dụng tool như Postman hoặc Thunder Client:
-
-### Example: Login
+**Create Service (Admin):**
 ```bash
-POST http://localhost:3000/api/auth/login
-Content-Type: application/json
-
-{
-  "username": "user123",
-  "password": "password123"
-}
+curl -X POST http://localhost:3000/api/services \
+  -H "X-Admin-Token: your-admin-token" \
+  -F "serviceCode=SV001" \
+  -F "serviceName=Vé gửi xe" \
+  -F "price=5000" \
+  -F "category=Gửi xe" \
+  -F "image=@parking.jpg"
 ```
 
-Response:
-```json
-{
-  "success": true,
-  "accessToken": "eyJhbGc...",
-  "refreshToken": "eyJhbGc...",
-  "user": {
-    "id": 1,
-    "username": "user123",
-    "role": "user"
-  }
-}
+## Security Best Practices
+
+1. **Password Hashing**: Use bcrypt với salt rounds >= 10
+2. **JWT Secret**: Use strong, random secret key
+3. **SQL Injection**: Always use prepared statements
+4. **CORS**: Configure properly for production
+5. **File Upload**: Validate file type, size, sanitize filenames
+6. **Rate Limiting**: Implement rate limiting cho login, API calls
+7. **HTTPS**: Use HTTPS in production
+8. **Environment Variables**: Never commit `.env` to git
+
+## Deployment
+
+### Production Checklist
+- [ ] Set `NODE_ENV=production`
+- [ ] Use HTTPS
+- [ ] Configure CORS properly
+- [ ] Enable rate limiting
+- [ ] Set up logging (Winston, Morgan)
+- [ ] Use Redis cache thay cho in-memory
+- [ ] Set up database backups
+- [ ] Monitor server health
+- [ ] Use PM2 hoặc similar process manager
+
+### PM2 Example
+```bash
+pm2 start index.js --name ctech-api
+pm2 logs ctech-api
+pm2 restart ctech-api
 ```
-
-## Security
-
-- JWT tokens với expiration time
-- Password hashing với bcrypt
-- CORS configuration
-- Input validation & sanitization
-- SQL injection prevention với prepared statements
 
 ## Troubleshooting
 
-### Database connection failed
-```bash
-# Check MySQL service
-mysql -u root -p
+### Database Connection Errors
+- Check `.env` credentials
+- Ensure MySQL is running
+- Check firewall settings
 
-# Verify credentials in .env
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=correct_password
-```
+### Cache Not Working
+- Check console logs: MISS/HIT/CACHED
+- Verify TTL settings
+- Clear cache: restart server
 
-### JWT token invalid
-- Token đã hết hạn → Refresh token
-- Token không đúng format → Kiểm tra header format
-- Secret key không khớp → Verify JWT_SECRET
+### File Upload Errors
+- Check `uploads/` directory exists
+- Verify file size < limit
+- Check file type validation
 
-## API Documentation Chi Tiết
+### JWT Errors
+- Check JWT_SECRET in `.env`
+- Verify token format: `Bearer <token>`
+- Check token expiration
 
-Xem thêm: [API Documentation](api/README.md)
+## API Documentation
+
+Xem chi tiết tại [API.md](API.md)
