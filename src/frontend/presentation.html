@@ -1240,6 +1240,7 @@
     let sliderCurrentPosition = 100; // Track actual slider position
     const TKB_SLIDE_INDEX = 8; // Slide 9 (index 8)
     let isTransitioning = false;
+    let isTKBAnimating = false; // Prevent rapid TKB animation spam
 
     for (let i = 0; i < totalSlides; i++) {
       const dot = document.createElement('div');
@@ -1294,6 +1295,7 @@
 
       // If on TKB slide and not at last animation state, advance animation
       if (currentSlide === TKB_SLIDE_INDEX && tkbAnimationState < 2) {
+        if (isTKBAnimating) return; // Block if already animating
         tkbAnimationState++;
         if (tkbAnimationState === 1) {
           animateTKB('compare');
@@ -1327,6 +1329,7 @@
 
       // If on TKB slide and not at first animation state, go back in animation
       if (currentSlide === TKB_SLIDE_INDEX && tkbAnimationState > 0) {
+        if (isTKBAnimating) return; // Block if already animating
         tkbAnimationState--;
         if (tkbAnimationState === 0) {
           animateTKB('before');
@@ -1420,6 +1423,9 @@
 
     // TKB Animation Function
     function animateTKB(mode) {
+      if (isTKBAnimating) return; // Prevent animation spam
+      isTKBAnimating = true;
+
       const badge = document.getElementById('tkb-badge');
       const title = document.getElementById('tkb-title');
       const subtitle = document.getElementById('tkb-subtitle');
@@ -1481,6 +1487,7 @@
         } else {
           // Update tracked position after animation completes
           sliderCurrentPosition = targetPosition;
+          isTKBAnimating = false; // Allow next animation
         }
       }
 
