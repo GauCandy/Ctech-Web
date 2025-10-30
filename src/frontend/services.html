@@ -123,6 +123,83 @@
       </section>
     </main>
 
+    <!-- Service Detail Modal -->
+    <div class="service-modal" id="serviceModal">
+      <div class="service-modal-content">
+        <div class="service-modal-header">
+          <div>
+            <div class="service-detail-code" id="modalCode">SV001</div>
+            <h3 class="service-detail-title" id="modalTitle">Tên dịch vụ</h3>
+            <div class="service-detail-price" id="modalPrice">0đ</div>
+            <div class="service-detail-status" id="modalStatus">Hoạt động</div>
+          </div>
+          <button class="service-modal-close" id="closeServiceModal">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+        <div class="service-modal-body" id="modalBody">
+          <!-- Left Column: Service Info -->
+          <div class="service-info-column">
+            <img id="modalImage" class="service-detail-image" src="" alt="Service Image" style="display: none;">
+
+            <div class="service-detail-section">
+              <h4>Mô tả</h4>
+              <p class="service-detail-desc" id="modalDesc">Mô tả dịch vụ</p>
+            </div>
+
+            <div class="service-detail-info">
+              <div class="service-detail-info-item">
+                <span class="material-icons">category</span>
+                <span><strong>Danh mục:</strong> <span id="modalCategory">-</span></span>
+              </div>
+              <div class="service-detail-info-item">
+                <span class="material-icons">schedule</span>
+                <span><strong>Cập nhật:</strong> <span id="modalDate">-</span></span>
+              </div>
+              <div class="service-detail-info-item">
+                <span class="material-icons">info</span>
+                <span id="modalStatusText">Đang hoạt động</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Payment -->
+          <div class="payment-column" id="paymentColumn" style="display: none;">
+            <div class="payment-section-wrapper">
+              <h4>Thanh toán</h4>
+
+              <div class="payment-qr-container">
+                <div class="payment-qr-code">
+                  <img id="paymentQRImage" src="" alt="QR Code">
+                </div>
+                <p style="color: #64748b; font-size: 14px; text-align: center; margin-top: 12px;">Quét mã QR để thanh toán</p>
+              </div>
+
+              <div class="payment-code-info">
+                <div class="payment-code-label">Mã giao dịch</div>
+                <div class="payment-code-value" id="paymentCodeValue">-</div>
+              </div>
+
+              <div class="payment-bank-info" id="bankInfo">
+                <div class="bank-info-item">
+                  <strong>Ngân hàng:</strong>
+                  <span id="bankName">-</span>
+                </div>
+                <div class="bank-info-item">
+                  <strong>Tài khoản:</strong>
+                  <span id="bankNumber">-</span>
+                </div>
+                <div class="bank-info-item">
+                  <strong>Người nhận:</strong>
+                  <span id="bankOwner">-</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Modal lich su don hang -->
     <div id="order-history-modal" class="order-history-modal" style="display: none;">
       <div class="order-history-backdrop" data-modal-backdrop></div>
@@ -1139,13 +1216,136 @@
               return;
             }
             const code = card.dataset.serviceCode;
-            if (!code || code === state.selectedCode) {
+            if (!code) {
               return;
             }
-            state.selectedCode = code;
-            renderServices();
+
+            // Open service detail modal
+            openServiceDetailModal(code);
           });
         }
+
+        // Service Detail Modal Functions
+        function openServiceDetailModal(serviceCode) {
+          const service = state.services.find(s => s.serviceCode === serviceCode);
+          if (!service) {
+            console.error('Service not found:', serviceCode);
+            return;
+          }
+
+          const modal = document.getElementById('serviceModal');
+          const modalContent = modal.querySelector('.service-modal-content');
+          const modalBody = modal.querySelector('.service-modal-body');
+
+          // Update modal content
+          document.getElementById('modalCode').textContent = service.serviceCode;
+          document.getElementById('modalTitle').textContent = service.name || service.serviceCode;
+          document.getElementById('modalPrice').textContent = formatPrice(service.price);
+
+          const statusEl = document.getElementById('modalStatus');
+          statusEl.textContent = service.isActive ? 'Hoạt động' : 'Tạm dừng';
+          statusEl.className = 'service-detail-status' + (service.isActive ? '' : ' inactive');
+
+          document.getElementById('modalDesc').textContent = service.description || 'Chưa có mô tả chi tiết.';
+          document.getElementById('modalCategory').textContent = service.category || '-';
+          document.getElementById('modalDate').textContent = formatDateTime(service.updatedAt);
+          document.getElementById('modalStatusText').textContent = service.isActive ? 'Đang hoạt động' : 'Tạm dừng';
+
+          // Handle image
+          const imageEl = document.getElementById('modalImage');
+          const hasImage = service.imageUrl && service.imageUrl.trim() !== '';
+
+          if (hasImage) {
+            imageEl.src = service.imageUrl;
+            imageEl.style.display = 'block';
+            imageEl.classList.remove('is-placeholder');
+            imageEl.onerror = function() {
+              this.onerror = null;
+              this.style.display = 'none';
+            };
+          } else {
+            imageEl.style.display = 'none';
+            imageEl.classList.remove('is-placeholder');
+          }
+
+          // Handle payment column
+          const session = getSession();
+          const isLoggedIn = Boolean(session && session.token);
+          const role = session && session.user && session.user.role;
+          const canPurchase = isLoggedIn && service.isActive && (role === 'teacher' || role === 'student');
+
+          const paymentColumn = document.getElementById('paymentColumn');
+          if (canPurchase) {
+            paymentColumn.style.display = 'block';
+            // Auto load payment info
+            loadPaymentInfo(service);
+          } else {
+            paymentColumn.style.display = 'none';
+          }
+
+          // Show modal
+          modal.classList.add('active');
+        }
+
+        async function loadPaymentInfo(service) {
+          const qrImage = document.getElementById('paymentQRImage');
+          const paymentCodeValue = document.getElementById('paymentCodeValue');
+          const bankName = document.getElementById('bankName');
+          const bankNumber = document.getElementById('bankNumber');
+          const bankOwner = document.getElementById('bankOwner');
+
+          try {
+            // Call payment API
+            const session = getSession();
+            const response = await fetch(`/api/services/${service.serviceCode}/purchase`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.token}`
+              }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+              throw new Error(data.error || 'Payment failed');
+            }
+
+            // Update payment info
+            qrImage.src = data.qrCodeUrl;
+            paymentCodeValue.textContent = data.transactionCode;
+            bankName.textContent = data.bankInfo.bankName;
+            bankNumber.textContent = data.bankInfo.bankNumber;
+            bankOwner.textContent = data.bankInfo.bankOwner;
+
+          } catch (error) {
+            console.error('Payment error:', error);
+            paymentCodeValue.textContent = 'Lỗi: ' + error.message;
+          }
+        }
+
+        function closeServiceDetailModal() {
+          const modal = document.getElementById('serviceModal');
+          modal.classList.remove('active');
+        }
+
+        // Close modal event listeners
+        document.getElementById('closeServiceModal').addEventListener('click', closeServiceDetailModal);
+
+        document.getElementById('serviceModal').addEventListener('click', function(e) {
+          if (e.target === this) {
+            closeServiceDetailModal();
+          }
+        });
+
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            const modal = document.getElementById('serviceModal');
+            if (modal.classList.contains('active')) {
+              closeServiceDetailModal();
+            }
+          }
+        });
 
         function openEditModal(serviceCode) {
           const service = state.services.find(s => s.serviceCode === serviceCode);
