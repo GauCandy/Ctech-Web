@@ -95,8 +95,8 @@ function createApp() {
   app.use('/api/auth', authRouter);
   app.use('/api/admin', adminRouter);
 
-  // Services router with cache (5 minutes TTL for normal, 24 hours for fallback)
-  app.use('/api/services', cacheMiddleware({ ttl: 300, fallbackOnError: true }), servicesRouter);
+  // Services router - load directly from database (no cache for real-time updates)
+  app.use('/api/services', servicesRouter);
 
   // Chatbot router with cache (10 minutes TTL)
   app.use('/api/chatbot', cacheMiddleware({ ttl: 600, fallbackOnError: true }), chatbotRouter);
