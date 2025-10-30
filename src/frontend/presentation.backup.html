@@ -1,0 +1,3017 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài thuyết trình - Website Học Vụ CTECH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Be Vietnam Pro', sans-serif;
+      background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .presentation { width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+
+    /* Header */
+    .header {
+      background: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #e5e7eb;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .logo { font-size: 20px; font-weight: 700; color: #1a1a1a; }
+    .timer { font-size: 18px; color: #4b5563; font-weight: 600; }
+    .close-btn {
+      background: #f3f4f6; border: 2px solid #e5e7eb; color: #374151;
+      width: 40px; height: 40px; border-radius: 8px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+    }
+    .close-btn:hover { background: #ef4444; border-color: #dc2626; color: white; }
+
+    /* Slides */
+    .slides-container {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      padding: 20px; overflow: hidden;
+      position: relative;
+    }
+    .slide {
+      display: none; width: 100%; max-width: 100%; height: 100%;
+      background: transparent; padding: 40px 60px;
+      overflow-y: auto;
+      flex-direction: column; justify-content: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+    .slide.active { display: flex; animation: slideInFromRight 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    .slide.slide-out-left { animation: slideOutToLeft 0.6s cubic-bezier(0.7, 0, 0.84, 0); }
+    .slide.slide-out-right { animation: slideOutToRight 0.6s cubic-bezier(0.7, 0, 0.84, 0); }
+    .slide.active.from-left { animation: slideInFromLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+
+    @keyframes slideInFromRight {
+      from {
+        opacity: 0;
+        transform: translateX(100px) scale(0.95);
+        filter: blur(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes slideInFromLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-100px) scale(0.95);
+        filter: blur(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+        filter: blur(0);
+      }
+    }
+
+    @keyframes slideOutToLeft {
+      from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(-100px) scale(0.95);
+      }
+    }
+
+    @keyframes slideOutToRight {
+      from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(100px) scale(0.95);
+      }
+    }
+
+    /* Typography */
+    .badge {
+      display: inline-block; background: #0047ab; color: white; padding: 12px 40px;
+      border-radius: 50px; font-weight: 800; font-size: 26px; margin-bottom: 18px;
+      border: 4px solid #003380;
+      transition: background 0.3s ease, border-color 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 0 6px 20px rgba(0,71,171,0.4);
+    }
+    .title {
+      font-size: 58px; font-weight: 800; color: #1a1a1a; margin-bottom: 16px;
+      line-height: 1.2; transition: color 0.3s ease;
+      text-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .subtitle {
+      font-size: 28px; color: #4b5563; font-weight: 600; margin-bottom: 20px;
+      transition: color 0.3s ease;
+    }
+    .greeting { font-size: 28px; color: #1a1a1a; margin-bottom: 20px; font-weight: 600; }
+    .description {
+      font-size: 24px; color: #1a1a1a; line-height: 1.7; margin-bottom: 20px;
+      transition: color 0.3s ease;
+    }
+
+    /* Cards */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin: 18px 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 18px 0; }
+    .card {
+      background: white; border: 3px solid rgba(0,0,0,0.12); border-radius: 16px;
+      padding: 20px; text-align: center; transition: all 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      animation: cardFadeIn 0.5s ease forwards;
+      opacity: 0;
+    }
+    .card:hover {
+      border-color: #0047ab;
+      box-shadow: 0 12px 32px rgba(0,71,171,0.25);
+      transform: translateY(-8px) scale(1.02);
+    }
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes cardFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .card-icon {
+      width: 70px; height: 70px; background: #0047ab; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 14px;
+      box-shadow: 0 6px 16px rgba(0,71,171,0.4);
+    }
+    .card-icon .material-icons { font-size: 40px; color: white; }
+    .card-title { font-size: 24px; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .card-desc { font-size: 18px; color: #4b5563; line-height: 1.5; }
+
+    /* Card variants */
+    .card-problem { background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.3); }
+    .card-problem .card-icon { background: linear-gradient(135deg, #ef4444, #dc2626); }
+    .card-solution { background: rgba(34, 197, 94, 0.05); border-color: rgba(34, 197, 94, 0.3); }
+    .card-solution .card-icon { background: linear-gradient(135deg, #22c55e, #16a34a); }
+    .card-solution .card-title { color: #22c55e; }
+
+    /* Info box */
+    .info-box {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 4px solid #0047ab;
+      border-radius: 20px;
+      padding: 24px 36px;
+      margin: 18px auto;
+      max-width: 900px;
+      text-align: center;
+      box-shadow: 0 8px 28px rgba(0,71,171,0.2);
+    }
+    .info-box h3 {
+      font-size: 28px;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    .info-box p {
+      font-size: 20px;
+      color: #4b5563;
+      line-height: 1.6;
+    }
+
+    /* Student info */
+    .student-info {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(6, 182, 212, 0.08) 100%);
+      padding: 44px;
+      border-radius: 24px;
+      max-width: 750px;
+      margin: 32px auto;
+      border: 4px solid rgba(59, 130, 246, 0.3);
+      box-shadow: 0 8px 28px rgba(59, 130, 246, 0.25);
+    }
+    .avatar {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.5);
+    }
+    .avatar .material-icons { font-size: 64px; color: white; }
+    .student-name {
+      font-size: 42px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 28px;
+      text-align: center;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .student-details {
+      text-align: left;
+      font-size: 26px;
+      color: #1a1a1a;
+      line-height: 1.8;
+    }
+    .student-details p { margin-bottom: 16px; }
+    .student-details strong {
+      color: #0047ab;
+      font-weight: 700;
+    }
+
+    /* Navigation */
+    .navigation {
+      background: white; padding: 20px 30px;
+      display: flex; align-items: center; justify-content: center;
+      border-top: 2px solid #e5e7eb; box-shadow: 0 -2px 8px rgba(0,0,0,0.08);
+    }
+    .nav-btn {
+      display: none; /* Hidden for wider viewport */
+    }
+    .progress { display: flex; align-items: center; gap: 20px; }
+    .slide-counter { font-size: 20px; color: #4b5563; font-weight: 600; }
+    .dots { display: flex; gap: 10px; }
+    .dot {
+      width: 12px; height: 12px; background: rgba(0,0,0,0.2); border-radius: 50%;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .dot:hover { background: rgba(0,71,171,0.5); transform: scale(1.2); }
+    .dot.active {
+      background: #0047ab;
+      width: 36px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,71,171,0.4);
+    }
+
+    /* Utilities */
+    .center { text-align: center; }
+    .demo {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 4px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 24px;
+      margin: 18px 0;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+    .demo h4 {
+      color: #1a1a1a;
+      margin-bottom: 14px;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .demo p {
+      color: #4b5563;
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    /* Web Mockup Styles */
+    .web-mockup {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      overflow: hidden;
+      max-width: 1200px;
+      margin: 20px auto;
+    }
+    .web-header {
+      background: linear-gradient(135deg, #0047ab 0%, #003380 100%);
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid #002d6b;
+    }
+    .web-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .web-logo {
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .web-logo .material-icons {
+      color: #0047ab;
+      font-size: 28px;
+    }
+    .web-title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .web-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      padding: 8px 16px;
+      border-radius: 20px;
+    }
+    .web-user .material-icons {
+      font-size: 20px;
+    }
+    .web-content {
+      padding: 24px 32px;
+      background: #f8fafc;
+    }
+    .web-search-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+    .web-input {
+      flex: 1;
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .web-input .material-icons {
+      color: #94a3b8;
+      font-size: 20px;
+    }
+    .web-button {
+      background: #0047ab;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .web-categories {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .web-category-btn {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+    }
+    .web-category-btn.active {
+      background: #0047ab;
+      color: white;
+      border-color: #0047ab;
+    }
+    .web-services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .web-service-card {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .web-service-card:hover {
+      border-color: #0047ab;
+      box-shadow: 0 4px 12px rgba(0,71,171,0.15);
+      transform: translateY(-2px);
+    }
+    .web-service-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .web-service-code {
+      background: #eff6ff;
+      color: #0047ab;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .web-service-status {
+      background: #dcfce7;
+      color: #16a34a;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .web-service-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+    .web-service-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0047ab;
+      margin-bottom: 8px;
+    }
+    .web-service-desc {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    /* Service Detail Modal */
+    .service-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .service-modal.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .service-modal-content {
+      background: white;
+      border-radius: 16px;
+      max-width: 700px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .service-modal-content.wide {
+      max-width: 1100px;
+    }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .service-modal-header {
+      padding: 24px;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .service-modal-close {
+      background: #f1f5f9;
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .service-modal-close:hover {
+      background: #ef4444;
+      color: white;
+    }
+    .service-modal-close .material-icons {
+      font-size: 20px;
+    }
+    .service-modal-body {
+      padding: 24px;
+    }
+    .service-modal-body.has-image {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .service-modal-body.has-image {
+        grid-template-columns: 1fr;
+      }
+    }
+    .service-detail-code {
+      background: #eff6ff;
+      color: #0047ab;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .service-detail-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+    .service-detail-price {
+      font-size: 32px;
+      font-weight: 700;
+      color: #0047ab;
+      margin-bottom: 16px;
+    }
+    .service-detail-status {
+      background: #dcfce7;
+      color: #16a34a;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .service-detail-desc {
+      font-size: 16px;
+      color: #4b5563;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .service-detail-image {
+      width: 100%;
+      border-radius: 12px;
+      margin-top: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .service-modal-body.has-image .service-detail-image {
+      margin-top: 0;
+      position: sticky;
+      top: 0;
+      height: fit-content;
+      grid-column: 1;
+      grid-row: 1 / -1;
+    }
+    .service-modal-body.has-image .service-detail-content {
+      grid-column: 2;
+    }
+    .service-detail-info {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    .service-detail-info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #1a1a1a;
+    }
+    .service-detail-info-item:last-child {
+      margin-bottom: 0;
+    }
+    .service-detail-info-item .material-icons {
+      color: #0047ab;
+      font-size: 20px;
+    }
+    .service-detail-info-item strong {
+      font-weight: 600;
+      color: #0047ab;
+    }
+
+    .quote {
+      background: linear-gradient(135deg, rgba(0,71,171,0.05) 0%, rgba(0,71,171,0.08) 100%);
+      border-left: 8px solid #0047ab;
+      padding: 24px 36px;
+      margin: 18px auto;
+      max-width: 900px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,71,171,0.2);
+    }
+    .quote p {
+      font-size: 22px;
+      color: #1a1a1a;
+      font-style: italic;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+    .quote strong {
+      color: #0047ab;
+      font-weight: 700;
+      font-size: 24px;
+    }
+
+    /* Chat Demo Styles */
+    .chat-demo-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      overflow: hidden;
+      width: 100%;
+      min-width: 650px;
+      max-width: 100%;
+      margin: 0;
+      border: 3px solid #e2e8f0;
+    }
+    .chat-demo-header {
+      background: linear-gradient(135deg, #0047ab 0%, #003380 100%);
+      color: white;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 3px solid #002d6b;
+    }
+    .chat-demo-avatar {
+      width: 48px;
+      height: 48px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .chat-demo-avatar .material-icons {
+      color: #0047ab;
+      font-size: 32px;
+    }
+    .chat-demo-info h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 4px 0;
+    }
+    .chat-demo-status {
+      font-size: 14px;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chat-demo-status-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: statusPulse 2s ease-in-out infinite;
+    }
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.9); }
+    }
+    .chat-demo-messages {
+      padding: 24px;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      height: 620px;
+      min-height: 620px;
+      max-height: 620px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .chat-message {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    .chat-message.show {
+      animation: chatMessageIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    @keyframes chatMessageIn {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .chat-message.user {
+      flex-direction: row-reverse;
+      align-self: flex-end;
+    }
+    .chat-message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .chat-message.user .chat-message-avatar {
+      background: linear-gradient(135deg, #0047ab, #0056d6);
+    }
+    .chat-message.bot .chat-message-avatar {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+    }
+    .chat-message-avatar .material-icons {
+      color: white;
+      font-size: 24px;
+    }
+    .chat-message-content {
+      max-width: 75%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .chat-message.user .chat-message-content {
+      align-items: flex-end;
+    }
+    .chat-message-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      padding: 0 4px;
+    }
+    .chat-message-bubble {
+      padding: 14px 18px;
+      border-radius: 18px;
+      font-size: 16px;
+      line-height: 1.6;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      word-wrap: break-word;
+    }
+    .chat-message.user .chat-message-bubble {
+      background: linear-gradient(135deg, #0047ab, #0056d6);
+      color: white;
+      border-bottom-right-radius: 6px;
+    }
+    .chat-message.bot .chat-message-bubble {
+      background: white;
+      color: #1a1a1a;
+      border: 2px solid #e2e8f0;
+      border-bottom-left-radius: 6px;
+    }
+    .chat-message-time {
+      font-size: 12px;
+      color: #94a3b8;
+      padding: 0 4px;
+    }
+    .chat-typing {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      opacity: 0;
+    }
+    .chat-typing.show {
+      animation: chatMessageIn 0.3s ease-out forwards;
+    }
+    .chat-typing-bubble {
+      background: white;
+      border: 2px solid #e2e8f0;
+      padding: 14px 18px;
+      border-radius: 18px;
+      border-bottom-left-radius: 6px;
+      display: flex;
+      gap: 6px;
+    }
+    .chat-typing-dot {
+      width: 8px;
+      height: 8px;
+      background: #0047ab;
+      border-radius: 50%;
+      animation: typingDotBounce 1.4s ease-in-out infinite;
+    }
+    .chat-typing-dot:nth-child(1) { animation-delay: 0s; }
+    .chat-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .chat-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingDotBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-10px); }
+    }
+    .chat-demo-input {
+      padding: 18px 24px;
+      background: white;
+      border-top: 2px solid #e2e8f0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .chat-demo-input-field {
+      flex: 1;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 12px 20px;
+      font-size: 15px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .chat-demo-input-field .material-icons {
+      color: #94a3b8;
+      font-size: 20px;
+    }
+    .chat-demo-send {
+      background: #0047ab;
+      color: white;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,71,171,0.3);
+      transition: all 0.2s;
+    }
+    .chat-demo-send:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(0,71,171,0.4);
+    }
+    .chat-demo-send .material-icons {
+      font-size: 24px;
+    }
+    .chat-demo-input.disabled .chat-demo-input-field {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .chat-demo-input.disabled .chat-demo-send {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .chat-demo-input-field input {
+      background: transparent;
+      border: none;
+      outline: none;
+      flex: 1;
+      font-size: 15px;
+      color: #1a1a1a;
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+    .chat-demo-input-field input::placeholder {
+      color: #94a3b8;
+    }
+
+    /* Image Comparison Slider */
+    .comparison-container {
+      position: relative;
+      width: 100%;
+      max-width: none;
+      max-height: 70vh;
+      margin: 20px auto;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      user-select: none;
+    }
+    .comparison-container img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 70vh;
+      object-fit: contain;
+    }
+    .comparison-before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      clip-path: inset(0 0% 0 0);
+    }
+    .comparison-before img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 70vh;
+      object-fit: contain;
+      position: relative;
+    }
+    .comparison-slider {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, #0047ab 0%, #003380 100%);
+      cursor: ew-resize;
+      transform: translateX(-50%);
+      z-index: 10;
+      box-shadow: 0 0 12px rgba(0, 71, 171, 0.8), 0 0 4px rgba(255, 255, 255, 0.8);
+    }
+    .comparison-slider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #0047ab, #003380);
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 8px rgba(0, 71, 171, 0.6);
+    }
+    .comparison-slider::after {
+      content: '⇔';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      z-index: 1;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .comparison-label {
+      position: absolute;
+      top: 24px;
+      padding: 12px 24px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      border-radius: 10px;
+      z-index: 5;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      backdrop-filter: blur(4px);
+      display: none;
+    }
+    .comparison-label.before {
+      left: 24px;
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.9), rgba(153, 27, 27, 0.9));
+    }
+    .comparison-label.after {
+      right: 24px;
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.9), rgba(22, 163, 74, 0.9));
+    }
+
+    /* Fake Cursor */
+    .fake-cursor {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      pointer-events: none;
+      z-index: 99999;
+      display: none;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+    }
+    .fake-cursor.active {
+      display: block;
+    }
+    .fake-cursor svg {
+      width: 100%;
+      height: 100%;
+    }
+    .fake-cursor.clicking {
+      animation: cursorClick 0.3s ease;
+    }
+    @keyframes cursorClick {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(0.9); }
+    }
+
+    /* Payment Button */
+    .payment-button {
+      width: 100%;
+      padding: 16px 24px;
+      margin-top: 24px;
+      background: linear-gradient(135deg, #0047ab 0%, #003380 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0, 71, 171, 0.3);
+    }
+    .payment-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 71, 171, 0.4);
+    }
+    .payment-button:active {
+      transform: translateY(0);
+    }
+    .payment-button .material-icons {
+      font-size: 24px;
+    }
+
+    /* Confetti Animation */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 99998;
+      overflow: hidden;
+      display: none;
+    }
+    .confetti-container.active {
+      display: block;
+    }
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #f0f;
+      animation: confetti-fall 3s linear forwards;
+    }
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(-150vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* QR Code Payment Section */
+    .payment-section {
+      margin-top: 32px;
+      padding: 24px;
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border-radius: 16px;
+      border: 2px solid #0ea5e9;
+      display: none;
+      animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .payment-section.active {
+      display: block;
+    }
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .payment-qr-container {
+      text-align: center;
+      position: relative;
+    }
+    .payment-qr-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0369a1;
+      margin-bottom: 16px;
+    }
+    .payment-qr-code {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 20px;
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    .payment-qr-code img {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+    }
+
+    /* Success Check Animation */
+    .payment-success {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100px;
+      height: 100px;
+      background: rgba(22, 163, 74, 0.95);
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: successPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 10;
+    }
+    .payment-success.active {
+      display: flex;
+    }
+    .payment-success .material-icons {
+      color: white;
+      font-size: 60px;
+      animation: checkDraw 0.4s 0.2s ease forwards;
+      opacity: 0;
+    }
+    @keyframes successPop {
+      0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+      }
+      70% {
+        transform: translate(-50%, -50%) scale(1.1);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+    }
+    @keyframes checkDraw {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Loading Spinner */
+    .payment-loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+      z-index: 5;
+    }
+    .payment-loading.active {
+      display: block;
+    }
+    .payment-spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid #e0e7ff;
+      border-top: 5px solid #0047ab;
+      border-radius: 50%;
+      animation: spinRotate 1s linear infinite;
+    }
+    @keyframes spinRotate {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Payment Code Display */
+    .payment-code-display {
+      margin-top: 24px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      border: 2px dashed #0ea5e9;
+      text-align: center;
+      display: none;
+      animation: fadeInScale 0.5s ease;
+    }
+    .payment-code-display.active {
+      display: block;
+    }
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .payment-code-label {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .payment-code-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0369a1;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 2px;
+    }
+    .payment-status {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #16a34a;
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .payment-status .material-icons {
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="presentation">
+    <div class="header">
+      <div class="logo">Website Học Vụ CTECH</div>
+      <div class="timer" id="timer">00:00</div>
+      <button class="close-btn" onclick="window.location.href='/'">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+
+    <div class="slides-container">
+      <!-- Slide 1 -->
+      <div class="slide active center">
+        <p class="greeting">Kính chào quý thầy cô và hội đồng giám khảo</p>
+        <div class="badge">BÀI THI KỸ NĂNG NGHỀ</div>
+        <h1 class="title">Website Học Vụ CTECH</h1>
+        <p class="subtitle">Bài thi kỹ năng nghề</p>
+        <div class="quote">
+          <p>Nền tảng quản lý học vụ và dịch vụ sinh viên<br>tích hợp thời khóa biểu, thanh toán và chatbot AI</p>
+        </div>
+        <div class="info-box" style="max-width: 800px; margin: 32px auto 0;">
+          <h3>Giới thiệu đề tài</h3>
+          <p style="font-size: 18px; line-height: 1.6;">
+            Đề tài hướng đến việc xây dựng một nền tảng web tích hợp,<br>
+            giúp học sinh - sinh viên dễ dàng tra cứu thông tin học vụ,<br>
+            thanh toán dịch vụ và nhận hỗ trợ tự động qua AI
+          </p>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">THỰC TRẠNG</div>
+          <h2 class="title">Những khó khăn hiện tại</h2>
+          <p class="subtitle">Học sinh - sinh viên đang gặp phải</p>
+        </div>
+        <div class="grid-3">
+          <div class="card card-problem">
+            <div class="card-icon"><span class="material-icons">description</span></div>
+            <h3 class="card-title">Thời khóa biểu của Bộ GD khó đọc</h3>
+            <p class="card-desc">Thời khóa biểu từ Bộ Giáo Dục phức tạp, khó tra cứu cho người mới</p>
+          </div>
+          <div class="card card-problem">
+            <div class="card-icon"><span class="material-icons">price_check</span></div>
+            <h3 class="card-title">Không có nơi tra cứu giá</h3>
+            <p class="card-desc">Học sinh không biết được giá dịch vụ để cân đối chi tiêu</p>
+          </div>
+          <div class="card card-problem">
+            <div class="card-icon"><span class="material-icons">help_outline</span></div>
+            <h3 class="card-title">Thiếu hỗ trợ</h3>
+            <p class="card-desc">Không có kênh hỏi đáp tự động 24/7</p>
+          </div>
+        </div>
+        <div class="info-box">
+          <p>Làm sao để <strong>giải quyết</strong> những vấn đề này?</p>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide">
+        <div class="center" style="margin-bottom: 32px;">
+          <div class="badge">SINH VIÊN THỰC HIỆN</div>
+          <h2 class="title">Thông Tin Đề Tài</h2>
+          <p class="subtitle">Bài thi kỹ năng nghề</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; width: 100%; max-width: 1300px; margin: 0 auto;">
+          <!-- Left - Student Info -->
+          <div class="student-info" style="margin: 0;">
+            <div class="avatar"><span class="material-icons">person</span></div>
+            <h3 class="student-name">Trần Tuấn Tú</h3>
+            <div class="student-details" style="font-size: 18px;">
+              <p style="white-space: nowrap;"><strong>Mã sinh viên:</strong> 6160285</p>
+              <p style="white-space: nowrap;"><strong>Lớp:</strong> TT601-K16</p>
+              <p style="white-space: nowrap;"><strong>Giáo viên hướng dẫn:</strong> Vũ Quốc Cường</p>
+            </div>
+          </div>
+
+          <!-- Right - Project Info -->
+          <div style="display: flex; flex-direction: column; justify-content: center; gap: 24px;">
+            <div class="info-box" style="min-height: 85px; display: flex; flex-direction: column; justify-content: center;">
+              <h3>Loại đề tài</h3>
+              <p>Đề tài mở • Chủ đề: Hỗ trợ học vụ sinh viên</p>
+            </div>
+            <div class="info-box" style="min-height: 85px; display: flex; flex-direction: column; justify-content: center;">
+              <h3>Tên sản phẩm</h3>
+              <p>Website Học Vụ CTECH</p>
+            </div>
+            <div class="info-box" style="min-height: 85px; display: flex; flex-direction: column; justify-content: center;">
+              <h3>Công nghệ</h3>
+              <p>Node.js • Express • OpenAI GPT-4 • MySQL</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">GIẢI PHÁP ĐỀ XUẤT</div>
+          <h2 class="title">Ý Tưởng Giải Quyết</h2>
+          <p class="subtitle">Một nền tảng tích hợp tất cả</p>
+        </div>
+        <div class="grid-2">
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">lightbulb</span></div>
+            <h3 class="card-title">Tập trung mọi thứ</h3>
+            <p class="card-desc">Một trang web duy nhất cho: Dịch vụ • Lịch học • Hỗ trợ</p>
+          </div>
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">auto_awesome</span></div>
+            <h3 class="card-title">Tự động hóa</h3>
+            <p class="card-desc">Chuyển đổi file PDF tự động, Chatbot AI thông minh</p>
+          </div>
+        </div>
+        <div class="info-box">
+          <h3>Website Học Vụ CTECH</h3>
+          <p>Nền tảng quản lý học vụ và dịch vụ sinh viên</p>
+        </div>
+      </div>
+
+      <!-- Slide 5 -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">TỔNG QUAN</div>
+          <h2 class="title">3 Tính Năng Chính</h2>
+          <p class="subtitle">Hướng đến học sinh - sinh viên</p>
+        </div>
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">store</span></div>
+            <h3 class="card-title">Dịch Vụ</h3>
+            <p class="card-desc">Tra cứu • Thanh toán<br>Quản lý dịch vụ SV</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">calendar_month</span></div>
+            <h3 class="card-title">Lịch Trình</h3>
+            <p class="card-desc">Upload PDF → Web<br>Giao diện trực quan</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">support_agent</span></div>
+            <h3 class="card-title">Hỗ Trợ</h3>
+            <p class="card-desc">Chatbot AI 24/7<br>Trả lời tự động</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6: Tính năng #1 - Dịch vụ Online -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">TÍNH NĂNG #1</div>
+          <h2 class="title">Dịch Vụ Online</h2>
+          <p class="subtitle">Quản lý tập trung các dịch vụ sinh viên</p>
+        </div>
+
+        <div class="info-box" style="margin-bottom: 24px;">
+          <h3>Tra cứu và thanh toán dịch vụ trực tuyến</h3>
+          <p>Sinh viên có thể xem giá, so sánh và thanh toán các dịch vụ ngay trên web</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">directions_bike</span></div>
+            <h3 class="card-title">Gửi Xe</h3>
+            <p class="card-desc">Vé gửi xe ngày và tháng<br>Giá từ 5.000đ - 100.000đ/tháng</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">restaurant</span></div>
+            <h3 class="card-title">Căn Tin</h3>
+            <p class="card-desc">Xuất ăn căn tin trường<br>Suất ăn trưa 25.000đ/ngày</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">school</span></div>
+            <h3 class="card-title">Đồ Học Tập</h3>
+            <p class="card-desc">Mượn thiết bị, dụng cụ học tập<br>Thẻ thư viện 50.000đ/năm</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">admin_panel_settings</span></div>
+            <h3 class="card-title">Quản Trị</h3>
+            <p class="card-desc">Admin thêm, sửa, xóa dịch vụ<br>Upload hình ảnh cho dịch vụ</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7 - Service Feature (2 states like TKB) -->
+      <div class="slide" style="background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%); padding: 0; overflow: hidden;">
+
+        <!-- State 0: Introduction View (Static) -->
+        <div id="serviceIntro" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px;">
+          <div class="center" style="max-width: 900px;">
+            <div class="badge">TÍNH NĂNG #1</div>
+            <h2 class="title" style="margin-top: 20px;">Quản Lý Dịch Vụ Sinh Viên</h2>
+            <p class="subtitle">Tra cứu, đăng ký và thanh toán dịch vụ trực tuyến</p>
+          </div>
+
+          <div class="grid-3" style="max-width: 1100px; margin-top: 40px;">
+            <div class="card card-solution">
+              <div class="card-icon"><span class="material-icons">inventory_2</span></div>
+              <h3 class="card-title">Danh Mục Dịch Vụ</h3>
+              <p class="card-desc">Canteen, gửi xe, in ấn và nhiều dịch vụ khác</p>
+            </div>
+            <div class="card card-solution">
+              <div class="card-icon"><span class="material-icons">qr_code</span></div>
+              <h3 class="card-title">Thanh Toán Nhanh</h3>
+              <p class="card-desc">Tạo mã QR thanh toán tự động qua VietQR</p>
+            </div>
+            <div class="card card-solution">
+              <div class="card-icon"><span class="material-icons">sync</span></div>
+              <h3 class="card-title">Đồng Bộ Thời Gian Thực</h3>
+              <p class="card-desc">Dữ liệu cập nhật trực tiếp từ database</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 40px; padding: 24px 32px; background: rgba(0, 71, 171, 0.05); border-radius: 16px; border: 2px solid rgba(0, 71, 171, 0.1); max-width: 700px;">
+            <p style="font-size: 16px; color: #0f172a; text-align: center; line-height: 1.6; margin: 0;">
+              <strong>💡 Xem demo:</strong> Ấn <kbd style="padding: 2px 8px; background: white; border-radius: 4px; border: 1px solid #cbd5e1; font-family: monospace;">→</kbd> để xem hệ thống hoạt động
+            </p>
+          </div>
+        </div>
+
+        <!-- State 1: Full Page Web Demo (Interactive) -->
+        <div id="serviceDemo" style="width: 100%; height: 100%; display: none; flex-direction: column;">
+
+          <!-- Top Navigation Bar -->
+          <div style="background: linear-gradient(135deg, #0047ab 0%, #003380 100%); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+            <div style="display: flex; align-items: center; gap: 16px;">
+              <div style="width: 48px; height: 48px; background: white; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                <span class="material-icons" style="font-size: 32px; color: #0047ab;">school</span>
+              </div>
+              <div>
+                <div style="font-size: 22px; font-weight: 700; color: white;">CTECH Services</div>
+                <div style="font-size: 13px; color: rgba(255,255,255,0.8);">Dịch vụ sinh viên</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 24px;">
+              <div style="color: white; font-size: 15px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Trang chủ</div>
+              <div style="color: white; font-size: 15px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; background: rgba(255,255,255,0.2);">Dịch vụ</div>
+              <div style="color: white; font-size: 15px; font-weight: 600; cursor: pointer; padding: 8px 16px; border-radius: 8px; transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">Lịch trình</div>
+              <div style="display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 10px;">
+                <span class="material-icons" style="color: white; font-size: 24px;">account_circle</span>
+                <span style="color: white; font-size: 14px; font-weight: 600;">Trần Tuấn Tú</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Section -->
+          <div style="background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); padding: 28px 40px 20px; border-bottom: none;">
+            <div style="max-width: 1400px; margin: 0 auto;">
+              <h1 style="font-size: 32px; font-weight: 800; color: #0f172a; margin: 0 0 8px 0; background: linear-gradient(135deg, #0047ab, #003380); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Truy cập kho dịch vụ số của CTECH</h1>
+              <p style="font-size: 15px; color: #64748b; margin: 0 0 20px 0;">Đồng bộ dữ liệu trực tiếp từ API dịch vụ để tra cứu, theo dõi và nhận mã thanh toán một cách minh bạch.</p>
+
+              <!-- Category Tabs -->
+              <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <div style="padding: 8px 16px; background: linear-gradient(135deg, #0047ab, #003380); color: white; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0, 71, 171, 0.3);">Tất cả</div>
+                <div style="padding: 8px 16px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">Canteen</div>
+                <div style="padding: 8px 16px; background: white; color: #64748b; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">Gửi Xe</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls Section -->
+          <div style="background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); padding: 20px 40px 28px; border-bottom: 2px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);">
+            <div style="max-width: 1400px; margin: 0 auto; display: flex; gap: 12px; align-items: center;">
+              <div style="flex: 1; background: white; border: 2px solid #e2e8f0; border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                <span class="material-icons" style="color: #94a3b8; font-size: 20px;">search</span>
+                <span style="color: #94a3b8; font-size: 15px;">Nhập mã, tên hoặc mô tả dịch vụ...</span>
+              </div>
+              <button style="background: linear-gradient(135deg, #0047ab, #003380); color: white; border: none; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(0, 71, 171, 0.15);">Tìm dịch vụ</button>
+              <button style="background: white; color: #64748b; border: 2px solid #e2e8f0; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;">Tải lại</button>
+              <div style="color: #64748b; font-size: 14px; margin-left: 12px;">Đã tải <strong style="color: #0047ab;" id="services-count">0</strong> dịch vụ từ API.</div>
+            </div>
+          </div>
+
+          <!-- Services Grid -->
+          <div style="flex: 1; overflow-y: auto; padding: 28px 40px; background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);">
+            <div id="services-grid-container" style="max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+              <!-- Services will be loaded from API -->
+              <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #94a3b8; font-size: 16px;">
+                <div style="margin-bottom: 12px;">⏳ Đang tải dịch vụ từ API...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Detail Modal -->
+        <div class="service-modal" id="serviceModal">
+          <div class="service-modal-content">
+            <div class="service-modal-header">
+              <div>
+                <div class="service-detail-code" id="modalCode">SV001</div>
+                <h3 class="service-detail-title" id="modalTitle">Vé gửi xe ngày</h3>
+                <div class="service-detail-price" id="modalPrice">5.000đ</div>
+                <div class="service-detail-status" id="modalStatus">Hoạt động</div>
+              </div>
+              <button class="service-modal-close" onclick="closeServiceModal()">
+                <span class="material-icons">close</span>
+              </button>
+            </div>
+            <div class="service-modal-body">
+              <img id="modalImage" class="service-detail-image" src="" alt="Service Image" style="display: none;">
+
+              <div class="service-detail-content">
+                <p class="service-detail-desc" id="modalDesc">Mô tả dịch vụ</p>
+
+                <div class="service-detail-info">
+                  <div class="service-detail-info-item">
+                    <span class="material-icons">category</span>
+                    <span><strong>Danh mục:</strong> <span id="modalCategory">Gửi xe</span></span>
+                  </div>
+                  <div class="service-detail-info-item">
+                    <span class="material-icons">schedule</span>
+                    <span><strong>Cập nhật:</strong> <span id="modalDate">20/01/2025</span></span>
+                  </div>
+                  <div class="service-detail-info-item">
+                    <span class="material-icons">info</span>
+                    <span><strong>Trạng thái:</strong> Đang hoạt động</span>
+                  </div>
+                </div>
+
+                <!-- Payment Button -->
+                <button class="payment-button" id="paymentButton" style="display: none;">
+                  <span class="material-icons">payment</span>
+                  <span>Thanh toán</span>
+                </button>
+
+                <!-- Payment Section -->
+                <div class="payment-section" id="paymentSection">
+                  <div class="payment-qr-container">
+                    <h3 class="payment-qr-title">Quét mã QR để thanh toán</h3>
+                    <div class="payment-qr-code">
+                      <img src="https://img.vietqr.io/image/970422-0372360619-compact.png?amount=35000&addInfo=CTECH-PAY-SV003-35000-CANTEEN&accountName=Tran%20Tuan%20Tu" alt="QR Code">
+                      <!-- Loading Spinner -->
+                      <div class="payment-loading" id="paymentLoading">
+                        <div class="payment-spinner"></div>
+                      </div>
+                      <!-- Success Check Mark -->
+                      <div class="payment-success" id="paymentSuccess">
+                        <span class="material-icons">check_circle</span>
+                      </div>
+                    </div>
+                    <p style="color: #64748b; font-size: 14px;">Sử dụng ứng dụng ngân hàng để quét mã</p>
+                  </div>
+
+                  <!-- Payment Code -->
+                  <div class="payment-code-display" id="paymentCode">
+                    <div class="payment-code-label">Mã thanh toán</div>
+                    <div class="payment-code-value">PAY-2025-CT-035</div>
+                    <div class="payment-status">
+                      <span class="material-icons">check_circle</span>
+                      <span>Thanh toán thành công</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        </div>
+        <!-- End serviceDemo div -->
+
+        <!-- Fake Cursor (shared across both states) -->
+        <div class="fake-cursor" id="fakeCursor">
+          <svg viewBox="0 0 24 24" fill="black" stroke="white" stroke-width="0.5">
+            <path d="M3 3 L3 17 L8 12 L11 18 L13 17 L10 11 L17 11 Z"/>
+          </svg>
+        </div>
+
+        <!-- Confetti Container (shared across both states) -->
+        <div class="confetti-container" id="confettiContainer"></div>
+      </div>
+
+      <!-- Slide 8: Tính năng #2 - Lịch trình TKB -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">TÍNH NĂNG #2</div>
+          <h2 class="title">Lịch Trình TKB</h2>
+          <p class="subtitle">Chuyển đổi file PDF thành giao diện đẹp</p>
+        </div>
+
+        <div class="info-box" style="margin-bottom: 24px;">
+          <h3>Giải quyết bài toán TKB phức tạp từ Bộ GD</h3>
+          <p>Upload file PDF → Hệ thống tự động parse → Hiển thị web trực quan</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">upload_file</span></div>
+            <h3 class="card-title">Upload File</h3>
+            <p class="card-desc">Tải lên file PDF thời khóa biểu<br>từ Bộ Giáo Dục (max 25MB)</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">auto_fix_high</span></div>
+            <h3 class="card-title">Tự Động Parse</h3>
+            <p class="card-desc">Hệ thống đọc và chuyển đổi<br>dữ liệu tự động với AI</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">calendar_view_week</span></div>
+            <h3 class="card-title">Hiển Thị Web</h3>
+            <p class="card-desc">Giao diện lịch đẹp, trực quan<br>Dễ tra cứu theo ngày/tuần</p>
+          </div>
+        </div>
+
+        <div class="quote">
+          <p>File PDF khó đọc <strong>→</strong> Web đẹp, dễ dùng</p>
+        </div>
+      </div>
+
+      <!-- Slide 9 - Demo TKB (With Animation) -->
+      <div class="slide">
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; width: 100%; height: 100%;">
+          <!-- Left Side - Comparison Image -->
+          <div class="comparison-container" id="comparison">
+            <div class="comparison-label before">TKB Bộ GD (Trước)</div>
+            <div class="comparison-label after">TKB Website (Sau)</div>
+            <img src="/img/TKB/tkb-moi.png" alt="TKB mới" style="display: block;">
+            <div class="comparison-before">
+              <img src="/img/TKB/tkb-cu.png" alt="TKB cũ">
+            </div>
+            <div class="comparison-slider" id="slider"></div>
+          </div>
+
+          <!-- Right Side - Info -->
+          <div>
+            <div class="badge" id="tkb-badge">VẤN ĐỀ</div>
+            <h2 class="title" id="tkb-title" style="text-align: left;">Thời Khóa Biểu Của Bộ GD</h2>
+            <p class="subtitle" id="tkb-subtitle" style="text-align: left;">Khó tra cứu cho người mới</p>
+
+            <p class="description" id="tkb-desc" style="font-size: 18px; font-weight: 600; color: #dc2626; margin-top: 24px; text-align: left;">
+              ❌ Bảng phức tạp, nhiều thông tin • Dễ gây nhầm lẫn • Khó tra cứu nhanh
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 10: Tính năng #3 - Chatbot AI -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">TÍNH NĂNG #3</div>
+          <h2 class="title">Chatbot AI</h2>
+          <p class="subtitle">Trợ lý ảo thông minh 24/7</p>
+        </div>
+
+        <div class="info-box" style="margin-bottom: 24px;">
+          <h3>Hỗ trợ tự động với OpenAI GPT-4</h3>
+          <p>Trả lời các câu hỏi về tuyển sinh, học phí, dịch vụ và thời khóa biểu</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">psychology</span></div>
+            <h3 class="card-title">AI Thông Minh</h3>
+            <p class="card-desc">Sử dụng OpenAI GPT-4<br>Hiểu ngữ cảnh, trả lời chính xác</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">schedule</span></div>
+            <h3 class="card-title">24/7 Online</h3>
+            <p class="card-desc">Luôn sẵn sàng hỗ trợ<br>Không cần chờ đợi giờ hành chính</p>
+          </div>
+          <div class="card">
+            <div class="card-icon"><span class="material-icons">forum</span></div>
+            <h3 class="card-title">Đa Năng</h3>
+            <p class="card-desc">Tuyển sinh, học phí, dịch vụ<br>Hướng dẫn sử dụng website</p>
+          </div>
+        </div>
+
+        <div class="quote">
+          <p>Hỏi đáp tự động • Tiết kiệm thời gian • <strong>Luôn sẵn sàng</strong></p>
+        </div>
+      </div>
+
+      <!-- Slide 11: Demo Chatbot -->
+      <div class="slide">
+        <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; width: 100%; height: 100%;">
+          <!-- Left Side - Info -->
+          <div>
+            <div class="badge">DEMO #3</div>
+            <h2 class="title" style="text-align: left;">Giao Diện Chatbot</h2>
+            <p class="subtitle" style="text-align: left;">Hỏi đáp tự động với AI</p>
+
+            <div class="info-box" style="margin-top: 32px; text-align: left;">
+              <h3>✨ Tính năng nổi bật</h3>
+              <p style="margin-bottom: 12px;">• Trả lời tự động 24/7</p>
+              <p style="margin-bottom: 12px;">• Hỗ trợ đa dạng câu hỏi</p>
+              <p style="margin-bottom: 12px;">• Giao diện thân thiện</p>
+              <p>• Tích hợp OpenAI GPT-4</p>
+            </div>
+
+            <div class="quote" style="margin-top: 24px;">
+              <p style="font-size: 18px;"><strong>Demo thực tế</strong><br>Xem chatbot hoạt động như thế nào!</p>
+            </div>
+          </div>
+
+          <!-- Right Side - Chat Demo -->
+          <div class="chat-demo-container">
+            <!-- Chat Header -->
+            <div class="chat-demo-header">
+              <div class="chat-demo-avatar">
+                <span class="material-icons">smart_toy</span>
+              </div>
+              <div class="chat-demo-info">
+                <h3>CTECH Assistant</h3>
+                <div class="chat-demo-status">
+                  <span class="chat-demo-status-dot"></span>
+                  <span>Đang hoạt động</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Messages Container -->
+            <div class="chat-demo-messages" id="chatMessages">
+              <!-- Initial bot greeting (static) -->
+              <div class="chat-message bot-message" id="staticGreeting" style="opacity: 1;">
+                <div class="chat-message-avatar">
+                  <span class="material-icons">smart_toy</span>
+                </div>
+                <div class="chat-message-content">
+                  <div class="chat-message-name">CTECH Bot</div>
+                  <div class="chat-message-text">Xin chào! Tôi có thể giúp gì cho bạn? 👋</div>
+                </div>
+              </div>
+              <!-- Animated messages will be added here -->
+            </div>
+
+            <!-- Chat Input -->
+            <div class="chat-demo-input disabled" id="chatDemoInput">
+              <div class="chat-demo-input-field">
+                <span class="material-icons">edit</span>
+                <input
+                  type="text"
+                  id="chatDemoInputField"
+                  placeholder="Nhập câu hỏi của bạn..."
+                  disabled
+                />
+              </div>
+              <button class="chat-demo-send" id="chatDemoSend">
+                <span class="material-icons">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 12 -->
+      <div class="slide">
+        <div class="center">
+          <div class="badge">TÁC ĐỘNG</div>
+          <h2 class="title">Lợi Ích Mang Lại</h2>
+          <p class="subtitle">Cho học sinh - sinh viên</p>
+        </div>
+        <div class="grid-2">
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">speed</span></div>
+            <h3 class="card-title">Tiết Kiệm Thời Gian</h3>
+            <p class="card-desc">Tra cứu nhanh, không phải đi nhiều nơi</p>
+          </div>
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">visibility</span></div>
+            <h3 class="card-title">Dễ Sử Dụng</h3>
+            <p class="card-desc">Giao diện trực quan, thân thiện</p>
+          </div>
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">devices</span></div>
+            <h3 class="card-title">Đa Nền Tảng</h3>
+            <p class="card-desc">Hoạt động tốt trên PC và điện thoại</p>
+          </div>
+          <div class="card card-solution">
+            <div class="card-icon"><span class="material-icons">palette</span></div>
+            <h3 class="card-title">Tùy Chỉnh Theme</h3>
+            <p class="card-desc">Hỗ trợ giao diện sáng/tối</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 13 -->
+      <div class="slide">
+        <div style="display: flex; flex-direction: column; align-items: center; width: 100%; padding: 40px;">
+          <!-- Badge ở giữa trên cùng -->
+          <div class="badge" style="margin-bottom: 40px;">KẾT THÚC BÀI THUYẾT TRÌNH</div>
+
+          <!-- 2 cột bên dưới -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 80px; width: 100%; max-width: 1200px;">
+            <!-- Left Side -->
+            <div style="text-align: center; display: flex; flex-direction: column; justify-content: center;">
+              <div class="avatar" style="margin: 0 auto 32px; width: 160px; height: 160px;">
+                <span class="material-icons" style="font-size: 72px;">done_all</span>
+              </div>
+              <h2 class="title" style="font-size: 48px; margin: 0 0 24px 0;">Trân Trọng Cảm Ơn!</h2>
+              <p class="description" style="font-size: 20px; line-height: 1.8; max-width: 500px; margin: 0 auto;">
+                Em xin chân thành cảm ơn quý thầy cô<br>
+                và hội đồng giám khảo đã dành thời gian<br>
+                theo dõi và đánh giá bài thi của em
+              </p>
+            </div>
+
+            <!-- Right Side -->
+            <div style="display: flex; flex-direction: column; justify-content: center;">
+              <div class="student-info" style="margin-bottom: 40px;">
+                <div class="student-details" style="text-align: left;">
+                  <p style="font-size: 20px; margin-bottom: 16px;"><strong>Giáo viên hướng dẫn:</strong> Vũ Quốc Cường</p>
+                  <p style="font-size: 20px; margin-bottom: 16px;"><strong>Sinh viên thực hiện:</strong> Trần Tuấn Tú</p>
+                </div>
+              </div>
+
+              <div class="info-box">
+                <h3>Phần Hỏi Đáp</h3>
+                <p>Kính mời quý thầy cô và hội đồng giám khảo đặt câu hỏi</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="navigation">
+      <button class="nav-btn" id="prevBtn" onclick="prevSlide()">
+        <span class="material-icons">navigate_before</span> Trước
+      </button>
+      <div class="progress">
+        <div class="slide-counter"><span id="current">1</span> / <span id="total">13</span></div>
+        <div class="dots" id="dots"></div>
+      </div>
+      <button class="nav-btn" id="nextBtn" onclick="nextSlide()">
+        Tiếp <span class="material-icons">navigate_next</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const dotsContainer = document.getElementById('dots');
+    const currentSpan = document.getElementById('current');
+    const timerSpan = document.getElementById('timer');
+    let startTime = Date.now();
+    let tkbAnimationState = 0; // 0: before, 1: compare, 2: after
+    let sliderCurrentPosition = 100; // Track actual slider position
+    const TKB_SLIDE_INDEX = 8; // Slide 9 (index 8)
+    let isTransitioning = false;
+    let isTKBAnimating = false; // Prevent rapid TKB animation spam
+
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      dot.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+
+    function updateSlides(direction = 'forward') {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      slides.forEach((slide, index) => {
+        const wasActive = slide.classList.contains('active');
+
+        if (index === currentSlide) {
+          // Entering slide
+          slide.classList.remove('slide-out-left', 'slide-out-right', 'from-left');
+          slide.classList.add('active');
+          if (direction === 'backward') {
+            slide.classList.add('from-left');
+          }
+        } else if (wasActive) {
+          // Leaving slide
+          slide.classList.remove('active', 'from-left');
+          if (direction === 'forward') {
+            slide.classList.add('slide-out-left');
+          } else {
+            slide.classList.add('slide-out-right');
+          }
+
+          // Remove classes after animation
+          setTimeout(() => {
+            slide.classList.remove('slide-out-left', 'slide-out-right');
+          }, 600);
+        }
+      });
+
+      const dots = document.querySelectorAll('.dot');
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+      });
+      currentSpan.textContent = currentSlide + 1;
+
+      setTimeout(() => {
+        isTransitioning = false;
+      }, 600);
+    }
+
+    function nextSlide() {
+      if (isTransitioning) return;
+
+      // If on Service slide and not at last animation state, advance animation
+      if (currentSlide === SERVICE_SLIDE_INDEX && serviceAnimationState < 1) {
+        if (serviceAnimationRunning) return; // Block if already animating
+        serviceAnimationState = 1;
+        // Show demo view and start animation
+        showServiceState(1);
+        setTimeout(async () => {
+          if (servicesData.length === 0) {
+            await fetchServicesFromAPI();
+            renderServiceCards();
+          }
+          runServiceDemoAnimation();
+        }, 300);
+        return;
+      }
+
+      // If on TKB slide and not at last animation state, advance animation
+      if (currentSlide === TKB_SLIDE_INDEX && tkbAnimationState < 2) {
+        if (isTKBAnimating) return; // Block if already animating
+        tkbAnimationState++;
+        if (tkbAnimationState === 1) {
+          animateTKB('compare');
+        } else if (tkbAnimationState === 2) {
+          animateTKB('after');
+        }
+        return;
+      }
+
+      // If on Chatbot slide and not at last animation state, advance animation
+      if (currentSlide === CHATBOT_SLIDE_INDEX && chatAnimationState < 1) {
+        if (chatAnimationRunning) return; // Block if already animating
+        chatAnimationState = 1;
+        // Start the chat demo animation
+        setTimeout(() => {
+          runChatAnimation();
+        }, 300);
+        return;
+      }
+
+      // Reset Service state when leaving slide 7
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        serviceAnimationState = 0;
+        stopServiceAnimation();
+        showServiceState(0); // Reset to intro view
+      }
+
+      // Reset TKB state when leaving slide 9
+      if (currentSlide === TKB_SLIDE_INDEX) {
+        tkbAnimationState = 0;
+        sliderCurrentPosition = 100;
+      }
+
+      // Reset Chatbot state when leaving slide 11
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        chatAnimationState = 0;
+        stopChatAnimation();
+      }
+
+      // Circular navigation
+      currentSlide = (currentSlide + 1) % totalSlides;
+
+      // Initialize Service slide when entering
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        serviceAnimationState = 0;
+        showServiceState(0);
+        // Pre-load data in background
+        setTimeout(async () => {
+          if (servicesData.length === 0) {
+            await fetchServicesFromAPI();
+            renderServiceCards();
+          }
+        }, 300);
+      }
+
+      // Initialize TKB animation when entering slide 9
+      if (currentSlide === TKB_SLIDE_INDEX) {
+        tkbAnimationState = 0;
+        sliderCurrentPosition = 100;
+        setTimeout(() => animateTKB('before'), 100);
+      }
+
+      // Initialize Chatbot slide when entering
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        chatAnimationState = 0;
+      }
+
+      updateSlides('forward');
+    }
+
+    function prevSlide() {
+      if (isTransitioning) return;
+
+      // If on Service slide and at animation state, go back to intro view
+      if (currentSlide === SERVICE_SLIDE_INDEX && serviceAnimationState > 0) {
+        if (serviceAnimationRunning) return; // Block if already animating
+        serviceAnimationState = 0;
+        stopServiceAnimation();
+        showServiceState(0);
+        return;
+      }
+
+      // If on TKB slide and not at first animation state, go back in animation
+      if (currentSlide === TKB_SLIDE_INDEX && tkbAnimationState > 0) {
+        if (isTKBAnimating) return; // Block if already animating
+        tkbAnimationState--;
+        if (tkbAnimationState === 0) {
+          animateTKB('before');
+        } else if (tkbAnimationState === 1) {
+          animateTKB('compare');
+        }
+        return;
+      }
+
+      // If on Chatbot slide and at animation state, go back to static view
+      if (currentSlide === CHATBOT_SLIDE_INDEX && chatAnimationState > 0) {
+        if (chatAnimationRunning) return; // Block if already animating
+        chatAnimationState = 0;
+        stopChatAnimation();
+        return;
+      }
+
+      // Reset Service state when leaving slide 7
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        serviceAnimationState = 0;
+        stopServiceAnimation();
+        showServiceState(0); // Reset to intro view
+      }
+
+      // Reset TKB state when leaving slide 9
+      if (currentSlide === TKB_SLIDE_INDEX) {
+        tkbAnimationState = 0;
+        sliderCurrentPosition = 100;
+      }
+
+      // Reset Chatbot state when leaving slide 11
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        chatAnimationState = 0;
+        stopChatAnimation();
+      }
+
+      // Circular navigation
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+
+      updateSlides('backward');
+    }
+
+    function goToSlide(index) {
+      if (isTransitioning) return;
+
+      const direction = index > currentSlide ? 'forward' : 'backward';
+
+      // Reset Service state when leaving current slide 7
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        serviceAnimationState = 0;
+        stopServiceAnimation();
+        showServiceState(0); // Reset to intro view
+      }
+
+      // Reset TKB state when leaving current slide 9
+      if (currentSlide === TKB_SLIDE_INDEX) {
+        tkbAnimationState = 0;
+        sliderCurrentPosition = 100;
+      }
+
+      // Reset Chatbot state when leaving current slide 11
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        chatAnimationState = 0;
+        stopChatAnimation();
+      }
+
+      currentSlide = index;
+
+      // Initialize Service slide when jumping to it
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        serviceAnimationState = 0;
+        showServiceState(0);
+        // Pre-load data in background
+        setTimeout(async () => {
+          if (servicesData.length === 0) {
+            await fetchServicesFromAPI();
+            renderServiceCards();
+          }
+        }, 300);
+      }
+
+      // Reset TKB animation when jumping to slide 9
+      if (currentSlide === TKB_SLIDE_INDEX) {
+        tkbAnimationState = 0;
+        sliderCurrentPosition = 100;
+        setTimeout(() => animateTKB('before'), 100);
+      }
+
+      // Initialize Chatbot slide when jumping to it
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        chatAnimationState = 0;
+      }
+
+      updateSlides(direction);
+    }
+
+    // Gesture support
+    let enterTapCount = 0;
+    let enterTapTimer = null;
+    const TAP_THRESHOLD = 500;
+
+    document.addEventListener('keydown', (e) => {
+      // Support right arrow and down arrow for next
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        nextSlide();
+      }
+      // Support left arrow and up arrow for previous
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        prevSlide();
+      }
+      // Enter double tap to exit presentation
+      if (e.key === 'Enter') {
+        e.preventDefault();
+
+        enterTapCount++;
+
+        if (enterTapTimer) {
+          clearTimeout(enterTapTimer);
+        }
+
+        // Double tap = exit to home
+        if (enterTapCount === 2) {
+          window.location.href = '/home';
+          enterTapCount = 0;
+          return;
+        }
+
+        // First tap, wait for second
+        enterTapTimer = setTimeout(() => {
+          enterTapCount = 0;
+        }, TAP_THRESHOLD);
+      }
+    });
+
+    setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      const minutes = Math.floor(elapsed / 60);
+      const seconds = elapsed % 60;
+      timerSpan.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }, 1000);
+
+    // TKB Animation Function
+    function animateTKB(mode) {
+      if (isTKBAnimating) return; // Prevent animation spam
+      isTKBAnimating = true;
+
+      const badge = document.getElementById('tkb-badge');
+      const title = document.getElementById('tkb-title');
+      const subtitle = document.getElementById('tkb-subtitle');
+      const desc = document.getElementById('tkb-desc');
+      const beforeImg = document.querySelector('.comparison-before');
+      const sliderEl = document.getElementById('slider');
+
+      let targetPosition = 50;
+
+      if (mode === 'before') {
+        // Show TKB cũ (full left)
+        targetPosition = 100;
+        badge.textContent = 'VẤN ĐỀ';
+        badge.style.background = '#dc2626';
+        badge.style.borderColor = '#991b1b';
+        title.textContent = 'Thời Khóa Biểu Của Bộ GD';
+        subtitle.textContent = 'Khó tra cứu cho người mới';
+        desc.innerHTML = '❌ Bảng phức tạp, nhiều thông tin • Dễ gây nhầm lẫn • Khó tra cứu nhanh';
+        desc.style.color = '#dc2626';
+      } else if (mode === 'compare') {
+        // Show comparison (middle)
+        targetPosition = 50;
+        badge.textContent = 'GIẢI PHÁP';
+        badge.style.background = '#0047ab';
+        badge.style.borderColor = '#003380';
+        title.textContent = 'Công Cụ Chuyển Đổi TKB';
+        subtitle.textContent = 'Tự động chuyển đổi từ PDF của Bộ GD';
+        desc.innerHTML = '🔄 Kéo thanh để so sánh • Chuyển đổi tự động từ file PDF';
+        desc.style.color = '#0047ab';
+      } else if (mode === 'after') {
+        // Show TKB mới (full right)
+        targetPosition = 0;
+        badge.textContent = 'KẾT QUẢ';
+        badge.style.background = '#22c55e';
+        badge.style.borderColor = '#16a34a';
+        title.textContent = 'TKB Sau Chuyển Đổi';
+        subtitle.textContent = 'Trực quan, dễ sử dụng';
+        desc.innerHTML = '✅ Giao diện trực quan • Màu sắc phân biệt • Dễ tra cứu môn học';
+        desc.style.color = '#22c55e';
+      }
+
+      // Use tracked position instead of parsing from CSS
+      const currentPos = sliderCurrentPosition;
+      const duration = 800;
+      const animStartTime = Date.now();
+
+      function animate() {
+        const elapsed = Date.now() - animStartTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+
+        const newPos = currentPos + (targetPosition - currentPos) * easeProgress;
+        const clipRight = 100 - newPos;
+        beforeImg.style.clipPath = `inset(0 ${clipRight}% 0 0)`;
+        sliderEl.style.left = newPos + '%';
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          // Update tracked position after animation completes
+          sliderCurrentPosition = targetPosition;
+          isTKBAnimating = false; // Allow next animation
+        }
+      }
+
+      animate();
+    }
+
+    // Image Comparison Slider
+    const comparison = document.getElementById('comparison');
+    const slider = document.getElementById('slider');
+    const beforeImage = comparison?.querySelector('.comparison-before');
+
+    if (comparison && slider && beforeImage) {
+      // Initialize at 100% (showing TKB cũ full)
+      beforeImage.style.clipPath = 'inset(0 0% 0 0)';
+      slider.style.left = '100%';
+
+      let isDragging = false;
+
+      function updateSlider(x) {
+        const rect = comparison.getBoundingClientRect();
+        const position = ((x - rect.left) / rect.width) * 100;
+        const clampedPosition = Math.max(0, Math.min(100, position));
+
+        // Use clip-path instead of width to maintain image aspect ratio
+        const clipRight = 100 - clampedPosition;
+        beforeImage.style.clipPath = `inset(0 ${clipRight}% 0 0)`;
+        slider.style.left = clampedPosition + '%';
+
+        // Update tracked position
+        sliderCurrentPosition = clampedPosition;
+      }
+
+      // Mouse events
+      slider.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        updateSlider(e.clientX);
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // Touch events for mobile
+      slider.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        e.preventDefault();
+      });
+
+      document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        updateSlider(touch.clientX);
+      });
+
+      document.addEventListener('touchend', () => {
+        isDragging = false;
+      });
+
+      // Click anywhere on comparison to move slider
+      comparison.addEventListener('click', (e) => {
+        updateSlider(e.clientX);
+      });
+    }
+
+    updateSlides();
+    document.getElementById('total').textContent = totalSlides;
+
+    // Service Modal Functions
+    function openServiceModal(code, name, price, status, desc, category, date, imageUrl) {
+      const modal = document.getElementById('serviceModal');
+      const modalContent = modal.querySelector('.service-modal-content');
+      const modalBody = modal.querySelector('.service-modal-body');
+
+      // Update modal content
+      document.getElementById('modalCode').textContent = code;
+      document.getElementById('modalTitle').textContent = name;
+      document.getElementById('modalPrice').textContent = price;
+      document.getElementById('modalStatus').textContent = status;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalCategory').textContent = category;
+      document.getElementById('modalDate').textContent = date;
+
+      // Handle image and 2-column layout
+      const imageEl = document.getElementById('modalImage');
+      const hasImage = imageUrl && imageUrl.trim() !== '';
+
+      if (hasImage) {
+        imageEl.src = imageUrl;
+        imageEl.style.display = 'block';
+        modalBody.classList.add('has-image');
+        modalContent.classList.add('wide');
+      } else {
+        imageEl.style.display = 'none';
+        modalBody.classList.remove('has-image');
+        modalContent.classList.remove('wide');
+      }
+
+      // Show modal
+      modal.classList.add('active');
+    }
+
+    function closeServiceModal() {
+      const modal = document.getElementById('serviceModal');
+      modal.classList.remove('active');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('serviceModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeServiceModal();
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const modal = document.getElementById('serviceModal');
+        if (modal.classList.contains('active')) {
+          closeServiceModal();
+        }
+      }
+    });
+
+    // ==================== SERVICE API & DATA ====================
+    let servicesData = [];
+
+    async function fetchServicesFromAPI() {
+      try {
+        const response = await fetch('/api/services');
+        if (!response.ok) {
+          throw new Error('Failed to fetch services');
+        }
+        const data = await response.json();
+        servicesData = Array.isArray(data.services) ? data.services : [];
+        return servicesData;
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        return [];
+      }
+    }
+
+    function renderServiceCards() {
+      const gridContainer = document.getElementById('services-grid-container');
+      if (!gridContainer) return;
+
+      // Clear existing cards
+      gridContainer.innerHTML = '';
+
+      // Render services from API
+      servicesData.forEach((service) => {
+        const card = document.createElement('div');
+        card.className = 'web-service-card';
+        card.setAttribute('data-service-code', service.serviceCode);
+
+        const hasImage = service.imageUrl && service.imageUrl.trim() !== '';
+        const imageHtml = hasImage
+          ? `<img src="${service.imageUrl}" alt="${service.name}" style="width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-bottom: 10px;" onerror="this.onerror=null; this.src='/img/services/placeholder-ticket.svg'; this.style.objectFit='contain'; this.style.padding='20px'; this.style.background='linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(22, 163, 74, 0.05))';">`
+          : `<img src="/img/services/placeholder-ticket.svg" alt="Service placeholder" style="width: 100%; height: 160px; object-fit: contain; padding: 20px; background: linear-gradient(135deg, rgba(14, 165, 233, 0.08), rgba(22, 163, 74, 0.05)); border-radius: 8px; margin-bottom: 10px;">`;
+
+        const statusText = service.isActive ? 'Hoạt động' : 'Tạm dừng';
+        const price = service.price != null ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(service.price) : 'Liên hệ';
+        const categoryBadge = service.category ? `<div style="display: inline-block; margin-top: 4px; padding: 4px 10px; font-size: 12px; font-weight: 700; color: #0047ab; background: #eff6ff; border-radius: 6px;">${service.category}</div>` : '';
+
+        card.innerHTML = `
+          ${imageHtml}
+          <div class="web-service-header">
+            <div>
+              <div class="web-service-name">${service.name}</div>
+              ${categoryBadge}
+            </div>
+            <div class="web-service-status">${statusText}</div>
+          </div>
+          <div class="web-service-desc">${service.description || 'Chưa có mô tả'}</div>
+          <div style="margin-top: 8px;">
+            <div style="font-size: 13px; color: #64748b;">Mã: ${service.serviceCode}</div>
+            <div class="web-service-price" style="font-size: 18px; font-weight: 800; color: #0047ab; background: linear-gradient(135deg, #0047ab, #003380); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Giá: ${price}</div>
+          </div>
+        `;
+
+        card.onclick = () => {
+          openServiceModal(
+            service.serviceCode,
+            service.name,
+            price,
+            statusText,
+            service.description || 'Chưa có mô tả',
+            service.category || '',
+            new Date(service.updatedAt || service.createdAt).toLocaleDateString('vi-VN'),
+            service.imageUrl || ''
+          );
+        };
+
+        gridContainer.appendChild(card);
+      });
+
+      // Update service count
+      const countElement = document.getElementById('services-count');
+      if (countElement) {
+        countElement.textContent = servicesData.length;
+      }
+    }
+
+    // ==================== SERVICE DEMO ANIMATION ====================
+    const SERVICE_SLIDE_INDEX = 6; // Slide 7 (index 6)
+    let serviceAnimationRunning = false;
+    let serviceAnimationTimeout = null;
+    let serviceAnimationState = 0; // 0: intro view, 1: demo animation
+
+    // Toggle between intro and demo views based on state
+    function showServiceState(state) {
+      const introView = document.getElementById('serviceIntro');
+      const demoView = document.getElementById('serviceDemo');
+
+      if (state === 0) {
+        // Show introduction view
+        if (introView) introView.style.display = 'flex';
+        if (demoView) demoView.style.display = 'none';
+      } else if (state === 1) {
+        // Show demo view
+        if (introView) introView.style.display = 'none';
+        if (demoView) demoView.style.display = 'flex';
+      }
+    }
+
+    function stopServiceAnimation() {
+      if (serviceAnimationTimeout) {
+        clearTimeout(serviceAnimationTimeout);
+        serviceAnimationTimeout = null;
+      }
+      serviceAnimationRunning = false;
+
+      // Hide cursor and reset UI elements
+      const cursor = document.getElementById('fakeCursor');
+      if (cursor) cursor.classList.remove('active');
+
+      const modal = document.getElementById('serviceModal');
+      if (modal) modal.style.display = 'none';
+
+      const confetti = document.getElementById('confettiContainer');
+      if (confetti) confetti.classList.remove('active');
+    }
+
+    async function runServiceDemoAnimation() {
+      if (serviceAnimationRunning) return;
+      serviceAnimationRunning = true;
+
+      const cursor = document.getElementById('fakeCursor');
+      const serviceCards = document.querySelectorAll('.web-service-card');
+
+      // Randomly select a service card from the first row
+      const randomIndex = Math.floor(Math.random() * Math.min(serviceCards.length, 4));
+      const selectedCard = serviceCards[randomIndex];
+
+      if (!cursor || !selectedCard) {
+        serviceAnimationRunning = false;
+        return;
+      }
+
+      try {
+        // Reset payment elements
+        document.getElementById('paymentButton').style.display = 'none';
+        document.getElementById('paymentSection').classList.remove('active');
+        document.getElementById('paymentLoading').classList.remove('active');
+        document.getElementById('paymentSuccess').classList.remove('active');
+        document.getElementById('paymentCode').classList.remove('active');
+        document.getElementById('confettiContainer').classList.remove('active');
+
+        // Step 1: Position cursor at bottom-right corner and show it
+        cursor.style.left = window.innerWidth + 'px';
+        cursor.style.top = window.innerHeight + 'px';
+        cursor.classList.add('active');
+        await delay(500);
+
+        // Step 2: Move cursor to selected card
+        const cardRect = selectedCard.getBoundingClientRect();
+        const targetX = cardRect.left + cardRect.width / 2;
+        const targetY = cardRect.top + cardRect.height / 2;
+
+        await moveCursor(cursor, targetX, targetY, 1000);
+        await delay(300);
+
+        // Step 3: Click animation on card
+        cursor.classList.add('clicking');
+        await delay(300);
+        cursor.classList.remove('clicking');
+
+        // Step 4: Open modal for selected card (trigger click)
+        selectedCard.click();
+
+        await delay(800);
+
+        // Step 5: Show payment button
+        document.getElementById('paymentButton').style.display = 'flex';
+        await delay(500);
+
+        // Step 6: Move cursor to payment button
+        const paymentBtn = document.getElementById('paymentButton');
+        const btnRect = paymentBtn.getBoundingClientRect();
+        const btnX = btnRect.left + btnRect.width / 2;
+        const btnY = btnRect.top + btnRect.height / 2;
+
+        await moveCursor(cursor, btnX, btnY, 800);
+        await delay(300);
+
+        // Step 7: Click payment button
+        cursor.classList.add('clicking');
+        await delay(300);
+        cursor.classList.remove('clicking');
+
+        // Hide payment button
+        paymentBtn.style.display = 'none';
+
+        // Step 8: Hide cursor and show QR with loading spinner
+        cursor.classList.remove('active');
+        document.getElementById('paymentSection').classList.add('active');
+        await delay(500);
+
+        // Show loading spinner - checking payment
+        document.getElementById('paymentLoading').classList.add('active');
+        await delay(3500);
+
+        // Step 9: Hide spinner and show success check
+        document.getElementById('paymentLoading').classList.remove('active');
+        await delay(200);
+        document.getElementById('paymentSuccess').classList.add('active');
+
+        // Launch confetti!
+        launchConfetti();
+        await delay(1000);
+
+        // Step 10: Show payment code
+        document.getElementById('paymentCode').classList.add('active');
+
+      } catch (error) {
+        console.error('Service animation error:', error);
+      }
+
+      serviceAnimationRunning = false;
+    }
+
+    function launchConfetti() {
+      const container = document.getElementById('confettiContainer');
+      container.classList.add('active');
+      container.innerHTML = ''; // Clear previous confetti
+
+      const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8800', '#ff0088'];
+      const confettiCount = 100;
+
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 0.1 + 's';
+        confetti.style.animationDuration = (Math.random() * 1.5 + 2.5) + 's';
+        container.appendChild(confetti);
+      }
+
+      // Remove confetti after animation
+      setTimeout(() => {
+        container.classList.remove('active');
+        container.innerHTML = '';
+      }, 4000);
+    }
+
+    function delay(ms) {
+      return new Promise(resolve => {
+        serviceAnimationTimeout = setTimeout(resolve, ms);
+      });
+    }
+
+    async function moveCursor(cursor, targetX, targetY, duration) {
+      const startX = parseFloat(cursor.style.left) || 0;
+      const startY = parseFloat(cursor.style.top) || 0;
+      const startTime = Date.now();
+
+      return new Promise(resolve => {
+        function animate() {
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+
+          // Easing function (ease-in-out)
+          const eased = progress < 0.5
+            ? 2 * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+
+          const currentX = startX + (targetX - startX) * eased;
+          const currentY = startY + (targetY - startY) * eased;
+
+          cursor.style.left = currentX + 'px';
+          cursor.style.top = currentY + 'px';
+
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            resolve();
+          }
+        }
+        animate();
+      });
+    }
+
+    function stopServiceAnimation() {
+      if (serviceAnimationTimeout) {
+        clearTimeout(serviceAnimationTimeout);
+        serviceAnimationTimeout = null;
+      }
+      serviceAnimationRunning = false;
+
+      // Hide cursor
+      const cursor = document.getElementById('fakeCursor');
+      if (cursor) cursor.classList.remove('active');
+
+      // Close modal
+      closeServiceModal();
+    }
+
+    // ==================== CHAT ANIMATION ====================
+    const CHATBOT_SLIDE_INDEX = 10; // Slide 11 (index 10)
+    let chatAnimationRunning = false;
+    let chatAnimationTimeout = null;
+    let chatAnimationState = 0; // 0: static view, 1: demo animation
+
+    // Chat conversation data
+    const chatConversation = [
+      {
+        type: 'bot',
+        name: 'CTECH Bot',
+        message: 'Xin chào! Tôi có thể giúp gì cho bạn? 👋',
+        delay: 0
+      },
+      {
+        type: 'user',
+        name: 'Bạn',
+        message: 'Học phí học kỳ này là bao nhiêu?'
+      },
+      {
+        type: 'bot',
+        name: 'CTECH Bot',
+        message: 'Học phí 1 học kỳ là <strong>10.000.000đ</strong> (5 tháng). Bạn có thể lên phòng kế toán để thanh toán nhé! 💳'
+      },
+      {
+        type: 'user',
+        name: 'Bạn',
+        message: 'Vé gửi xe giá bao nhiêu?'
+      },
+      {
+        type: 'bot',
+        name: 'CTECH Bot',
+        message: 'Vé gửi xe có 2 loại:<br>🚲 Vé ngày: <strong>3.000đ</strong><br>🚲 Vé tháng: <strong>50.000đ</strong> (tiết kiệm 44%)<br>Bạn có thể thanh toán online!'
+      },
+      {
+        type: 'user',
+        name: 'Bạn',
+        message: 'Làm sao để xem lịch học?'
+      },
+      {
+        type: 'bot',
+        name: 'CTECH Bot',
+        message: 'Để xem lịch học, bạn làm như sau:<br>📅 Vào trang <strong>Lịch trình</strong><br>📄 Upload file TKB từ Bộ GD<br>✨ Hệ thống sẽ hiển thị tkb đã được biên dịch!'
+      }
+    ];
+
+    function getCurrentTime() {
+      const now = new Date();
+      return now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function createChatMessage(type, name, message) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `chat-message ${type}`;
+
+      const avatarDiv = document.createElement('div');
+      avatarDiv.className = 'chat-message-avatar';
+      const avatarIcon = document.createElement('span');
+      avatarIcon.className = 'material-icons';
+      avatarIcon.textContent = type === 'user' ? 'person' : 'smart_toy';
+      avatarDiv.appendChild(avatarIcon);
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'chat-message-content';
+
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'chat-message-name';
+      nameSpan.textContent = name;
+
+      const bubbleDiv = document.createElement('div');
+      bubbleDiv.className = 'chat-message-bubble';
+      bubbleDiv.innerHTML = message;
+
+      const timeSpan = document.createElement('span');
+      timeSpan.className = 'chat-message-time';
+      timeSpan.textContent = getCurrentTime();
+
+      contentDiv.appendChild(nameSpan);
+      contentDiv.appendChild(bubbleDiv);
+      contentDiv.appendChild(timeSpan);
+
+      messageDiv.appendChild(avatarDiv);
+      messageDiv.appendChild(contentDiv);
+
+      return messageDiv;
+    }
+
+    function createTypingIndicator() {
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'chat-typing';
+
+      const avatarDiv = document.createElement('div');
+      avatarDiv.className = 'chat-message-avatar';
+      avatarDiv.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
+      const avatarIcon = document.createElement('span');
+      avatarIcon.className = 'material-icons';
+      avatarIcon.textContent = 'smart_toy';
+      avatarDiv.appendChild(avatarIcon);
+
+      const bubbleDiv = document.createElement('div');
+      bubbleDiv.className = 'chat-typing-bubble';
+      for (let i = 0; i < 3; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'chat-typing-dot';
+        bubbleDiv.appendChild(dot);
+      }
+
+      typingDiv.appendChild(avatarDiv);
+      typingDiv.appendChild(bubbleDiv);
+
+      return typingDiv;
+    }
+
+    function scrollChatToBottom() {
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    }
+
+    async function runChatAnimation() {
+      if (chatAnimationRunning) return;
+      chatAnimationRunning = true;
+
+      const chatMessages = document.getElementById('chatMessages');
+      if (!chatMessages) {
+        chatAnimationRunning = false;
+        return;
+      }
+
+      // Clear only animated messages, keep the static greeting message
+      const staticGreeting = document.getElementById('staticGreeting');
+      if (!staticGreeting) {
+        // If static greeting doesn't exist, recreate it
+        const greeting = createChatMessage('bot', 'CTECH Bot', 'Xin chào! Tôi có thể giúp gì cho bạn? 👋');
+        greeting.id = 'staticGreeting';
+        greeting.style.opacity = '1';
+        chatMessages.innerHTML = '';
+        chatMessages.appendChild(greeting);
+      } else {
+        // Remove all messages except the static greeting
+        const allMessages = chatMessages.querySelectorAll('.chat-message');
+        allMessages.forEach(msg => {
+          if (msg.id !== 'staticGreeting') {
+            msg.remove();
+          }
+        });
+      }
+
+      // Start from index 1 to skip the first greeting message (already static in HTML)
+      for (let i = 1; i < chatConversation.length; i++) {
+        const conv = chatConversation[i];
+
+        if (conv.type === 'user') {
+          // Show user message immediately
+          const messageElement = createChatMessage(conv.type, conv.name, conv.message);
+          chatMessages.appendChild(messageElement);
+          messageElement.classList.add('show');
+          scrollChatToBottom();
+
+          // Wait 400ms before showing typing indicator (realistic delay)
+          await new Promise(resolve => {
+            chatAnimationTimeout = setTimeout(resolve, 400);
+          });
+        } else {
+          // For bot messages: show typing indicator first
+          const typingIndicator = createTypingIndicator();
+          chatMessages.appendChild(typingIndicator);
+          typingIndicator.classList.add('show');
+          scrollChatToBottom();
+
+          // Wait 1800ms while AI is "thinking"
+          await new Promise(resolve => {
+            chatAnimationTimeout = setTimeout(resolve, 1800);
+          });
+
+          // Remove typing indicator and show bot message
+          typingIndicator.remove();
+          const messageElement = createChatMessage(conv.type, conv.name, conv.message);
+          chatMessages.appendChild(messageElement);
+          messageElement.classList.add('show');
+          scrollChatToBottom();
+
+          // Wait 2500ms for user to "read" the response before next question
+          await new Promise(resolve => {
+            chatAnimationTimeout = setTimeout(resolve, 2500);
+          });
+        }
+      }
+
+      chatAnimationRunning = false;
+
+      // Enable input after animation completes
+      enableChatInput();
+    }
+
+    function enableChatInput() {
+      const inputContainer = document.getElementById('chatDemoInput');
+      const inputField = document.getElementById('chatDemoInputField');
+
+      if (inputContainer && inputField) {
+        inputContainer.classList.remove('disabled');
+        inputField.disabled = false;
+        inputField.focus();
+      }
+    }
+
+    function disableChatInput() {
+      const inputContainer = document.getElementById('chatDemoInput');
+      const inputField = document.getElementById('chatDemoInputField');
+
+      if (inputContainer && inputField) {
+        inputContainer.classList.add('disabled');
+        inputField.disabled = true;
+        inputField.value = '';
+      }
+    }
+
+    async function sendUserMessage() {
+      const inputField = document.getElementById('chatDemoInputField');
+      const chatMessages = document.getElementById('chatMessages');
+
+      if (!inputField || !chatMessages) return;
+
+      const userMessage = inputField.value.trim();
+      if (!userMessage) return;
+
+      // Clear input
+      inputField.value = '';
+
+      // Add user message
+      const userMessageEl = createChatMessage('user', 'Bạn', userMessage);
+      chatMessages.appendChild(userMessageEl);
+      setTimeout(() => {
+        userMessageEl.classList.add('show');
+        scrollChatToBottom();
+      }, 50);
+
+      // Show typing indicator immediately
+      const typingIndicator = createTypingIndicator();
+      chatMessages.appendChild(typingIndicator);
+      typingIndicator.classList.add('show');
+      scrollChatToBottom();
+
+      // Call API
+      try {
+        const response = await fetch('/api/chatbot/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message: userMessage })
+        });
+
+        const data = await response.json();
+
+        // Remove typing indicator
+        typingIndicator.remove();
+
+        // Add bot response
+        const botMessage = data.reply || 'Xin lỗi, tôi không thể trả lời câu hỏi này.';
+        const botMessageEl = createChatMessage('bot', 'CTECH Bot', botMessage);
+        chatMessages.appendChild(botMessageEl);
+        setTimeout(() => {
+          botMessageEl.classList.add('show');
+          scrollChatToBottom();
+        }, 50);
+
+      } catch (error) {
+        console.error('Chat API error:', error);
+
+        // Remove typing indicator
+        typingIndicator.remove();
+
+        // Show error message
+        const errorMessageEl = createChatMessage('bot', 'CTECH Bot', 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.');
+        chatMessages.appendChild(errorMessageEl);
+        setTimeout(() => {
+          errorMessageEl.classList.add('show');
+          scrollChatToBottom();
+        }, 50);
+      }
+    }
+
+    // Setup event listeners for chat input
+    document.addEventListener('DOMContentLoaded', () => {
+      const inputField = document.getElementById('chatDemoInputField');
+      const sendBtn = document.getElementById('chatDemoSend');
+
+      if (inputField) {
+        inputField.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter' && !inputField.disabled) {
+            sendUserMessage();
+          }
+        });
+      }
+
+      if (sendBtn) {
+        sendBtn.addEventListener('click', () => {
+          if (!inputField.disabled) {
+            sendUserMessage();
+          }
+        });
+      }
+    });
+
+    function stopChatAnimation() {
+      if (chatAnimationTimeout) {
+        clearTimeout(chatAnimationTimeout);
+        chatAnimationTimeout = null;
+      }
+      chatAnimationRunning = false;
+
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) {
+        chatMessages.innerHTML = '';
+      }
+
+      // Disable input when leaving slide
+      disableChatInput();
+    }
+
+    // Service and Chatbot animations are now handled in nextSlide/prevSlide functions
+    // No need to override updateSlides - state machine logic is integrated
+  </script>
+</body>
+</html>
