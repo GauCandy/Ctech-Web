@@ -2,9 +2,9 @@
 
 > **Tài liệu tham chiếu cho BotChat Support - Trợ lý ảo Trường Cao đẳng CTECH**
 
-📅 **Cập nhật:** 13:52 30/10/2025  
+📅 **Cập nhật:** 15:05 30/10/2025  
 🔄 **Trạng thái:** Tự động đồng bộ từ hệ thống  
-📊 **Tổng số dịch vụ:** 8
+📊 **Tổng số dịch vụ:** 9
 
 ---
 
@@ -83,7 +83,7 @@ gửi Oto tại trường không phát sinh phí ra vào trong tháng
 |-----------|----------|
 | **Trạng thái** | Hoạt động |
 | **Giá** | 8.000 VND |
-| **Cập nhật** | 22/10/2025 |
+| **Cập nhật** | 30/10/2025 |
 
 **Mô tả:**
 
@@ -139,7 +139,7 @@ Gửi xe trong trường không mất phí ra vào trong ngày
 |-----------|----------|
 | **Trạng thái** | Hoạt động |
 | **Giá** | 30.000 VND |
-| **Cập nhật** | 28/10/2025 |
+| **Cập nhật** | 30/10/2025 |
 
 **Mô tả:**
 
@@ -172,6 +172,17 @@ Bao gồm 1 xuất tôm chiên
 1 phần lạc xưởng
 
 
+### ✅ DV009 - vé mượn công cụ học tập
+
+| Thông tin | Chi tiết |
+|-----------|----------|
+| **Trạng thái** | Hoạt động |
+| **Giá** | 10.000 VND |
+| **Cập nhật** | 30/10/2025 |
+
+> *Hiện nhà trường chưa cung cấp mô tả chi tiết cho dịch vụ này.*
+
+
 ---
 
 ## 📞 Liên hệ hỗ trợ
@@ -179,4 +190,4 @@ Bao gồm 1 xuất tôm chiên
 - 📧 Email: contact@ctech.edu.vn
 - ☎️ Hotline: 1800 6770
 
-> *Tài liệu được tạo tự động lúc 2025-10-30T06:52:13.416Z*
+> *Tài liệu được tạo tự động lúc 2025-10-30T08:05:46.454Z*

@@ -1443,11 +1443,44 @@
         </div>
       </div>
 
-      <!-- Slide 7 - Full Page Service Demo -->
+      <!-- Slide 7 - Service Feature (2 states like TKB) -->
       <div class="slide" style="background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%); padding: 0; overflow: hidden;">
 
-        <!-- Full Page Web Design -->
-        <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+        <!-- State 0: Introduction View (Static) -->
+        <div id="serviceIntro" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px;">
+          <div class="center" style="max-width: 900px;">
+            <div class="badge">TÍNH NĂNG #1</div>
+            <h2 class="title" style="margin-top: 20px;">Quản Lý Dịch Vụ Sinh Viên</h2>
+            <p class="subtitle">Tra cứu, đăng ký và thanh toán dịch vụ trực tuyến</p>
+          </div>
+
+          <div class="grid-3" style="max-width: 1100px; margin-top: 40px;">
+            <div class="card card-solution">
+              <div class="card-icon"><span class="material-icons">inventory_2</span></div>
+              <h3 class="card-title">Danh Mục Dịch Vụ</h3>
+              <p class="card-desc">Canteen, gửi xe, in ấn và nhiều dịch vụ khác</p>
+            </div>
+            <div class="card card-solution">
+              <div class="card-icon"><span class="material-icons">qr_code</span></div>
+              <h3 class="card-title">Thanh Toán Nhanh</h3>
+              <p class="card-desc">Tạo mã QR thanh toán tự động qua VietQR</p>
+            </div>
+            <div class="card card-solution">
+              <div class="card-icon"><span class="material-icons">sync</span></div>
+              <h3 class="card-title">Đồng Bộ Thời Gian Thực</h3>
+              <p class="card-desc">Dữ liệu cập nhật trực tiếp từ database</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 40px; padding: 24px 32px; background: rgba(0, 71, 171, 0.05); border-radius: 16px; border: 2px solid rgba(0, 71, 171, 0.1); max-width: 700px;">
+            <p style="font-size: 16px; color: #0f172a; text-align: center; line-height: 1.6; margin: 0;">
+              <strong>💡 Xem demo:</strong> Ấn <kbd style="padding: 2px 8px; background: white; border-radius: 4px; border: 1px solid #cbd5e1; font-family: monospace;">→</kbd> để xem hệ thống hoạt động
+            </p>
+          </div>
+        </div>
+
+        <!-- State 1: Full Page Web Demo (Interactive) -->
+        <div id="serviceDemo" style="width: 100%; height: 100%; display: none; flex-direction: column;">
 
           <!-- Top Navigation Bar -->
           <div style="background: linear-gradient(135deg, #0047ab 0%, #003380 100%); padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
@@ -1584,14 +1617,17 @@
           </div>
         </div>
 
-        <!-- Fake Cursor -->
+        </div>
+        <!-- End serviceDemo div -->
+
+        <!-- Fake Cursor (shared across both states) -->
         <div class="fake-cursor" id="fakeCursor">
           <svg viewBox="0 0 24 24" fill="black" stroke="white" stroke-width="0.5">
             <path d="M3 3 L3 17 L8 12 L11 18 L13 17 L10 11 L17 11 Z"/>
           </svg>
         </div>
 
-        <!-- Confetti Container -->
+        <!-- Confetti Container (shared across both states) -->
         <div class="confetti-container" id="confettiContainer"></div>
       </div>
 
@@ -1916,6 +1952,22 @@
     function nextSlide() {
       if (isTransitioning) return;
 
+      // If on Service slide and not at last animation state, advance animation
+      if (currentSlide === SERVICE_SLIDE_INDEX && serviceAnimationState < 1) {
+        if (serviceAnimationRunning) return; // Block if already animating
+        serviceAnimationState = 1;
+        // Show demo view and start animation
+        showServiceState(1);
+        setTimeout(async () => {
+          if (servicesData.length === 0) {
+            await fetchServicesFromAPI();
+            renderServiceCards();
+          }
+          runServiceDemoAnimation();
+        }, 300);
+        return;
+      }
+
       // If on TKB slide and not at last animation state, advance animation
       if (currentSlide === TKB_SLIDE_INDEX && tkbAnimationState < 2) {
         if (isTKBAnimating) return; // Block if already animating
@@ -1928,14 +1980,51 @@
         return;
       }
 
+      // If on Chatbot slide and not at last animation state, advance animation
+      if (currentSlide === CHATBOT_SLIDE_INDEX && chatAnimationState < 1) {
+        if (chatAnimationRunning) return; // Block if already animating
+        chatAnimationState = 1;
+        // Start the chat demo animation
+        setTimeout(() => {
+          runChatAnimation();
+        }, 300);
+        return;
+      }
+
+      // Reset Service state when leaving slide 7
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        serviceAnimationState = 0;
+        stopServiceAnimation();
+        showServiceState(0); // Reset to intro view
+      }
+
       // Reset TKB state when leaving slide 9
       if (currentSlide === TKB_SLIDE_INDEX) {
         tkbAnimationState = 0;
         sliderCurrentPosition = 100;
       }
 
+      // Reset Chatbot state when leaving slide 11
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        chatAnimationState = 0;
+        stopChatAnimation();
+      }
+
       // Circular navigation
       currentSlide = (currentSlide + 1) % totalSlides;
+
+      // Initialize Service slide when entering
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        serviceAnimationState = 0;
+        showServiceState(0);
+        // Pre-load data in background
+        setTimeout(async () => {
+          if (servicesData.length === 0) {
+            await fetchServicesFromAPI();
+            renderServiceCards();
+          }
+        }, 300);
+      }
 
       // Initialize TKB animation when entering slide 9
       if (currentSlide === TKB_SLIDE_INDEX) {
@@ -1944,11 +2033,25 @@
         setTimeout(() => animateTKB('before'), 100);
       }
 
+      // Initialize Chatbot slide when entering
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        chatAnimationState = 0;
+      }
+
       updateSlides('forward');
     }
 
     function prevSlide() {
       if (isTransitioning) return;
+
+      // If on Service slide and at animation state, go back to intro view
+      if (currentSlide === SERVICE_SLIDE_INDEX && serviceAnimationState > 0) {
+        if (serviceAnimationRunning) return; // Block if already animating
+        serviceAnimationState = 0;
+        stopServiceAnimation();
+        showServiceState(0);
+        return;
+      }
 
       // If on TKB slide and not at first animation state, go back in animation
       if (currentSlide === TKB_SLIDE_INDEX && tkbAnimationState > 0) {
@@ -1962,10 +2065,31 @@
         return;
       }
 
+      // If on Chatbot slide and at animation state, go back to static view
+      if (currentSlide === CHATBOT_SLIDE_INDEX && chatAnimationState > 0) {
+        if (chatAnimationRunning) return; // Block if already animating
+        chatAnimationState = 0;
+        stopChatAnimation();
+        return;
+      }
+
+      // Reset Service state when leaving slide 7
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        serviceAnimationState = 0;
+        stopServiceAnimation();
+        showServiceState(0); // Reset to intro view
+      }
+
       // Reset TKB state when leaving slide 9
       if (currentSlide === TKB_SLIDE_INDEX) {
         tkbAnimationState = 0;
         sliderCurrentPosition = 100;
+      }
+
+      // Reset Chatbot state when leaving slide 11
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        chatAnimationState = 0;
+        stopChatAnimation();
       }
 
       // Circular navigation
@@ -1979,19 +2103,50 @@
 
       const direction = index > currentSlide ? 'forward' : 'backward';
 
+      // Reset Service state when leaving current slide 7
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        serviceAnimationState = 0;
+        stopServiceAnimation();
+        showServiceState(0); // Reset to intro view
+      }
+
       // Reset TKB state when leaving current slide 9
       if (currentSlide === TKB_SLIDE_INDEX) {
         tkbAnimationState = 0;
         sliderCurrentPosition = 100;
       }
 
+      // Reset Chatbot state when leaving current slide 11
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        chatAnimationState = 0;
+        stopChatAnimation();
+      }
+
       currentSlide = index;
+
+      // Initialize Service slide when jumping to it
+      if (currentSlide === SERVICE_SLIDE_INDEX) {
+        serviceAnimationState = 0;
+        showServiceState(0);
+        // Pre-load data in background
+        setTimeout(async () => {
+          if (servicesData.length === 0) {
+            await fetchServicesFromAPI();
+            renderServiceCards();
+          }
+        }, 300);
+      }
 
       // Reset TKB animation when jumping to slide 9
       if (currentSlide === TKB_SLIDE_INDEX) {
         tkbAnimationState = 0;
         sliderCurrentPosition = 100;
         setTimeout(() => animateTKB('before'), 100);
+      }
+
+      // Initialize Chatbot slide when jumping to it
+      if (currentSlide === CHATBOT_SLIDE_INDEX) {
+        chatAnimationState = 0;
       }
 
       updateSlides(direction);
@@ -2322,6 +2477,41 @@
     const SERVICE_SLIDE_INDEX = 6; // Slide 7 (index 6)
     let serviceAnimationRunning = false;
     let serviceAnimationTimeout = null;
+    let serviceAnimationState = 0; // 0: intro view, 1: demo animation
+
+    // Toggle between intro and demo views based on state
+    function showServiceState(state) {
+      const introView = document.getElementById('serviceIntro');
+      const demoView = document.getElementById('serviceDemo');
+
+      if (state === 0) {
+        // Show introduction view
+        if (introView) introView.style.display = 'flex';
+        if (demoView) demoView.style.display = 'none';
+      } else if (state === 1) {
+        // Show demo view
+        if (introView) introView.style.display = 'none';
+        if (demoView) demoView.style.display = 'flex';
+      }
+    }
+
+    function stopServiceAnimation() {
+      if (serviceAnimationTimeout) {
+        clearTimeout(serviceAnimationTimeout);
+        serviceAnimationTimeout = null;
+      }
+      serviceAnimationRunning = false;
+
+      // Hide cursor and reset UI elements
+      const cursor = document.getElementById('fakeCursor');
+      if (cursor) cursor.classList.remove('active');
+
+      const modal = document.getElementById('serviceModal');
+      if (modal) modal.style.display = 'none';
+
+      const confetti = document.getElementById('confettiContainer');
+      if (confetti) confetti.classList.remove('active');
+    }
 
     async function runServiceDemoAnimation() {
       if (serviceAnimationRunning) return;
@@ -2502,6 +2692,7 @@
     const CHATBOT_SLIDE_INDEX = 10; // Slide 11 (index 10)
     let chatAnimationRunning = false;
     let chatAnimationTimeout = null;
+    let chatAnimationState = 0; // 0: static view, 1: demo animation
 
     // Chat conversation data
     const chatConversation = [
@@ -2819,59 +3010,8 @@
       disableChatInput();
     }
 
-    // Override updateSlides to handle animations
-    const originalUpdateSlides = updateSlides;
-    window.updateSlides = function(direction) {
-      // Stop service animation when leaving slide 7
-      if (currentSlide === SERVICE_SLIDE_INDEX) {
-        stopServiceAnimation();
-      }
-
-      // Stop chat animation when leaving slide 11
-      if (currentSlide === CHATBOT_SLIDE_INDEX) {
-        stopChatAnimation();
-      }
-
-      // Call original function
-      originalUpdateSlides(direction);
-
-      // Start service animation when entering slide 7
-      if (currentSlide === SERVICE_SLIDE_INDEX) {
-        setTimeout(async () => {
-          // Load services from API if not already loaded
-          if (servicesData.length === 0) {
-            await fetchServicesFromAPI();
-            renderServiceCards();
-          }
-          runServiceDemoAnimation();
-        }, 500);
-      }
-
-      // Start chat animation when entering slide 11
-      if (currentSlide === CHATBOT_SLIDE_INDEX) {
-        setTimeout(() => {
-          runChatAnimation();
-        }, 500);
-      }
-    };
-    updateSlides = window.updateSlides;
-
-    // Start animation if already on service slide
-    if (currentSlide === SERVICE_SLIDE_INDEX) {
-      setTimeout(async () => {
-        // Load services from API
-        await fetchServicesFromAPI();
-        renderServiceCards();
-        runServiceDemoAnimation();
-      }, 500);
-    }
-
-    // Start animation if already on chatbot slide
-    if (currentSlide === CHATBOT_SLIDE_INDEX) {
-      setTimeout(() => {
-        runChatAnimation();
-      }, 500);
-    }
+    // Service and Chatbot animations are now handled in nextSlide/prevSlide functions
+    // No need to override updateSlides - state machine logic is integrated
   </script>
 </body>
 </html>

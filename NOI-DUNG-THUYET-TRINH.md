@@ -702,7 +702,7 @@ Nhóm em xin phép được trả lời các câu hỏi!
 
 ---
 
-## 📊 METRICS (Số liệu demo)
+## 📊 METRICS (Số liệu demo)`2
 
 - **Database:** 7 services, 3+ users, 5+ orders
 - **API Endpoints:** 25+ routes
