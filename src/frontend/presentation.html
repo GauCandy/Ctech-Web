@@ -122,18 +122,16 @@
     .glass-card {
       background: var(--glass-bg);
       backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 48px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
-                  0 0 80px rgba(14, 165, 233, 0.05);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 2px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .glass-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4),
-                  0 0 120px rgba(14, 165, 233, 0.1);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
       border-color: rgba(14, 165, 233, 0.3);
     }
 
@@ -156,24 +154,35 @@
     }
 
     h2 {
-      font-size: 56px;
+      font-size: 64px;
       font-weight: 800;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #f1f5f9 0%, var(--text-muted) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      margin-bottom: 20px;
+      color: var(--text);
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 2px;
     }
 
     h3 {
-      font-size: 32px;
+      font-size: 38px;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .subtitle {
-      font-size: 24px;
+      font-size: 28px;
       color: var(--text-muted);
       font-weight: 400;
       margin-bottom: 48px;
@@ -182,21 +191,27 @@
     /* Badge */
     .badge {
       display: inline-block;
-      padding: 12px 32px;
+      padding: 14px 36px;
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      border-radius: 100px;
-      font-size: 14px;
+      border-radius: 10px;
+      font-size: 16px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 32px;
-      box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
-      animation: badgePulse 2s ease-in-out infinite;
+      letter-spacing: 0.15em;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+      position: relative;
     }
 
-    @keyframes badgePulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3); }
-      50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(14, 165, 233, 0.5); }
+    .badge::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 5px;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 10px 0 0 10px;
     }
 
     /* Feature Grid */
@@ -209,15 +224,368 @@
       margin-top: 48px;
     }
 
-    .feature-card {
+    /* Image Gallery */
+    .image-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      width: 100%;
+      max-width: 1200px;
+      margin-top: 48px;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 16/9;
       background: var(--glass-bg);
       backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 32px;
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 30px 80px rgba(14, 165, 233, 0.3);
+      border-color: var(--primary);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.1);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      background: linear-gradient(to top, rgba(15, 23, 42, 0.95), transparent);
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gallery-item:hover .gallery-overlay {
+      transform: translateY(0);
+    }
+
+    .gallery-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .gallery-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Hero Image Section */
+    .hero-image {
+      width: 100%;
+      max-width: 900px;
+      height: 500px;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4),
+                  0 0 120px rgba(14, 165, 233, 0.2);
+      margin-top: 48px;
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-image::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.3), rgba(139, 92, 246, 0.3));
+      z-index: 1;
+    }
+
+    /* Split Layout */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      width: 100%;
+      max-width: 1200px;
+      margin-top: 48px;
+      align-items: center;
+    }
+
+    .split-image {
+      width: 100%;
+      height: 400px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .split-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .split-image::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), transparent);
+    }
+
+    /* Screenshot Frame */
+    .screenshot-frame {
+      width: 100%;
+      max-width: 1000px;
+      margin-top: 48px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+      background: #1e293b;
+      padding: 8px;
+    }
+
+    .screenshot-frame img {
+      width: 100%;
+      border-radius: 12px;
+      display: block;
+    }
+
+    /* Logo Grid */
+    .logo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 32px;
+      width: 100%;
+      max-width: 1000px;
+      margin-top: 48px;
+    }
+
+    .logo-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      filter: grayscale(0.8) opacity(0.7);
+    }
+
+    .logo-item:hover {
+      filter: grayscale(0) opacity(1);
+      transform: translateY(-5px);
+      border-color: var(--primary);
+    }
+
+    .logo-item img {
+      max-width: 100%;
+      height: 60px;
+      object-fit: contain;
+    }
+
+    /* Background Image Slide */
+    .bg-image-slide {
+      position: relative;
+    }
+
+    .bg-image-slide::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: var(--bg-image);
+      background-size: cover;
+      background-position: center;
+      opacity: 0.08;
+      z-index: -1;
+      filter: blur(5px);
+    }
+
+    /* Professional Decorative Elements */
+    .slide-with-accent {
+      position: relative;
+    }
+
+    .slide-with-accent::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    .slide-with-accent::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      z-index: -1;
+    }
+
+    /* Left Accent Bar */
+    .slide-with-bar::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 20%;
+      width: 5px;
+      height: 60%;
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+      border-radius: 0 5px 5px 0;
+      z-index: 0;
+    }
+
+    /* Corner Decoration */
+    .slide-with-corner::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, transparent 50%, rgba(14, 165, 233, 0.05) 50%);
+      z-index: -1;
+    }
+
+    /* Folder Structure - Simple Indentation */
+    .folder-tree {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 17px;
+      color: #e2e8f0;
+      padding: 20px;
+      background: rgba(15, 23, 42, 0.3);
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .folder-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      margin: 4px 0;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      background: rgba(30, 41, 59, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .folder-item:hover {
+      background: rgba(14, 165, 233, 0.15);
+      border-color: rgba(14, 165, 233, 0.4);
+      transform: translateX(4px);
+    }
+
+    /* Indentation levels */
+    .indent-0 {
+      padding-left: 12px;
+      border-left: 3px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .indent-1 {
+      padding-left: 36px;
+      border-left: 3px solid rgba(14, 165, 233, 0.4);
+    }
+
+    .indent-2 {
+      padding-left: 60px;
+      border-left: 3px solid rgba(139, 92, 246, 0.4);
+    }
+
+    .indent-3 {
+      padding-left: 84px;
+      border-left: 3px solid rgba(236, 72, 153, 0.4);
+    }
+
+    .folder-icon {
+      font-size: 22px;
+      display: flex;
+      align-items: center;
+      min-width: 22px;
+    }
+
+    .folder-icon.folder {
+      color: #fbbf24;
+    }
+
+    .folder-icon.file {
+      color: #38bdf8;
+    }
+
+    .folder-icon.database {
+      color: #34d399;
+    }
+
+    .folder-icon.special {
+      color: #a78bfa;
+    }
+
+    .folder-name {
+      font-weight: 600;
+      font-size: 17px;
+      color: #e2e8f0;
+      min-width: 160px;
+    }
+
+    .folder-name.folder {
+      color: #fbbf24;
+    }
+
+    .folder-name.file {
+      color: #38bdf8;
+    }
+
+    .folder-desc {
+      color: #94a3b8;
+      font-size: 15px;
+      font-weight: 400;
+    }
+
+    .feature-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 2px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     .feature-card::before {
@@ -226,10 +594,10 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 4px;
+      height: 3px;
       background: linear-gradient(90deg, var(--primary), var(--secondary));
       transform: scaleX(0);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .feature-card:hover::before {
@@ -237,53 +605,54 @@
     }
 
     .feature-card:hover {
-      transform: translateY(-8px);
-      border-color: rgba(14, 165, 233, 0.5);
-      box-shadow: 0 20px 60px rgba(14, 165, 233, 0.2);
+      transform: translateY(-5px);
+      border-color: rgba(14, 165, 233, 0.4);
+      box-shadow: 0 12px 40px rgba(14, 165, 233, 0.15);
     }
 
     .feature-icon {
       width: 64px;
       height: 64px;
       background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      border-radius: 16px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       font-size: 32px;
       color: white;
-      box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 16px rgba(14, 165, 233, 0.25);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .feature-card:hover .feature-icon {
-      transform: rotateY(360deg) scale(1.1);
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.35);
     }
 
     .feature-title {
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 700;
       margin-bottom: 12px;
       color: var(--text);
     }
 
     .feature-desc {
-      font-size: 15px;
+      font-size: 18px;
       color: var(--text-muted);
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
     /* Number Highlight */
     .number-highlight {
-      font-size: 64px;
+      font-size: 72px;
       font-weight: 900;
       background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
 
     /* Tech Stack Icons */
@@ -350,12 +719,12 @@
     }
 
     .slide-counter {
-      padding: 12px 24px;
+      padding: 14px 32px;
       background: var(--glass-bg);
       backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
+      border: 2px solid var(--glass-border);
       border-radius: 100px;
-      font-size: 14px;
+      font-size: 20px;
       font-weight: 600;
       color: var(--text-muted);
     }
@@ -363,6 +732,7 @@
     .slide-counter span {
       color: var(--primary);
       font-weight: 700;
+      font-size: 22px;
     }
 
     /* Progress Bar */
@@ -386,12 +756,12 @@
     /* Code Block */
     .code-block {
       background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.2);
+      border: 2px solid rgba(148, 163, 184, 0.2);
       border-radius: 12px;
-      padding: 24px;
+      padding: 28px;
       font-family: 'Fira Code', 'Courier New', monospace;
-      font-size: 14px;
-      line-height: 1.8;
+      font-size: 18px;
+      line-height: 2;
       color: #e2e8f0;
       margin: 24px 0;
       overflow-x: auto;
@@ -432,26 +802,30 @@
       display: flex;
       align-items: center;
       gap: 20px;
-      padding: 20px;
+      padding: 20px 24px;
       background: var(--glass-bg);
       backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
+      border: 2px solid var(--glass-border);
+      border-left: 4px solid var(--primary);
+      border-radius: 12px;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
     .icon-list-item:hover {
-      transform: translateX(10px);
-      border-color: rgba(14, 165, 233, 0.5);
+      transform: translateX(8px);
+      border-left-color: var(--secondary);
+      border-color: rgba(14, 165, 233, 0.3);
+      box-shadow: 0 4px 16px rgba(14, 165, 233, 0.1);
     }
 
     .icon-list-item .material-icons {
-      font-size: 32px;
+      font-size: 40px;
       color: var(--primary);
     }
 
     .icon-list-item span {
-      font-size: 18px;
+      font-size: 22px;
       color: var(--text);
       font-weight: 500;
     }
@@ -489,15 +863,26 @@
       flex: 1;
       background: var(--glass-bg);
       backdrop-filter: blur(20px);
-      border: 1px solid var(--glass-border);
+      border: 2px solid var(--glass-border);
       border-radius: 16px;
-      padding: 24px;
+      padding: 32px;
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      font-size: 20px;
     }
 
     .timeline-content:hover {
       transform: translateY(-5px);
       border-color: rgba(14, 165, 233, 0.5);
+    }
+
+    .timeline-content h3 {
+      font-size: 32px;
+      margin-bottom: 16px;
+    }
+
+    .timeline-content p {
+      font-size: 20px;
+      line-height: 1.7;
     }
 
     .timeline-dot {
@@ -567,7 +952,7 @@
     <!-- ==================== PHẦN 1: GIỚI THIỆU ==================== -->
 
     <!-- Slide 1: Title -->
-    <div class="slide active">
+    <div class="slide active bg-image-slide" style="--bg-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&h=1080&fit=crop');">
       <div class="badge">ĐỒ ÁN TỐT NGHIỆP 2025</div>
       <h1 style="text-align: center; max-width: 900px;">
         Hệ Thống Quản Lý & Dịch Vụ Trực Tuyến<br>Trường Cao Đẳng CTECH
@@ -577,25 +962,25 @@
       </p>
 
       <div class="glass-card" style="margin-top: 48px; max-width: 700px;">
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span class="material-icons" style="color: var(--primary); font-size: 24px;">person</span>
-            <span style="font-size: 18px; color: var(--text);">Sinh viên: Trần Tuấn Tú</span>
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <span class="material-icons" style="color: var(--primary); font-size: 32px;">person</span>
+            <span style="font-size: 24px; color: var(--text); font-weight: 500;">Sinh viên: Trần Tuấn Tú</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span class="material-icons" style="color: var(--primary); font-size: 24px;">code</span>
-            <span style="font-size: 18px; color: var(--text);">Công nghệ: Node.js + Express + MySQL + OpenAI GPT-4</span>
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <span class="material-icons" style="color: var(--primary); font-size: 32px;">code</span>
+            <span style="font-size: 24px; color: var(--text); font-weight: 500;">Công nghệ: Node.js + Express + MySQL + OpenAI GPT-4</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span class="material-icons" style="color: var(--primary); font-size: 24px;">calendar_today</span>
-            <span style="font-size: 18px; color: var(--text);">Thời gian: 2025</span>
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <span class="material-icons" style="color: var(--primary); font-size: 32px;">calendar_today</span>
+            <span style="font-size: 24px; color: var(--text); font-weight: 500;">Thời gian: 2025</span>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Slide 2: Mục lục -->
-    <div class="slide">
+    <div class="slide slide-with-accent">
       <div class="badge">NỘI DUNG THUYẾT TRÌNH</div>
       <h2 style="text-align: center;">5 Phần Chính</h2>
       <p class="subtitle" style="text-align: center;">Tổng quan về hệ thống CTECH</p>
@@ -649,7 +1034,7 @@
     </div>
 
     <!-- Slide 3: Vấn đề -->
-    <div class="slide">
+    <div class="slide slide-with-accent">
       <div class="badge">PHẦN 1: GIỚI THIỆU</div>
       <h2 style="text-align: center;">Vấn Đề Hiện Tại</h2>
       <p class="subtitle" style="text-align: center;">Pain points của hệ thống quản lý truyền thống</p>
@@ -687,7 +1072,7 @@
     </div>
 
     <!-- Slide 4: Mục tiêu -->
-    <div class="slide">
+    <div class="slide slide-with-corner">
       <div class="badge">PHẦN 1: GIỚI THIỆU</div>
       <h2 style="text-align: center;">Mục Tiêu Dự Án</h2>
       <p class="subtitle" style="text-align: center;">Xây dựng hệ thống toàn diện cho 3 đối tượng</p>
@@ -735,38 +1120,8 @@
       </div>
     </div>
 
-    <!-- Slide 5: Thông tin CTECH -->
-    <div class="slide">
-      <div class="badge">PHẦN 1: GIỚI THIỆU</div>
-      <h2 style="text-align: center;">Trường Cao Đẳng CTECH</h2>
-      <p class="subtitle" style="text-align: center;">Trường Cao đẳng Kỹ thuật - Công nghệ Bách Khoa (Thành lập 01/10/2008)</p>
-
-      <div class="feature-grid" style="grid-template-columns: repeat(4, 1fr); max-width: 1200px;">
-        <div class="feature-card">
-          <div class="number-highlight">15+</div>
-          <div class="feature-title">Năm Kinh Nghiệm</div>
-          <div class="feature-desc">Đồng hành cùng cộng đồng kỹ sư</div>
-        </div>
-        <div class="feature-card">
-          <div class="number-highlight">100%</div>
-          <div class="feature-title">Việc Làm</div>
-          <div class="feature-desc">Sinh viên có việc làm đúng chuyên môn</div>
-        </div>
-        <div class="feature-card">
-          <div class="number-highlight">25+</div>
-          <div class="feature-title">Ngành Học</div>
-          <div class="feature-desc">Chuyên sâu, thực hành cao</div>
-        </div>
-        <div class="feature-card">
-          <div class="number-highlight">500+</div>
-          <div class="feature-title">Đối Tác</div>
-          <div class="feature-desc">Doanh nghiệp đào tạo & tuyển dụng</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Slide 6: Giải pháp -->
-    <div class="slide">
+    <!-- Slide 5: Giải pháp -->
+    <div class="slide slide-with-accent">
       <div class="badge">PHẦN 1: GIỚI THIỆU</div>
       <h2 style="text-align: center;">Giải Pháp: Website CTECH</h2>
       <p class="subtitle" style="text-align: center;">1 nền tảng duy nhất, tập trung mọi thứ</p>
@@ -820,12 +1175,12 @@
     <!-- ==================== PHẦN 2: KIẾN TRÚC ==================== -->
 
     <!-- Slide 7: Tech Stack -->
-    <div class="slide">
+    <div class="slide slide-with-corner">
       <div class="badge">PHẦN 2: KIẾN TRÚC HỆ THỐNG</div>
       <h2 style="text-align: center;">Stack Công Nghệ</h2>
       <p class="subtitle" style="text-align: center;">Modern tech stack cho hiệu năng và scalability</p>
 
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 48px; max-width: 1000px; margin-top: 48px;">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 48px; max-width: 1000px; margin-top: 32px;">
         <div class="glass-card">
           <h3 style="margin-bottom: 24px; font-size: 24px;">Backend</h3>
           <div class="tech-stack" style="flex-direction: column; gap: 24px;">
@@ -862,10 +1217,32 @@
           </div>
         </div>
       </div>
+
+      <!-- Tech Stack Visual -->
+      <div class="logo-grid" style="margin-top: 40px;">
+        <div class="logo-item">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js">
+        </div>
+        <div class="logo-item">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express" style="filter: brightness(0) invert(1);">
+        </div>
+        <div class="logo-item">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL">
+        </div>
+        <div class="logo-item">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
+        </div>
+        <div class="logo-item">
+          <img src="https://www.svgrepo.com/show/306500/openai.svg" alt="OpenAI" style="filter: brightness(0) invert(1);">
+        </div>
+        <div class="logo-item">
+          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
+        </div>
+      </div>
     </div>
 
     <!-- Slide 8: Kiến trúc hệ thống -->
-    <div class="slide">
+    <div class="slide slide-with-corner">
       <div class="badge">PHẦN 2: KIẾN TRÚC HỆ THỐNG</div>
       <h2 style="text-align: center;">Kiến Trúc Hệ Thống</h2>
       <p class="subtitle" style="text-align: center;">RESTful API Architecture</p>
@@ -907,7 +1284,7 @@ GET  /api/admin/dashboard   # Thống kê admin
     </div>
 
     <!-- Slide 9: Cấu trúc dự án -->
-    <div class="slide">
+    <div class="slide slide-with-accent">
       <div class="badge">PHẦN 2: KIẾN TRÚC HỆ THỐNG</div>
       <h2 style="text-align: center;">Cấu Trúc Dự Án</h2>
       <p class="subtitle" style="text-align: center;">Modular architecture với feature-based structure</p>
@@ -918,16 +1295,91 @@ GET  /api/admin/dashboard   # Thống kê admin
             <span class="material-icons" style="color: var(--secondary);">folder</span>
             Backend
           </h3>
-          <div class="code-block" style="font-size: 12px; line-height: 1.6;">
-src/backend/
-├── api/features/
-│   ├── auth/         # Xác thực
-│   ├── services/     # Dịch vụ
-│   ├── orders/       # Đơn hàng
-│   ├── chatbot/      # AI Chat
-│   ├── timetable/    # Lịch học
-│   └── admin/        # Quản trị
-└── database/         # MySQL
+          <div class="folder-tree">
+            <!-- api/ -->
+            <div class="folder-item indent-0">
+              <span class="folder-icon folder material-icons">folder</span>
+              <span class="folder-name folder">api/</span>
+              <span class="folder-desc">REST API endpoints</span>
+            </div>
+
+            <!-- features/ -->
+            <div class="folder-item indent-1">
+              <span class="folder-icon folder material-icons">folder</span>
+              <span class="folder-name folder">features/</span>
+              <span class="folder-desc">Feature modules</span>
+            </div>
+
+            <!-- Feature modules -->
+            <div class="folder-item indent-2">
+              <span class="folder-icon folder material-icons">admin_panel_settings</span>
+              <span class="folder-name folder">admin/</span>
+              <span class="folder-desc">Quản trị hệ thống</span>
+            </div>
+
+            <div class="folder-item indent-2">
+              <span class="folder-icon folder material-icons">lock</span>
+              <span class="folder-name folder">auth/</span>
+              <span class="folder-desc">Xác thực JWT</span>
+            </div>
+
+            <div class="folder-item indent-2">
+              <span class="folder-icon special material-icons">smart_toy</span>
+              <span class="folder-name folder">chatbot/</span>
+              <span class="folder-desc">AI Chat GPT-4 + RAG</span>
+            </div>
+
+            <div class="folder-item indent-2">
+              <span class="folder-icon folder material-icons">shopping_cart</span>
+              <span class="folder-name folder">orders/</span>
+              <span class="folder-desc">Đơn hàng & thanh toán</span>
+            </div>
+
+            <div class="folder-item indent-2">
+              <span class="folder-icon folder material-icons">business_center</span>
+              <span class="folder-name folder">services/</span>
+              <span class="folder-desc">Quản lý dịch vụ</span>
+            </div>
+
+            <div class="folder-item indent-2">
+              <span class="folder-icon folder material-icons">calendar_today</span>
+              <span class="folder-name folder">timetable/</span>
+              <span class="folder-desc">Lịch học & TKB</span>
+            </div>
+
+            <div class="folder-item indent-2">
+              <span class="folder-icon folder material-icons">local_offer</span>
+              <span class="folder-name folder">vouchers/</span>
+              <span class="folder-desc">Quản lý voucher</span>
+            </div>
+
+            <!-- shared/ -->
+            <div class="folder-item indent-1">
+              <span class="folder-icon folder material-icons">share</span>
+              <span class="folder-name folder">shared/</span>
+              <span class="folder-desc">Shared utilities</span>
+            </div>
+
+            <!-- database/ -->
+            <div class="folder-item indent-0">
+              <span class="folder-icon database material-icons">storage</span>
+              <span class="folder-name folder">database/</span>
+              <span class="folder-desc">MySQL connection</span>
+            </div>
+
+            <!-- middleware/ -->
+            <div class="folder-item indent-0">
+              <span class="folder-icon folder material-icons">security</span>
+              <span class="folder-name folder">middleware/</span>
+              <span class="folder-desc">Auth & validation</span>
+            </div>
+
+            <!-- server/ -->
+            <div class="folder-item indent-0">
+              <span class="folder-icon folder material-icons">dns</span>
+              <span class="folder-name folder">server/</span>
+              <span class="folder-desc">Express server</span>
+            </div>
           </div>
         </div>
 
@@ -936,22 +1388,63 @@ src/backend/
             <span class="material-icons" style="color: var(--primary);">folder</span>
             Frontend
           </h3>
-          <div class="code-block" style="font-size: 12px; line-height: 1.6;">
-src/frontend/
-├── main.html         # Trang chủ
-├── services.html     # Dịch vụ
-├── schedule.html     # Lịch học
-├── admin.html        # Admin
-├── css/              # Styles
-├── js/               # Scripts
-└── img/              # Assets
+          <div class="folder-tree">
+            <!-- HTML Files -->
+            <div class="folder-item indent-0">
+              <span class="folder-icon file material-icons">home</span>
+              <span class="folder-name file">main.html</span>
+              <span class="folder-desc">Trang chủ & giới thiệu</span>
+            </div>
+
+            <div class="folder-item indent-0">
+              <span class="folder-icon file material-icons">login</span>
+              <span class="folder-name file">login.html</span>
+              <span class="folder-desc">Đăng nhập</span>
+            </div>
+
+            <div class="folder-item indent-0">
+              <span class="folder-icon file material-icons">shopping_cart</span>
+              <span class="folder-name file">services.html</span>
+              <span class="folder-desc">Quản lý dịch vụ</span>
+            </div>
+
+            <div class="folder-item indent-0">
+              <span class="folder-icon file material-icons">calendar_month</span>
+              <span class="folder-name file">schedule.html</span>
+              <span class="folder-desc">Thời khóa biểu</span>
+            </div>
+
+            <div class="folder-item indent-0">
+              <span class="folder-icon file material-icons">admin_panel_settings</span>
+              <span class="folder-name file">admin.html</span>
+              <span class="folder-desc">Admin dashboard</span>
+            </div>
+
+            <!-- Asset Folders -->
+            <div class="folder-item indent-0">
+              <span class="folder-icon folder material-icons">palette</span>
+              <span class="folder-name folder">css/</span>
+              <span class="folder-desc">Stylesheets (21 files)</span>
+            </div>
+
+            <div class="folder-item indent-0">
+              <span class="folder-icon folder material-icons">code</span>
+              <span class="folder-name folder">js/</span>
+              <span class="folder-desc">JavaScript (14 modules)</span>
+            </div>
+
+            <div class="folder-item indent-0">
+              <span class="folder-icon folder material-icons">image</span>
+              <span class="folder-name folder">img/</span>
+              <span class="folder-desc">Images & graphics</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Slide 10: Bảo mật & Phân quyền -->
-    <div class="slide">
+    <div class="slide slide-with-accent">
       <div class="badge">PHẦN 2: KIẾN TRÚC HỆ THỐNG</div>
       <h2 style="text-align: center;">Bảo Mật & Phân Quyền</h2>
       <p class="subtitle" style="text-align: center;">Multi-layer security với JWT và RBAC</p>
@@ -1014,7 +1507,7 @@ src/frontend/
     <!-- ==================== PHẦN 3: TÍNH NĂNG ==================== -->
 
     <!-- Slide 11: Tổng quan 3 tính năng -->
-    <div class="slide">
+    <div class="slide slide-with-corner">
       <div class="badge">PHẦN 3: CÁC TÍNH NĂNG CHÍNH</div>
       <h2 style="text-align: center;">3 Tính Năng Chính</h2>
       <p class="subtitle" style="text-align: center;">Hướng đến học sinh - sinh viên</p>
@@ -1071,50 +1564,56 @@ src/frontend/
     </div>
 
     <!-- Slide 12: Demo Dịch vụ (Simplified - Placeholder for full demo) -->
-    <div class="slide">
+    <div class="slide slide-with-accent">
       <div class="badge">TÍNH NĂNG #1</div>
       <h2 style="text-align: center;">Quản Lý Dịch Vụ</h2>
       <p class="subtitle" style="text-align: center;">Tra cứu, đăng ký và thanh toán trực tuyến</p>
 
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; max-width: 1100px; margin-top: 32px;">
-        <div class="glass-card">
-          <h3 style="margin-bottom: 20px;">User Features</h3>
-          <div class="icon-list-item" style="margin-bottom: 16px;">
-            <span class="material-icons">inventory_2</span>
-            <span>Danh sách 7 dịch vụ (Canteen, Gửi xe...)</span>
+      <div class="split-layout">
+        <div>
+          <div class="glass-card" style="margin-bottom: 24px;">
+            <h3 style="margin-bottom: 20px;">User Features</h3>
+            <div class="icon-list-item" style="margin-bottom: 16px;">
+              <span class="material-icons">inventory_2</span>
+              <span>Danh sách 7 dịch vụ (Canteen, Gửi xe...)</span>
+            </div>
+            <div class="icon-list-item" style="margin-bottom: 16px;">
+              <span class="material-icons">search</span>
+              <span>Tìm kiếm & lọc theo danh mục</span>
+            </div>
+            <div class="icon-list-item" style="margin-bottom: 16px;">
+              <span class="material-icons">qr_code</span>
+              <span>Thanh toán VietQR tự động</span>
+            </div>
+            <div class="icon-list-item">
+              <span class="material-icons">history</span>
+              <span>Lịch sử đơn hàng</span>
+            </div>
           </div>
-          <div class="icon-list-item" style="margin-bottom: 16px;">
-            <span class="material-icons">search</span>
-            <span>Tìm kiếm & lọc theo danh mục</span>
-          </div>
-          <div class="icon-list-item" style="margin-bottom: 16px;">
-            <span class="material-icons">qr_code</span>
-            <span>Thanh toán VietQR tự động</span>
-          </div>
-          <div class="icon-list-item">
-            <span class="material-icons">history</span>
-            <span>Lịch sử đơn hàng</span>
+
+          <div class="glass-card">
+            <h3 style="margin-bottom: 20px;">Admin Features</h3>
+            <div class="icon-list-item" style="margin-bottom: 16px;">
+              <span class="material-icons">add_circle</span>
+              <span>Thêm dịch vụ mới</span>
+            </div>
+            <div class="icon-list-item" style="margin-bottom: 16px;">
+              <span class="material-icons">edit</span>
+              <span>Sửa thông tin dịch vụ</span>
+            </div>
+            <div class="icon-list-item" style="margin-bottom: 16px;">
+              <span class="material-icons">image</span>
+              <span>Upload/thay đổi hình ảnh</span>
+            </div>
+            <div class="icon-list-item">
+              <span class="material-icons">toggle_on</span>
+              <span>Bật/tắt dịch vụ (soft delete)</span>
+            </div>
           </div>
         </div>
 
-        <div class="glass-card">
-          <h3 style="margin-bottom: 20px;">Admin Features</h3>
-          <div class="icon-list-item" style="margin-bottom: 16px;">
-            <span class="material-icons">add_circle</span>
-            <span>Thêm dịch vụ mới</span>
-          </div>
-          <div class="icon-list-item" style="margin-bottom: 16px;">
-            <span class="material-icons">edit</span>
-            <span>Sửa thông tin dịch vụ</span>
-          </div>
-          <div class="icon-list-item" style="margin-bottom: 16px;">
-            <span class="material-icons">image</span>
-            <span>Upload/thay đổi hình ảnh</span>
-          </div>
-          <div class="icon-list-item">
-            <span class="material-icons">toggle_on</span>
-            <span>Bật/tắt dịch vụ (soft delete)</span>
-          </div>
+        <div class="split-image">
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=800&fit=crop" alt="Services Screenshot" onerror="this.src='https://via.placeholder.com/600x800/0ea5e9/ffffff?text=Services+Demo'">
         </div>
       </div>
 
@@ -1125,8 +1624,50 @@ src/frontend/
       </div>
     </div>
 
-    <!-- Slide 13: Demo TKB (Simplified) -->
+    <!-- Slide 12.5: Demo Dịch vụ với Screenshot Gallery -->
     <div class="slide">
+      <div class="badge">TÍNH NĂNG #1</div>
+      <h2 style="text-align: center;">Giao Diện Dịch Vụ</h2>
+      <p class="subtitle" style="text-align: center;">7 dịch vụ với hình ảnh minh họa đẹp mắt</p>
+
+      <div class="image-gallery">
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&h=300&fit=crop" alt="Canteen" onerror="this.src='https://via.placeholder.com/500x300/0ea5e9/ffffff?text=Canteen'">
+          <div class="gallery-overlay">
+            <div class="gallery-title">Dịch vụ Canteen</div>
+            <div class="gallery-desc">Đặt suất ăn trực tuyến, thanh toán VietQR</div>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=500&h=300&fit=crop" alt="Gửi xe" onerror="this.src='https://via.placeholder.com/500x300/8b5cf6/ffffff?text=Gui+Xe'">
+          <div class="gallery-overlay">
+            <div class="gallery-title">Gửi xe</div>
+            <div class="gallery-desc">Đăng ký gửi xe theo tháng hoặc lượt</div>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=500&h=300&fit=crop" alt="Học phí" onerror="this.src='https://via.placeholder.com/500x300/10b981/ffffff?text=Hoc+Phi'">
+          <div class="gallery-overlay">
+            <div class="gallery-title">Học phí</div>
+            <div class="gallery-desc">Tra cứu và thanh toán học phí online</div>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&h=300&fit=crop" alt="Bằng tốt nghiệp" onerror="this.src='https://via.placeholder.com/500x300/f59e0b/ffffff?text=Bang+Tot+Nghiep'">
+          <div class="gallery-overlay">
+            <div class="gallery-title">Bằng tốt nghiệp</div>
+            <div class="gallery-desc">Đăng ký cấp bằng và bảng điểm</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="screenshot-frame">
+        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&h=600&fit=crop" alt="Dashboard" onerror="this.src='https://via.placeholder.com/1000x600/0ea5e9/ffffff?text=Services+Dashboard'">
+      </div>
+    </div>
+
+    <!-- Slide 13: Demo TKB (Simplified) -->
+    <div class="slide slide-with-corner">
       <div class="badge">TÍNH NĂNG #2</div>
       <h2 style="text-align: center;">Quản Lý Thời Khóa Biểu</h2>
       <p class="subtitle" style="text-align: center;">Upload PDF, parse tự động và so sánh</p>
@@ -1173,6 +1714,10 @@ src/frontend/
         </div>
       </div>
 
+      <div class="screenshot-frame">
+        <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1000&h=600&fit=crop" alt="Timetable" onerror="this.src='https://via.placeholder.com/1000x600/8b5cf6/ffffff?text=Timetable+Dashboard'">
+      </div>
+
       <div class="glass-card" style="max-width: 800px; margin-top: 32px; text-align: center;">
         <p style="color: var(--primary); font-size: 18px; font-weight: 600;">
           💻 Live Demo tại: <a href="http://localhost:3000/schedule" target="_blank" style="color: var(--primary); text-decoration: underline;">localhost:3000/schedule</a>
@@ -1181,7 +1726,7 @@ src/frontend/
     </div>
 
     <!-- Slide 14: Demo Chatbot -->
-    <div class="slide">
+    <div class="slide slide-with-corner">
       <div class="badge">TÍNH NĂNG #3</div>
       <h2 style="text-align: center;">Chatbot AI GPT-4</h2>
       <p class="subtitle" style="text-align: center;">Hỗ trợ tư vấn 24/7 với RAG knowledge base</p>
@@ -1230,7 +1775,7 @@ src/frontend/
     <!-- ==================== PHẦN 4: DEMO ==================== -->
 
     <!-- Slide 15: Kịch bản Demo -->
-    <div class="slide">
+    <div class="slide slide-with-accent">
       <div class="badge">PHẦN 4: DEMO TRỰC TIẾP</div>
       <h2 style="text-align: center;">Kịch Bản Demo</h2>
       <p class="subtitle" style="text-align: center;">4 bước chính trong 15 phút</p>
@@ -1275,7 +1820,7 @@ src/frontend/
     </div>
 
     <!-- Slide 16: Live Demo -->
-    <div class="slide">
+    <div class="slide slide-with-accent">
       <div class="badge">PHẦN 4: DEMO TRỰC TIẾP</div>
       <h2 style="text-align: center;">Live Demo</h2>
       <p class="subtitle" style="text-align: center;">Trình diễn hệ thống thực tế</p>
@@ -1307,7 +1852,7 @@ src/frontend/
     <!-- ==================== PHẦN 5: KẾT LUẬN ==================== -->
 
     <!-- Slide 17: Thành quả đạt được -->
-    <div class="slide">
+    <div class="slide slide-with-corner">
       <div class="badge">PHẦN 5: KẾT LUẬN</div>
       <h2 style="text-align: center;">Thành Quả Đạt Được</h2>
       <p class="subtitle" style="text-align: center;">Hệ thống hoàn chỉnh với 4 trụ cột chính</p>
@@ -1420,7 +1965,7 @@ src/frontend/
     </div>
 
     <!-- Slide 18: Hướng phát triển -->
-    <div class="slide">
+    <div class="slide slide-with-accent">
       <div class="badge">PHẦN 5: KẾT LUẬN</div>
       <h2 style="text-align: center;">Hướng Phát Triển</h2>
       <p class="subtitle" style="text-align: center;">Roadmap 3 giai đoạn</p>
@@ -1474,7 +2019,7 @@ src/frontend/
     </div>
 
     <!-- Slide 19: Q&A Preview -->
-    <div class="slide">
+    <div class="slide slide-with-corner">
       <div class="badge">PHẦN 5: KẾT LUẬN</div>
       <h2 style="text-align: center;">Câu Hỏi Thường Gặp</h2>
       <p class="subtitle" style="text-align: center;">Chuẩn bị cho phần Q&A</p>
@@ -1504,7 +2049,7 @@ src/frontend/
     </div>
 
     <!-- Slide 20: Thank You -->
-    <div class="slide">
+    <div class="slide bg-image-slide" style="--bg-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1920&h=1080&fit=crop');">
       <div style="text-align: center;">
         <h1 style="font-size: 96px; margin-bottom: 32px;">Cảm Ơn!</h1>
         <p class="subtitle" style="font-size: 28px;">Mời thầy/cô và các bạn đặt câu hỏi</p>
@@ -1613,12 +2158,26 @@ src/frontend/
     nextBtn.addEventListener('click', nextSlide);
     prevBtn.addEventListener('click', prevSlide);
 
-    // Keyboard navigation
+    // Keyboard navigation (supports remote presenter)
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
-      if (e.key === 'ArrowLeft') prevSlide();
+      // Next slide: ArrowRight, ArrowDown (remote presenter), Space
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        nextSlide();
+      }
+      // Previous slide: ArrowLeft, ArrowUp (remote presenter)
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        prevSlide();
+      }
+      // Jump to first/last slide
       if (e.key === 'Home') { currentSlide = 0; updateSlide(); }
       if (e.key === 'End') { currentSlide = totalSlides - 1; updateSlide(); }
+      // Fullscreen toggle (F key)
+      if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        fullscreenBtn.click();
+      }
     });
 
     // Fullscreen
