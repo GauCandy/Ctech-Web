@@ -496,10 +496,10 @@
     .folder-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 10px 12px;
-      margin: 4px 0;
-      border-radius: 8px;
+      gap: 8px;
+      padding: 6px 10px;
+      margin: 2px 0;
+      border-radius: 6px;
       border: 1px solid rgba(148, 163, 184, 0.15);
       background: rgba(30, 41, 59, 0.3);
       transition: all 0.2s ease;
@@ -513,30 +513,34 @@
 
     /* Indentation levels */
     .indent-0 {
-      padding-left: 12px;
+      margin-left: 0;
+      padding-left: 10px;
       border-left: 3px solid rgba(148, 163, 184, 0.3);
     }
 
     .indent-1 {
-      padding-left: 36px;
+      margin-left: 24px;
+      padding-left: 10px;
       border-left: 3px solid rgba(14, 165, 233, 0.4);
     }
 
     .indent-2 {
-      padding-left: 60px;
+      margin-left: 48px;
+      padding-left: 10px;
       border-left: 3px solid rgba(139, 92, 246, 0.4);
     }
 
     .indent-3 {
-      padding-left: 84px;
+      margin-left: 72px;
+      padding-left: 10px;
       border-left: 3px solid rgba(236, 72, 153, 0.4);
     }
 
     .folder-icon {
-      font-size: 22px;
+      font-size: 18px;
       display: flex;
       align-items: center;
-      min-width: 22px;
+      min-width: 18px;
     }
 
     .folder-icon.folder {
@@ -557,9 +561,9 @@
 
     .folder-name {
       font-weight: 600;
-      font-size: 17px;
+      font-size: 14px;
       color: #e2e8f0;
-      min-width: 160px;
+      min-width: 130px;
     }
 
     .folder-name.folder {
@@ -572,7 +576,7 @@
 
     .folder-desc {
       color: #94a3b8;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 400;
     }
 
@@ -1672,14 +1676,14 @@ GET  /api/admin/dashboard   # Thống kê admin
       <h2 style="text-align: center;">Quản Lý Thời Khóa Biểu</h2>
       <p class="subtitle" style="text-align: center;">Upload PDF, parse tự động và so sánh</p>
 
-      <div class="feature-grid" style="max-width: 1000px;">
+      <div class="feature-grid" style="max-width: 1000px; margin-top: 24px;">
         <div class="feature-card">
           <div class="feature-icon">
             <span class="material-icons">upload_file</span>
           </div>
           <div class="feature-title">Upload PDF</div>
           <div class="feature-desc">
-            Hỗ trợ upload file PDF từ Bộ GD, tự động parse thành dữ liệu structured
+            Upload PDF từ Bộ GD, tự động parse
           </div>
         </div>
 
@@ -1689,7 +1693,7 @@ GET  /api/admin/dashboard   # Thống kê admin
           </div>
           <div class="feature-title">So Sánh TKB</div>
           <div class="feature-desc">
-            Slider so sánh TKB cũ vs mới, dễ dàng nhận biết thay đổi
+            Slider so sánh TKB cũ vs mới
           </div>
         </div>
 
@@ -1699,7 +1703,7 @@ GET  /api/admin/dashboard   # Thống kê admin
           </div>
           <div class="feature-title">Highlight Tiết Học</div>
           <div class="feature-desc">
-            Tự động highlight tiết học hiện tại theo thời gian thực
+            Highlight tiết học theo thời gian thực
           </div>
         </div>
 
@@ -1709,19 +1713,9 @@ GET  /api/admin/dashboard   # Thống kê admin
           </div>
           <div class="feature-title">Lọc & Export</div>
           <div class="feature-desc">
-            Lọc theo lớp, giảng viên, phòng học. Export PDF hoặc iCal
+            Lọc theo lớp, GV. Export PDF/iCal
           </div>
         </div>
-      </div>
-
-      <div class="screenshot-frame">
-        <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1000&h=600&fit=crop" alt="Timetable" onerror="this.src='https://via.placeholder.com/1000x600/8b5cf6/ffffff?text=Timetable+Dashboard'">
-      </div>
-
-      <div class="glass-card" style="max-width: 800px; margin-top: 32px; text-align: center;">
-        <p style="color: var(--primary); font-size: 18px; font-weight: 600;">
-          💻 Live Demo tại: <a href="http://localhost:3000/schedule" target="_blank" style="color: var(--primary); text-decoration: underline;">localhost:3000/schedule</a>
-        </p>
       </div>
     </div>
 
@@ -1970,50 +1964,53 @@ GET  /api/admin/dashboard   # Thống kê admin
       <h2 style="text-align: center;">Hướng Phát Triển</h2>
       <p class="subtitle" style="text-align: center;">Roadmap 3 giai đoạn</p>
 
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <h3 style="color: var(--primary); margin-bottom: 12px;">Ngắn Hạn (1-3 tháng)</h3>
-            <div style="font-size: 15px; color: var(--text-muted); line-height: 1.8;">
-              • Push notifications cho đơn hàng<br>
-              • Email confirmation & SMS OTP<br>
-              • Tích hợp Momo, ZaloPay<br>
-              • Auto verify payment với webhook<br>
-              • Google Analytics & tracking
-            </div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin-top: 40px;">
+        <!-- Ngắn hạn -->
+        <div class="glass-card" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.05)); border-left: 4px solid var(--primary);">
+          <div style="text-align: center; margin-bottom: 16px;">
+            <div style="width: 48px; height: 48px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">1</div>
+            <h3 style="color: var(--primary); margin: 0;">Ngắn Hạn</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">1-3 tháng</p>
           </div>
-          <div style="flex: 1;"></div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div style="flex: 1;"></div>
-          <div class="timeline-content">
-            <h3 style="color: var(--secondary); margin-bottom: 12px;">Trung Hạn (3-6 tháng)</h3>
-            <div style="font-size: 15px; color: var(--text-muted); line-height: 1.8;">
-              • Mobile App (React Native / Flutter)<br>
-              • Chatbot voice support<br>
-              • Image recognition (upload ảnh thẻ)<br>
-              • Forum sinh viên<br>
-              • Rating & review dịch vụ
-            </div>
+          <div style="font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+            • Thông báo Email & SMS<br>
+            • Tích hợp Momo, ZaloPay<br>
+            • Xác thực OTP đăng ký<br>
+            • Export báo cáo PDF/Excel<br>
+            • Dark mode & đa ngôn ngữ
           </div>
         </div>
 
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="timeline-content">
-            <h3 style="color: var(--accent); margin-bottom: 12px;">Dài Hạn (6-12 tháng)</h3>
-            <div style="font-size: 15px; color: var(--text-muted); line-height: 1.8;">
-              • Microservices architecture<br>
-              • Containerization (Docker + K8s)<br>
-              • Blockchain cho bằng cấp<br>
-              • Smart parking với IoT<br>
-              • Face recognition check-in
-            </div>
+        <!-- Trung hạn -->
+        <div class="glass-card" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05)); border-left: 4px solid var(--secondary);">
+          <div style="text-align: center; margin-bottom: 16px;">
+            <div style="width: 48px; height: 48px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">2</div>
+            <h3 style="color: var(--secondary); margin: 0;">Trung Hạn</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">3-6 tháng</p>
           </div>
-          <div style="flex: 1;"></div>
+          <div style="font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+            • Ứng dụng di động (PWA)<br>
+            • Điểm danh QR Code<br>
+            • Hệ thống đánh giá dịch vụ<br>
+            • Diễn đàn hỏi đáp SV<br>
+            • Tích hợp lịch Google
+          </div>
+        </div>
+
+        <!-- Dài hạn -->
+        <div class="glass-card" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(236, 72, 153, 0.05)); border-left: 4px solid var(--accent);">
+          <div style="text-align: center; margin-bottom: 16px;">
+            <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">3</div>
+            <h3 style="color: var(--accent); margin: 0;">Dài Hạn</h3>
+            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">6-12 tháng</p>
+          </div>
+          <div style="font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+            • Chatbot tích hợp giọng nói<br>
+            • Hệ thống thống kê & báo cáo<br>
+            • Tích hợp hệ thống học vụ<br>
+            • Tối ưu hiệu năng & cache<br>
+            • Hệ thống backup tự động
+          </div>
         </div>
       </div>
     </div>
