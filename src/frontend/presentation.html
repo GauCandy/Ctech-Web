@@ -295,6 +295,17 @@
       100% { transform: translateX(100%); }
     }
 
+    @keyframes badgePulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+    }
+
     /* Feature Grid */
     .feature-grid {
       display: grid;
@@ -1439,15 +1450,19 @@
         Website quản lý toàn diện với AI Chatbot, thanh toán VietQR và PWA
       </p>
 
-      <div class="glass-card" style="margin-top: 48px; max-width: 700px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px);">
+      <div class="glass-card" style="margin-top: 48px; max-width: 800px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px);">
         <div style="display: flex; flex-direction: column; gap: 20px;">
           <div style="display: flex; align-items: center; gap: 16px;">
             <span class="material-icons" style="color: #0ea5e9; font-size: 32px;">person</span>
             <span style="font-size: 24px; color: #ffffff; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Thí sinh: Trần Tuấn Tú</span>
           </div>
           <div style="display: flex; align-items: center; gap: 16px;">
-            <span class="material-icons" style="color: #0ea5e9; font-size: 32px;">code</span>
-            <span style="font-size: 24px; color: #ffffff; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Công nghệ: Node.js + Express + MySQL + OpenAI GPT-4</span>
+            <span class="material-icons" style="color: #0ea5e9; font-size: 32px;">school</span>
+            <span style="font-size: 24px; color: #ffffff; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Lớp: TT601-K16</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <span class="material-icons" style="color: #0ea5e9; font-size: 32px;">supervisor_account</span>
+            <span style="font-size: 24px; color: #ffffff; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Giảng viên hướng dẫn: Vũ Quốc Cường</span>
           </div>
           <div style="display: flex; align-items: center; gap: 16px;">
             <span class="material-icons" style="color: #0ea5e9; font-size: 32px;">calendar_today</span>
@@ -1653,7 +1668,7 @@
     <!-- ==================== PHẦN 2: KIẾN TRÚC ==================== -->
 
     <!-- Slide 7: Tech Stack -->
-    <div class="slide slide-with-corner">
+    <div class="slide bg-image-slide" style="--bg-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?w=1920&h=1080&fit=crop');">
       <div class="badge">PHẦN 2: KIẾN TRÚC HỆ THỐNG</div>
       <h2 style="text-align: center;">Stack Công Nghệ</h2>
       <p class="subtitle" style="text-align: center;">Modern tech stack cho hiệu năng và scalability</p>
@@ -1693,28 +1708,6 @@
               <span style="font-size: 18px;">Progressive Web App</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- Tech Stack Visual -->
-      <div class="logo-grid" style="margin-top: 40px;">
-        <div class="logo-item">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg" alt="Node.js">
-        </div>
-        <div class="logo-item">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" alt="Express" style="filter: brightness(0) invert(1);">
-        </div>
-        <div class="logo-item">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL">
-        </div>
-        <div class="logo-item">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
-        </div>
-        <div class="logo-item">
-          <img src="https://www.svgrepo.com/show/306500/openai.svg" alt="OpenAI" style="filter: brightness(0) invert(1);">
-        </div>
-        <div class="logo-item">
-          <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
         </div>
       </div>
     </div>
@@ -2047,51 +2040,45 @@ GET  /api/admin/dashboard   # Thống kê admin
       <h2 style="text-align: center;">Quản Lý Dịch Vụ</h2>
       <p class="subtitle" style="text-align: center;">Tra cứu, đăng ký và thanh toán trực tuyến</p>
 
-      <div class="split-layout">
-        <div>
-          <div class="glass-card" style="margin-bottom: 24px;">
-            <h3 style="margin-bottom: 20px;">User Features</h3>
-            <div class="icon-list-item" style="margin-bottom: 16px;">
-              <span class="material-icons">inventory_2</span>
-              <span>Danh sách 7 dịch vụ (Canteen, Gửi xe...)</span>
-            </div>
-            <div class="icon-list-item" style="margin-bottom: 16px;">
-              <span class="material-icons">search</span>
-              <span>Tìm kiếm & lọc theo danh mục</span>
-            </div>
-            <div class="icon-list-item" style="margin-bottom: 16px;">
-              <span class="material-icons">qr_code</span>
-              <span>Thanh toán VietQR tự động</span>
-            </div>
-            <div class="icon-list-item">
-              <span class="material-icons">history</span>
-              <span>Lịch sử đơn hàng</span>
-            </div>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; max-width: 1200px; margin-top: 32px;">
+        <div class="glass-card">
+          <h3 style="margin-bottom: 20px;">User Features</h3>
+          <div class="icon-list-item" style="margin-bottom: 16px;">
+            <span class="material-icons">inventory_2</span>
+            <span>Danh sách dịch vụ dành cho sinh viên</span>
           </div>
-
-          <div class="glass-card">
-            <h3 style="margin-bottom: 20px;">Admin Features</h3>
-            <div class="icon-list-item" style="margin-bottom: 16px;">
-              <span class="material-icons">add_circle</span>
-              <span>Thêm dịch vụ mới</span>
-            </div>
-            <div class="icon-list-item" style="margin-bottom: 16px;">
-              <span class="material-icons">edit</span>
-              <span>Sửa thông tin dịch vụ</span>
-            </div>
-            <div class="icon-list-item" style="margin-bottom: 16px;">
-              <span class="material-icons">image</span>
-              <span>Upload/thay đổi hình ảnh</span>
-            </div>
-            <div class="icon-list-item">
-              <span class="material-icons">toggle_on</span>
-              <span>Bật/tắt dịch vụ (soft delete)</span>
-            </div>
+          <div class="icon-list-item" style="margin-bottom: 16px;">
+            <span class="material-icons">search</span>
+            <span>Tìm kiếm & lọc theo danh mục</span>
+          </div>
+          <div class="icon-list-item" style="margin-bottom: 16px;">
+            <span class="material-icons">qr_code</span>
+            <span>Thanh toán VietQR tự động</span>
+          </div>
+          <div class="icon-list-item">
+            <span class="material-icons">history</span>
+            <span>Lịch sử đơn hàng</span>
           </div>
         </div>
 
-        <div class="split-image">
-          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=800&fit=crop" alt="Services Screenshot" onerror="this.src='https://via.placeholder.com/600x800/0ea5e9/ffffff?text=Services+Demo'">
+        <div class="glass-card">
+          <h3 style="margin-bottom: 20px;">Admin Features</h3>
+          <div class="icon-list-item" style="margin-bottom: 16px;">
+            <span class="material-icons">add_circle</span>
+            <span>Thêm dịch vụ mới</span>
+          </div>
+          <div class="icon-list-item" style="margin-bottom: 16px;">
+            <span class="material-icons">edit</span>
+            <span>Sửa thông tin dịch vụ</span>
+          </div>
+          <div class="icon-list-item" style="margin-bottom: 16px;">
+            <span class="material-icons">image</span>
+            <span>Upload/thay đổi hình ảnh</span>
+          </div>
+          <div class="icon-list-item">
+            <span class="material-icons">toggle_on</span>
+            <span>Bật/tắt dịch vụ (soft delete)</span>
+          </div>
         </div>
       </div>
 
@@ -2099,48 +2086,6 @@ GET  /api/admin/dashboard   # Thống kê admin
         <p style="color: var(--primary); font-size: 18px; font-weight: 600;">
           💻 Live Demo tại: <a href="http://localhost:3000/services" target="_blank" style="color: var(--primary); text-decoration: underline;">localhost:3000/services</a>
         </p>
-      </div>
-    </div>
-
-    <!-- Slide 12.5: Demo Dịch vụ với Screenshot Gallery -->
-    <div class="slide">
-      <div class="badge">TÍNH NĂNG #1</div>
-      <h2 style="text-align: center;">Giao Diện Dịch Vụ</h2>
-      <p class="subtitle" style="text-align: center;">7 dịch vụ với hình ảnh minh họa đẹp mắt</p>
-
-      <div class="image-gallery">
-        <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500&h=300&fit=crop" alt="Canteen" onerror="this.src='https://via.placeholder.com/500x300/0ea5e9/ffffff?text=Canteen'">
-          <div class="gallery-overlay">
-            <div class="gallery-title">Dịch vụ Canteen</div>
-            <div class="gallery-desc">Đặt suất ăn trực tuyến, thanh toán VietQR</div>
-          </div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1506521781263-d8422e82f27a?w=500&h=300&fit=crop" alt="Gửi xe" onerror="this.src='https://via.placeholder.com/500x300/8b5cf6/ffffff?text=Gui+Xe'">
-          <div class="gallery-overlay">
-            <div class="gallery-title">Gửi xe</div>
-            <div class="gallery-desc">Đăng ký gửi xe theo tháng hoặc lượt</div>
-          </div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=500&h=300&fit=crop" alt="Học phí" onerror="this.src='https://via.placeholder.com/500x300/10b981/ffffff?text=Hoc+Phi'">
-          <div class="gallery-overlay">
-            <div class="gallery-title">Học phí</div>
-            <div class="gallery-desc">Tra cứu và thanh toán học phí online</div>
-          </div>
-        </div>
-        <div class="gallery-item">
-          <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=500&h=300&fit=crop" alt="Bằng tốt nghiệp" onerror="this.src='https://via.placeholder.com/500x300/f59e0b/ffffff?text=Bang+Tot+Nghiep'">
-          <div class="gallery-overlay">
-            <div class="gallery-title">Bằng tốt nghiệp</div>
-            <div class="gallery-desc">Đăng ký cấp bằng và bảng điểm</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="screenshot-frame">
-        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1000&h=600&fit=crop" alt="Dashboard" onerror="this.src='https://via.placeholder.com/1000x600/0ea5e9/ffffff?text=Services+Dashboard'">
       </div>
     </div>
 
@@ -2243,12 +2188,12 @@ GET  /api/admin/dashboard   # Thống kê admin
     <!-- ==================== PHẦN 4: DEMO ==================== -->
 
     <!-- Slide 15: Kịch bản Demo -->
-    <div class="slide slide-with-accent">
+    <div class="slide bg-image-slide" style="--bg-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&h=1080&fit=crop');">
       <div class="badge">PHẦN 4: DEMO TRỰC TIẾP</div>
       <h2 style="text-align: center;">Kịch Bản Demo</h2>
-      <p class="subtitle" style="text-align: center;">4 bước chính trong 15 phút</p>
+      <p class="subtitle" style="text-align: center;">5 bước chính trong 15 phút</p>
 
-      <div class="feature-grid" style="grid-template-columns: repeat(4, 1fr); max-width: 1200px;">
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin-top: 32px;">
         <div class="feature-card">
           <div class="feature-icon">
             <span class="material-icons">smart_toy</span>
@@ -2278,9 +2223,18 @@ GET  /api/admin/dashboard   # Thống kê admin
 
         <div class="feature-card">
           <div class="feature-icon">
-            <span class="material-icons">admin_panel_settings</span>
+            <span class="material-icons">calendar_month</span>
           </div>
           <div class="number-highlight" style="font-size: 48px;">04</div>
+          <div class="feature-title">Chuyển đổi TKB</div>
+          <div class="feature-desc">Upload PDF & parse thời khóa biểu</div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <span class="material-icons">admin_panel_settings</span>
+          </div>
+          <div class="number-highlight" style="font-size: 48px;">05</div>
           <div class="feature-title">Admin</div>
           <div class="feature-desc">Quản lý dịch vụ CRUD</div>
         </div>
@@ -2288,32 +2242,22 @@ GET  /api/admin/dashboard   # Thống kê admin
     </div>
 
     <!-- Slide 16: Live Demo -->
-    <div class="slide slide-with-accent">
+    <div class="slide bg-image-slide" style="--bg-image: url('https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=1920&h=1080&fit=crop');">
       <div class="badge">PHẦN 4: DEMO TRỰC TIẾP</div>
       <h2 style="text-align: center;">Live Demo</h2>
       <p class="subtitle" style="text-align: center;">Trình diễn hệ thống thực tế</p>
 
-      <div class="glass-card" style="max-width: 700px; text-align: center; padding: 64px;">
-        <span class="material-icons" style="font-size: 120px; color: var(--primary); margin-bottom: 32px; animation: badgePulse 2s ease-in-out infinite;">play_circle</span>
-        <h3 style="font-size: 32px; margin-bottom: 16px;">Chuyển sang Website Demo</h3>
-        <p style="font-size: 18px; color: var(--text-muted); margin-bottom: 32px;">
-          Mở <strong style="color: var(--primary);">localhost:3000</strong> trong tab mới
+      <div class="glass-card" style="max-width: 600px; text-align: center; padding: 80px 60px; position: relative; z-index: 100;">
+        <span class="material-icons" style="font-size: 140px; color: var(--primary); margin-bottom: 32px; animation: badgePulse 2s ease-in-out infinite;">play_circle</span>
+        <h3 style="font-size: 36px; margin-bottom: 24px;">Chuyển sang Website Demo</h3>
+        <p style="font-size: 20px; color: var(--text-muted); margin-bottom: 48px;">
+          Quay lại trang home trong tab mới
         </p>
 
-        <div style="display: flex; flex-direction: column; gap: 16px; font-size: 16px; text-align: left; max-width: 400px; margin: 0 auto;">
-          <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(14, 165, 233, 0.1); border-radius: 12px;">
-            <span class="material-icons" style="color: var(--primary);">home</span>
-            <span>Trang chủ: <strong>/</strong></span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(139, 92, 246, 0.1); border-radius: 12px;">
-            <span class="material-icons" style="color: var(--secondary);">shopping_cart</span>
-            <span>Dịch vụ: <strong>/services</strong></span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 12px; padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 12px;">
-            <span class="material-icons" style="color: var(--accent);">calendar_month</span>
-            <span>Lịch học: <strong>/schedule</strong></span>
-          </div>
-        </div>
+        <a href="http://localhost:3000/home" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 20px 48px; background: linear-gradient(135deg, #0ea5e9, #8b5cf6); color: #ffffff; font-size: 22px; font-weight: 700; border-radius: 16px; text-decoration: none; box-shadow: 0 8px 32px rgba(14, 165, 233, 0.4); transition: all 0.3s ease; cursor: pointer; position: relative; z-index: 1000;" onmouseover="this.style.transform='translateY(-4px) scale(1.05)'; this.style.boxShadow='0 12px 48px rgba(14, 165, 233, 0.6)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 8px 32px rgba(14, 165, 233, 0.4)';">
+          <span class="material-icons" style="vertical-align: middle; margin-right: 12px; font-size: 28px;">open_in_new</span>
+          Quay Lại Trang Home
+        </a>
       </div>
     </div>
 
@@ -2331,7 +2275,7 @@ GET  /api/admin/dashboard   # Thống kê admin
           <div style="display: flex; flex-direction: column; gap: 12px; font-size: 15px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>7 dịch vụ với thanh toán VietQR</span>
+              <span>hỗ trợ dịch vụ với thanh toán VietQR</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
@@ -2528,7 +2472,7 @@ GET  /api/admin/dashboard   # Thống kê admin
     <!-- Slide 20: Thank You -->
     <div class="slide bg-image-slide" style="--bg-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1920&h=1080&fit=crop');">
       <div style="text-align: center;">
-        <h1 style="font-size: 96px; margin-bottom: 32px; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.7); filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));">Cảm Ơn!</h1>
+        <h1 style="font-size: 96px; margin-bottom: 32px; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.7); filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));">Xin cảm Ơn!</h1>
         <p class="subtitle" style="font-size: 28px; color: #ffffff; font-weight: 600; text-shadow: 0 3px 15px rgba(0, 0, 0, 0.95);">Mời ban giám khảo đặt câu hỏi</p>
 
         <div class="glass-card" style="max-width: 700px; margin-top: 64px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px);">
