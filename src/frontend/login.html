@@ -710,7 +710,10 @@
             window.location.href = '/home';
           } catch (error) {
             console.error('Login failed:', error);
-            setStatus(statusElement, 'error', error.message || 'Không thể đăng nhập. Vui lòng thử lại.');
+            const errorMessage = error.message === 'Invalid credentials'
+              ? 'Thông tin đăng nhập không chính xác'
+              : (error.message || 'Không thể đăng nhập. Vui lòng thử lại.');
+            setStatus(statusElement, 'error', errorMessage);
             throw error;
           } finally {
             if (submitButton) {

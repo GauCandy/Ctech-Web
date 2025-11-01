@@ -1704,7 +1704,10 @@
               <span style="font-size: 18px;">CSS3 Grid & Flexbox</span>
             </div>
             <div style="display: flex; align-items: center; gap: 16px;">
-              <span class="material-icons" style="font-size: 48px; color: var(--accent);">pwa</span>
+              <div style="width: 48px; height: 48px; border: 3px solid var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(139, 92, 246, 0.2)); position: relative;">
+                <div style="width: 20px; height: 20px; background: var(--accent); border-radius: 3px;"></div>
+                <div style="position: absolute; bottom: -2px; right: -2px; width: 16px; height: 16px; background: #22c55e; border-radius: 50%; border: 2px solid #0f172a;"></div>
+              </div>
               <span style="font-size: 18px;">Progressive Web App</span>
             </div>
           </div>
@@ -1742,14 +1745,29 @@
         </div>
       </div>
 
-      <div class="glass-card" style="max-width: 800px; margin-top: 48px;">
-        <h3 style="margin-bottom: 16px;">API Endpoints (25+ routes)</h3>
-        <div class="code-block" style="font-size: 13px;">
-GET  /api/services          # Danh sách dịch vụ
-POST /api/services/:code/purchase  # Tạo đơn hàng
-GET  /api/chatbot/chat      # Chat với AI
-POST /api/auth/login        # Đăng nhập
-GET  /api/admin/dashboard   # Thống kê admin
+      <div class="glass-card" style="max-width: 850px; margin-top: 24px; margin-bottom: 80px; padding: 32px;">
+        <h3 style="margin-bottom: 20px; text-align: center; font-size: 42px;">Hỗ Trợ 25+ API Endpoints</h3>
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div style="background: rgba(14, 165, 233, 0.1); padding: 16px 20px; border-radius: 10px; border-left: 4px solid #0ea5e9;">
+              <div style="font-size: 22px; font-weight: 700; color: #0ea5e9; margin-bottom: 6px;">Authentication</div>
+              <div style="font-size: 16px; color: #cbd5e1;">Đăng nhập, đăng ký, xác thực</div>
+            </div>
+            <div style="background: rgba(236, 72, 153, 0.1); padding: 16px 20px; border-radius: 10px; border-left: 4px solid #ec4899;">
+              <div style="font-size: 22px; font-weight: 700; color: #ec4899; margin-bottom: 6px;">Chatbot AI</div>
+              <div style="font-size: 16px; color: #cbd5e1;">Tư vấn thông minh, hỗ trợ 24/7</div>
+            </div>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div style="background: rgba(139, 92, 246, 0.1); padding: 16px 20px; border-radius: 10px; border-left: 4px solid #8b5cf6;">
+              <div style="font-size: 22px; font-weight: 700; color: #8b5cf6; margin-bottom: 6px;">Services</div>
+              <div style="font-size: 16px; color: #cbd5e1;">Quản lý dịch vụ, đặt hàng</div>
+            </div>
+            <div style="background: rgba(34, 197, 94, 0.1); padding: 16px 20px; border-radius: 10px; border-left: 4px solid #22c55e;">
+              <div style="font-size: 22px; font-weight: 700; color: #22c55e; margin-bottom: 6px;">Admin & Timetable</div>
+              <div style="font-size: 16px; color: #cbd5e1;">Thống kê, quản lý TKB</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1949,27 +1967,27 @@ GET  /api/admin/dashboard   # Thống kê admin
         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <span class="material-icons" style="color: var(--accent);">check_circle</span>
-            <span>JWT Token (5 min timeout)</span>
+            <span>JWT Token (hết hạn 5 phút)</span>
           </div>
           <div style="display: flex; align-items: center; gap: 12px;">
             <span class="material-icons" style="color: var(--accent);">check_circle</span>
-            <span>Password Hashing</span>
+            <span>Mã hóa mật khẩu</span>
           </div>
           <div style="display: flex; align-items: center; gap: 12px;">
             <span class="material-icons" style="color: var(--accent);">check_circle</span>
-            <span>CORS Protection</span>
+            <span>Bảo vệ CORS</span>
           </div>
           <div style="display: flex; align-items: center; gap: 12px;">
             <span class="material-icons" style="color: var(--accent);">check_circle</span>
-            <span>XSS Protection</span>
+            <span>Bảo vệ XSS</span>
           </div>
           <div style="display: flex; align-items: center; gap: 12px;">
             <span class="material-icons" style="color: var(--accent);">check_circle</span>
-            <span>SQL Injection Prevention</span>
+            <span>Ngăn chặn SQL Injection</span>
           </div>
           <div style="display: flex; align-items: center; gap: 12px;">
             <span class="material-icons" style="color: var(--accent);">check_circle</span>
-            <span>Role-Based Access Control</span>
+            <span>Phân quyền theo vai trò</span>
           </div>
         </div>
       </div>
@@ -2095,7 +2113,7 @@ GET  /api/admin/dashboard   # Thống kê admin
       <h2 style="text-align: center;">Quản Lý Thời Khóa Biểu</h2>
       <p class="subtitle" style="text-align: center;">Upload PDF, parse tự động và so sánh</p>
 
-      <div class="feature-grid" style="max-width: 1000px; margin-top: 24px;">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; max-width: 1100px; margin-top: 32px;">
         <div class="feature-card">
           <div class="feature-icon">
             <span class="material-icons">upload_file</span>
@@ -2149,19 +2167,19 @@ GET  /api/admin/dashboard   # Thống kê admin
           <h3 style="margin-bottom: 20px;">Công Nghệ</h3>
           <div class="icon-list-item" style="margin-bottom: 16px;">
             <span class="material-icons" style="color: var(--primary);">psychology</span>
-            <span>OpenAI GPT-4 API</span>
+            <span>API OpenAI GPT-4</span>
           </div>
           <div class="icon-list-item" style="margin-bottom: 16px;">
             <span class="material-icons" style="color: var(--secondary);">auto_stories</span>
-            <span>RAG (Retrieval-Augmented Generation)</span>
+            <span>RAG (Tìm kiếm & Tạo nội dung)</span>
           </div>
           <div class="icon-list-item" style="margin-bottom: 16px;">
             <span class="material-icons" style="color: var(--accent);">memory</span>
-            <span>Context-aware với knowledge base</span>
+            <span>Nhận biết ngữ cảnh với kho tri thức</span>
           </div>
           <div class="icon-list-item">
             <span class="material-icons">storage</span>
-            <span>Knowledge từ services.md (tự động gen)</span>
+            <span>Tri thức từ services.md (tự động gen)</span>
           </div>
         </div>
 
@@ -2301,23 +2319,23 @@ GET  /api/admin/dashboard   # Thống kê admin
           <div style="display: flex; flex-direction: column; gap: 12px; font-size: 15px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>JWT authentication</span>
+              <span>Xác thực JWT</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Role-based access control</span>
+              <span>Phân quyền theo vai trò</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>SQL injection prevention</span>
+              <span>Ngăn chặn SQL injection</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>XSS protection</span>
+              <span>Bảo vệ XSS</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>CORS & CSRF protection</span>
+              <span>Bảo vệ CORS & CSRF</span>
             </div>
           </div>
         </div>
@@ -2327,23 +2345,23 @@ GET  /api/admin/dashboard   # Thống kê admin
           <div style="display: flex; flex-direction: column; gap: 12px; font-size: 15px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Service Worker caching</span>
+              <span>Bộ nhớ đệm Service Worker</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Lazy loading</span>
+              <span>Tải dữ liệu theo yêu cầu</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Optimized images</span>
+              <span>Tối ưu hóa hình ảnh</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Database indexing</span>
+              <span>Đánh chỉ mục cơ sở dữ liệu</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Connection pooling</span>
+              <span>Kết nối database dùng chung</span>
             </div>
           </div>
         </div>
@@ -2353,23 +2371,23 @@ GET  /api/admin/dashboard   # Thống kê admin
           <div style="display: flex; flex-direction: column; gap: 12px; font-size: 15px;">
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Material Design principles</span>
+              <span>Nguyên tắc Material Design</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Smooth animations</span>
+              <span>Hiệu ứng mượt mà</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Responsive design</span>
+              <span>Giao diện đáp ứng</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Loading states</span>
+              <span>Trạng thái tải dữ liệu</span>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
               <span class="material-icons" style="color: var(--accent); font-size: 20px;">check_circle</span>
-              <span>Error handling</span>
+              <span>Xử lý lỗi thân thiện</span>
             </div>
           </div>
         </div>
@@ -2385,31 +2403,30 @@ GET  /api/admin/dashboard   # Thống kê admin
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin-top: 40px;">
         <!-- Ngắn hạn -->
         <div class="gradient-border float-animation">
-          <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.05));">
+          <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(14, 165, 233, 0.08));">
             <div style="text-align: center; margin-bottom: 16px;">
-              <div class="pulse-ring" style="width: 48px; height: 48px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">1</div>
-            <h3 style="color: var(--primary); margin: 0;">Ngắn Hạn</h3>
-            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">1-3 tháng</p>
+              <div class="pulse-ring" style="width: 56px; height: 56px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; font-weight: 700; color: white; box-shadow: 0 4px 16px rgba(14, 165, 233, 0.5);">1</div>
+            <h3 style="color: #0ea5e9; margin: 0; font-size: 32px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Ngắn Hạn</h3>
+            <p style="font-size: 18px; color: #cbd5e1; margin-top: 8px; font-weight: 600; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">1-3 tháng</p>
           </div>
-          <div style="font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+          <div style="font-size: 18px; color: #e2e8f0; line-height: 1.8; font-weight: 500; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">
             • Thông báo Email & SMS<br>
-            • Tích hợp Momo, ZaloPay<br>
             • Xác thực OTP đăng ký<br>
             • Export báo cáo PDF/Excel<br>
-            • Dark mode & đa ngôn ngữ
+            • Hỗ trợ đa ngôn ngữ
           </div>
           </div>
         </div>
 
         <!-- Trung hạn -->
         <div class="gradient-border float-animation" style="animation-delay: 0.2s;">
-          <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));">
+          <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.08));">
             <div style="text-align: center; margin-bottom: 16px;">
-              <div class="pulse-ring" style="width: 48px; height: 48px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">2</div>
-            <h3 style="color: var(--secondary); margin: 0;">Trung Hạn</h3>
-            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">3-6 tháng</p>
+              <div class="pulse-ring" style="width: 56px; height: 56px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; font-weight: 700; color: white; box-shadow: 0 4px 16px rgba(139, 92, 246, 0.5);">2</div>
+            <h3 style="color: #8b5cf6; margin: 0; font-size: 32px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Trung Hạn</h3>
+            <p style="font-size: 18px; color: #cbd5e1; margin-top: 8px; font-weight: 600; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">3-6 tháng</p>
           </div>
-          <div style="font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+          <div style="font-size: 18px; color: #e2e8f0; line-height: 1.8; font-weight: 500; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">
             • Ứng dụng di động (PWA)<br>
             • Điểm danh QR Code<br>
             • Hệ thống đánh giá dịch vụ<br>
@@ -2421,13 +2438,13 @@ GET  /api/admin/dashboard   # Thống kê admin
 
         <!-- Dài hạn -->
         <div class="gradient-border float-animation" style="animation-delay: 0.4s;">
-          <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(236, 72, 153, 0.05));">
+          <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));">
             <div style="text-align: center; margin-bottom: 16px;">
-              <div class="pulse-ring" style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">3</div>
-            <h3 style="color: var(--accent); margin: 0;">Dài Hạn</h3>
-            <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">6-12 tháng</p>
+              <div class="pulse-ring" style="width: 56px; height: 56px; background: #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; font-weight: 700; color: white; box-shadow: 0 4px 16px rgba(34, 197, 94, 0.5);">3</div>
+            <h3 style="color: #22c55e; margin: 0; font-size: 32px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Dài Hạn</h3>
+            <p style="font-size: 18px; color: #cbd5e1; margin-top: 8px; font-weight: 600; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">6-12 tháng</p>
           </div>
-          <div style="font-size: 14px; color: var(--text-muted); line-height: 1.7;">
+          <div style="font-size: 18px; color: #e2e8f0; line-height: 1.8; font-weight: 500; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">
             • Chatbot tích hợp giọng nói<br>
             • Hệ thống thống kê & báo cáo<br>
             • Tích hợp hệ thống học vụ<br>
@@ -2435,36 +2452,6 @@ GET  /api/admin/dashboard   # Thống kê admin
             • Hệ thống backup tự động
           </div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Slide 19: Q&A Preview -->
-    <div class="slide slide-with-corner">
-      <div class="badge">PHẦN 5: KẾT LUẬN</div>
-      <h2 style="text-align: center;">Câu Hỏi Thường Gặp</h2>
-      <p class="subtitle" style="text-align: center;">Chuẩn bị cho phần Q&A</p>
-
-      <div style="display: flex; flex-direction: column; gap: 24px; max-width: 1000px; margin-top: 32px;">
-        <div class="glass-card">
-          <h3 style="margin-bottom: 12px; color: var(--primary);">Q1: Tại sao chọn Vanilla JavaScript thay vì React/Vue?</h3>
-          <p style="color: var(--text-muted); font-size: 15px; line-height: 1.8;">
-            <strong>A:</strong> Hiệu năng tốt hơn (không overhead), bundle size nhỏ hơn (loading nhanh), học được JavaScript thuần (hiểu sâu hơn), dự án không quá phức tạp.
-          </p>
-        </div>
-
-        <div class="glass-card">
-          <h3 style="margin-bottom: 12px; color: var(--secondary);">Q2: Làm thế nào để tích hợp VietQR?</h3>
-          <p style="color: var(--text-muted); font-size: 15px; line-height: 1.8;">
-            <strong>A:</strong> Sử dụng VietQR API (<code style="background: rgba(14, 165, 233, 0.1); padding: 2px 8px; border-radius: 4px;">img.vietqr.io</code>), tự động điền amount + transaction code + account name. Bank info từ .env (bảo mật).
-          </p>
-        </div>
-
-        <div class="glass-card">
-          <h3 style="margin-bottom: 12px; color: var(--accent);">Q3: Làm thế nào để scale khi có nhiều user?</h3>
-          <p style="color: var(--text-muted); font-size: 15px; line-height: 1.8;">
-            <strong>A:</strong> Ngắn hạn: Redis caching, CDN cho static files, connection pool. Dài hạn: Load balancer, database replication, microservices, message queue.
-          </p>
         </div>
       </div>
     </div>
