@@ -36,7 +36,7 @@
       height: 100vh;
     }
 
-    /* Animated Background */
+    /* Animated Mesh Gradient Background */
     .animated-bg {
       position: fixed;
       top: 0;
@@ -44,17 +44,25 @@
       width: 100%;
       height: 100%;
       z-index: 0;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      background:
+        radial-gradient(at 27% 37%, hsla(215, 98%, 61%, 0.08) 0px, transparent 50%),
+        radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 0.06) 0px, transparent 50%),
+        radial-gradient(at 52% 99%, hsla(354, 98%, 61%, 0.08) 0px, transparent 50%),
+        radial-gradient(at 10% 29%, hsla(256, 96%, 67%, 0.06) 0px, transparent 50%),
+        radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 0.06) 0px, transparent 50%),
+        radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 0.08) 0px, transparent 50%),
+        radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 0.06) 0px, transparent 50%),
+        linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
       background-size: 200% 200%;
-      animation: gradientShift 15s ease infinite;
+      animation: meshGradient 20s ease infinite;
     }
 
-    @keyframes gradientShift {
+    @keyframes meshGradient {
       0%, 100% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
     }
 
-    /* Particle Effect */
+    /* Enhanced Particle & Geometric Shapes */
     .particles {
       position: fixed;
       top: 0;
@@ -63,21 +71,50 @@
       height: 100%;
       z-index: 1;
       pointer-events: none;
+      overflow: hidden;
     }
 
     .particle {
       position: absolute;
-      background: var(--primary);
       border-radius: 50%;
-      opacity: 0.1;
+      opacity: 0.15;
+      filter: blur(2px);
       animation: float 20s infinite ease-in-out;
     }
 
+    /* Floating geometric shapes */
+    .particles::before,
+    .particles::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.3;
+    }
+
+    .particles::before {
+      width: 400px;
+      height: 400px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      top: 10%;
+      right: 10%;
+      animation: float 15s infinite ease-in-out;
+    }
+
+    .particles::after {
+      width: 500px;
+      height: 500px;
+      background: linear-gradient(135deg, #f093fb, #f5576c);
+      bottom: 10%;
+      left: 10%;
+      animation: float 18s infinite ease-in-out reverse;
+    }
+
     @keyframes float {
-      0%, 100% { transform: translateY(0) translateX(0); }
-      25% { transform: translateY(-100px) translateX(50px); }
-      50% { transform: translateY(-200px) translateX(-50px); }
-      75% { transform: translateY(-100px) translateX(100px); }
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+      25% { transform: translate(-50px, -80px) rotate(90deg) scale(1.1); }
+      50% { transform: translate(50px, -150px) rotate(180deg) scale(0.95); }
+      75% { transform: translate(-80px, -80px) rotate(270deg) scale(1.05); }
     }
 
     /* Slide Container */
@@ -120,46 +157,81 @@
 
     /* Glass Card */
     .glass-card {
-      background: var(--glass-bg);
+      background: rgba(15, 23, 42, 0.85);
       backdrop-filter: blur(20px);
-      border: 2px solid var(--glass-border);
-      border-radius: 20px;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
       padding: 40px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+      animation: rotate 15s linear infinite;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     .glass-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
-      border-color: rgba(14, 165, 233, 0.3);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      border-color: rgba(102, 126, 234, 0.4);
     }
 
     /* Typography */
     h1 {
       font-size: 72px;
       font-weight: 900;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #ffffff;
       margin-bottom: 24px;
       letter-spacing: -0.02em;
-      animation: textGlow 3s ease-in-out infinite;
+      position: relative;
+      text-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.9),
+        0 2px 10px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(102, 126, 234, 0.5);
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+    }
+
+    @keyframes textGradient {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
     @keyframes textGlow {
-      0%, 100% { filter: drop-shadow(0 0 20px rgba(14, 165, 233, 0.5)); }
-      50% { filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.7)); }
+      0%, 100% {
+        filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.6))
+                drop-shadow(0 0 60px rgba(118, 75, 162, 0.4));
+      }
+      50% {
+        filter: drop-shadow(0 0 50px rgba(240, 147, 251, 0.8))
+                drop-shadow(0 0 80px rgba(245, 87, 108, 0.5));
+      }
     }
 
     h2 {
       font-size: 64px;
       font-weight: 800;
       margin-bottom: 20px;
-      color: var(--text);
+      color: #ffffff;
       position: relative;
-      padding-bottom: 20px;
+      padding-bottom: 24px;
+      text-shadow:
+        0 3px 15px rgba(0, 0, 0, 0.9),
+        0 2px 8px rgba(0, 0, 0, 0.8);
+      filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
     }
 
     h2::after {
@@ -168,50 +240,59 @@
       bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 100px;
-      height: 5px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      border-radius: 2px;
+      width: 120px;
+      height: 6px;
+      background: linear-gradient(90deg, #f093fb, #f5576c, #4facfe);
+      border-radius: 3px;
+      box-shadow: 0 4px 12px rgba(245, 87, 108, 0.5);
     }
 
     h3 {
       font-size: 38px;
       font-weight: 700;
-      color: var(--text);
+      color: #ffffff;
       margin-bottom: 20px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
     }
 
     .subtitle {
       font-size: 28px;
-      color: var(--text-muted);
-      font-weight: 400;
+      color: #e2e8f0;
+      font-weight: 500;
       margin-bottom: 48px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
     }
 
     /* Badge */
     .badge {
       display: inline-block;
       padding: 14px 36px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-      border-radius: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50px;
       font-size: 16px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.15em;
-      margin-bottom: 28px;
-      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+      margin-bottom: 32px;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4), 0 4px 16px rgba(102, 126, 234, 0.2);
       position: relative;
+      overflow: hidden;
     }
 
     .badge::before {
       content: '';
       position: absolute;
-      left: 0;
+      left: -50%;
       top: 0;
-      width: 5px;
+      width: 200%;
       height: 100%;
-      background: rgba(255, 255, 255, 0.4);
-      border-radius: 10px 0 0 10px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
 
     /* Feature Grid */
@@ -581,70 +662,118 @@
     }
 
     .feature-card {
-      background: var(--glass-bg);
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.6));
       backdrop-filter: blur(20px);
-      border: 2px solid var(--glass-border);
-      border-radius: 16px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      border-radius: 20px;
       padding: 32px;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      transform-style: preserve-3d;
+      perspective: 1000px;
     }
 
+    /* Animated glowing border */
     .feature-card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      transform: scaleX(0);
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      inset: 0;
+      border-radius: 20px;
+      padding: 2px;
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #4facfe);
+      background-size: 300% 300%;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      animation: borderGlow 4s ease infinite;
+    }
+
+    @keyframes borderGlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
 
     .feature-card:hover::before {
-      transform: scaleX(1);
+      opacity: 1;
+    }
+
+    /* Shimmer effect */
+    .feature-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+      transform: rotate(45deg);
+      animation: shimmerMove 3s infinite;
+    }
+
+    @keyframes shimmerMove {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) rotate(45deg); }
     }
 
     .feature-card:hover {
-      transform: translateY(-5px);
-      border-color: rgba(14, 165, 233, 0.4);
-      box-shadow: 0 12px 40px rgba(14, 165, 233, 0.15);
+      transform: translateY(-12px) rotateX(5deg) scale(1.02);
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3), 0 10px 30px rgba(118, 75, 162, 0.2);
     }
 
     .feature-icon {
-      width: 64px;
-      height: 64px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-      border-radius: 12px;
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
-      font-size: 32px;
+      margin-bottom: 24px;
+      font-size: 36px;
       color: white;
-      box-shadow: 0 4px 16px rgba(14, 165, 233, 0.25);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4), 0 4px 12px rgba(118, 75, 162, 0.3);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-icon::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .feature-card:hover .feature-icon::before {
+      transform: translateX(100%);
     }
 
     .feature-card:hover .feature-icon {
-      transform: translateY(-4px) scale(1.05);
-      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.35);
+      transform: translateY(-8px) scale(1.1) rotate(-5deg);
+      box-shadow: 0 12px 32px rgba(102, 126, 234, 0.5), 0 6px 16px rgba(118, 75, 162, 0.4);
     }
 
     .feature-title {
       font-size: 24px;
       font-weight: 700;
       margin-bottom: 12px;
-      color: var(--text);
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
     }
 
     .feature-desc {
       font-size: 18px;
-      color: var(--text-muted);
+      color: #e2e8f0;
       line-height: 1.7;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
     }
 
     /* Number Highlight */
@@ -931,6 +1060,341 @@
       background: var(--primary);
       transform: scale(1.1);
     }
+
+    /* Mouse Cursor Spotlight Effect */
+    .cursor-glow {
+      position: fixed;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.05) 30%, transparent 70%);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+      mix-blend-mode: screen;
+      filter: blur(40px);
+    }
+
+    /* Liquid Morphing Blobs */
+    .liquid-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      filter: blur(80px);
+      opacity: 0.2;
+      animation: morphBlob 20s ease-in-out infinite;
+    }
+
+    .blob-1 {
+      width: 600px;
+      height: 600px;
+      top: -100px;
+      left: -100px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      animation-delay: 0s;
+    }
+
+    .blob-2 {
+      width: 500px;
+      height: 500px;
+      bottom: -150px;
+      right: -100px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      animation-delay: 4s;
+    }
+
+    .blob-3 {
+      width: 550px;
+      height: 550px;
+      top: 50%;
+      left: 50%;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      animation-delay: 8s;
+    }
+
+    @keyframes morphBlob {
+      0%, 100% {
+        border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+        transform: translate(0, 0) rotate(0deg) scale(1);
+      }
+      25% {
+        border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%;
+        transform: translate(50px, -50px) rotate(90deg) scale(1.1);
+      }
+      50% {
+        border-radius: 50% 50% 30% 70% / 50% 70% 30% 60%;
+        transform: translate(-50px, 50px) rotate(180deg) scale(0.9);
+      }
+      75% {
+        border-radius: 30% 70% 70% 30% / 60% 40% 60% 40%;
+        transform: translate(-80px, -30px) rotate(270deg) scale(1.05);
+      }
+    }
+
+    /* Magnetic Card Effect */
+    .magnetic-card {
+      transition: transform 0.2s ease-out;
+    }
+
+    /* Neon Glow Text Effect */
+    .neon-text {
+      text-shadow:
+        0 0 10px rgba(102, 126, 234, 0.8),
+        0 0 20px rgba(102, 126, 234, 0.6),
+        0 0 30px rgba(118, 75, 162, 0.4),
+        0 0 40px rgba(118, 75, 162, 0.3),
+        0 0 70px rgba(240, 147, 251, 0.2),
+        0 0 100px rgba(240, 147, 251, 0.1);
+      animation: neonFlicker 3s ease-in-out infinite;
+    }
+
+    @keyframes neonFlicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow:
+          0 0 10px rgba(102, 126, 234, 0.8),
+          0 0 20px rgba(102, 126, 234, 0.6),
+          0 0 30px rgba(118, 75, 162, 0.4),
+          0 0 40px rgba(118, 75, 162, 0.3),
+          0 0 70px rgba(240, 147, 251, 0.2),
+          0 0 100px rgba(240, 147, 251, 0.1);
+      }
+      20%, 24%, 55% {
+        text-shadow: none;
+      }
+    }
+
+    /* 3D Tilt Effect on Hover */
+    .tilt-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.3s ease-out;
+    }
+
+    /* Glitch Effect */
+    .glitch {
+      position: relative;
+    }
+
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+    }
+
+    .glitch::before {
+      animation: glitchTop 1.5s linear infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+      -webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
+    }
+
+    .glitch::after {
+      animation: glitchBottom 1.5s linear infinite;
+      clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+      -webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
+    }
+
+    @keyframes glitchTop {
+      2%, 64% {
+        transform: translate(2px, -2px);
+        filter: hue-rotate(180deg);
+      }
+      4%, 60% {
+        transform: translate(-2px, 2px);
+      }
+      62% {
+        transform: translate(13px, -1px) skew(-13deg);
+      }
+    }
+
+    @keyframes glitchBottom {
+      2%, 64% {
+        transform: translate(-2px, 0);
+        filter: hue-rotate(90deg);
+      }
+      4%, 60% {
+        transform: translate(-2px, 0);
+      }
+      62% {
+        transform: translate(-22px, 5px) skew(21deg);
+      }
+    }
+
+    /* Ripple Effect */
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ripple::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .ripple:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    /* Holographic Effect */
+    .holographic {
+      position: relative;
+      background: linear-gradient(135deg,
+        rgba(102, 126, 234, 0.1),
+        rgba(118, 75, 162, 0.1),
+        rgba(240, 147, 251, 0.1),
+        rgba(79, 172, 254, 0.1)
+      );
+      background-size: 400% 400%;
+      animation: holographicShift 10s ease infinite;
+    }
+
+    @keyframes holographicShift {
+      0%, 100% { background-position: 0% 50%; }
+      25% { background-position: 100% 50%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+    }
+
+    /* Floating Animation for Cards */
+    .float-animation {
+      animation: cardFloat 6s ease-in-out infinite;
+    }
+
+    @keyframes cardFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    /* Pulsing Ring Effect */
+    .pulse-ring {
+      position: relative;
+    }
+
+    .pulse-ring::before,
+    .pulse-ring::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      border: 2px solid rgba(102, 126, 234, 0.5);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: ringPulse 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+
+    .pulse-ring::after {
+      animation-delay: 1s;
+    }
+
+    @keyframes ringPulse {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* Scanline Effect */
+    .scanlines {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scanlines::before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(102, 126, 234, 0.05) 50%,
+        transparent 100%
+      );
+      animation: scan 4s linear infinite;
+    }
+
+    @keyframes scan {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    /* Gradient Border Animation */
+    .gradient-border {
+      position: relative;
+      border-radius: 16px;
+      padding: 3px;
+      background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #4facfe);
+      background-size: 400% 400%;
+      animation: gradientBorderMove 8s ease infinite;
+    }
+
+    @keyframes gradientBorderMove {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .gradient-border-inner {
+      background: var(--bg-darker);
+      border-radius: 14px;
+      padding: 32px;
+    }
+
+    /* Glass Morphism Enhanced */
+    .glass-morph {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(30px) saturate(180%);
+      -webkit-backdrop-filter: blur(30px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow:
+        0 8px 32px 0 rgba(31, 38, 135, 0.37),
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    /* Spotlight Text Effect */
+    .spotlight-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background-size: 200% 200%;
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: spotlightMove 5s ease infinite;
+    }
+
+    @keyframes spotlightMove {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
   </style>
 </head>
 <body>
@@ -939,6 +1403,16 @@
 
   <!-- Particles -->
   <div class="particles" id="particles"></div>
+
+  <!-- Liquid Morphing Blobs -->
+  <div class="liquid-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Mouse Cursor Glow -->
+  <div class="cursor-glow" id="cursorGlow"></div>
 
   <!-- Progress Bar -->
   <div class="progress-bar">
@@ -957,27 +1431,27 @@
 
     <!-- Slide 1: Title -->
     <div class="slide active bg-image-slide" style="--bg-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&h=1080&fit=crop');">
-      <div class="badge">ĐỒ ÁN TỐT NGHIỆP 2025</div>
-      <h1 style="text-align: center; max-width: 900px;">
+      <div class="badge" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); box-shadow: 0 8px 32px rgba(14, 165, 233, 0.6); font-size: 18px;">VÒNG CHUNG KẾT KỸ NĂNG NGHỀ 2025</div>
+      <h1 style="text-align: center; max-width: 900px; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.7); filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));">
         Hệ Thống Quản Lý & Dịch Vụ Trực Tuyến<br>Trường Cao Đẳng CTECH
       </h1>
-      <p class="subtitle" style="text-align: center;">
+      <p class="subtitle" style="text-align: center; color: #ffffff; font-weight: 600; text-shadow: 0 3px 15px rgba(0, 0, 0, 0.95), 0 0 30px rgba(0, 0, 0, 0.8);">
         Website quản lý toàn diện với AI Chatbot, thanh toán VietQR và PWA
       </p>
 
-      <div class="glass-card" style="margin-top: 48px; max-width: 700px;">
+      <div class="glass-card" style="margin-top: 48px; max-width: 700px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px);">
         <div style="display: flex; flex-direction: column; gap: 20px;">
           <div style="display: flex; align-items: center; gap: 16px;">
-            <span class="material-icons" style="color: var(--primary); font-size: 32px;">person</span>
-            <span style="font-size: 24px; color: var(--text); font-weight: 500;">Sinh viên: Trần Tuấn Tú</span>
+            <span class="material-icons" style="color: #0ea5e9; font-size: 32px;">person</span>
+            <span style="font-size: 24px; color: #ffffff; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Thí sinh: Trần Tuấn Tú</span>
           </div>
           <div style="display: flex; align-items: center; gap: 16px;">
-            <span class="material-icons" style="color: var(--primary); font-size: 32px;">code</span>
-            <span style="font-size: 24px; color: var(--text); font-weight: 500;">Công nghệ: Node.js + Express + MySQL + OpenAI GPT-4</span>
+            <span class="material-icons" style="color: #0ea5e9; font-size: 32px;">code</span>
+            <span style="font-size: 24px; color: #ffffff; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Công nghệ: Node.js + Express + MySQL + OpenAI GPT-4</span>
           </div>
           <div style="display: flex; align-items: center; gap: 16px;">
-            <span class="material-icons" style="color: var(--primary); font-size: 32px;">calendar_today</span>
-            <span style="font-size: 24px; color: var(--text); font-weight: 500;">Thời gian: 2025</span>
+            <span class="material-icons" style="color: #0ea5e9; font-size: 32px;">calendar_today</span>
+            <span style="font-size: 24px; color: #ffffff; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Thời gian: 2025</span>
           </div>
         </div>
       </div>
@@ -1961,14 +2435,15 @@ GET  /api/admin/dashboard   # Thống kê admin
     <!-- Slide 18: Hướng phát triển -->
     <div class="slide slide-with-accent">
       <div class="badge">PHẦN 5: KẾT LUẬN</div>
-      <h2 style="text-align: center;">Hướng Phát Triển</h2>
-      <p class="subtitle" style="text-align: center;">Roadmap 3 giai đoạn</p>
+      <h2 style="text-align: center; text-shadow: 0 3px 12px rgba(0, 0, 0, 0.8);">Hướng Phát Triển</h2>
+      <p class="subtitle" style="text-align: center; color: #e2e8f0; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Roadmap 3 giai đoạn</p>
 
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin-top: 40px;">
         <!-- Ngắn hạn -->
-        <div class="glass-card" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.05)); border-left: 4px solid var(--primary);">
-          <div style="text-align: center; margin-bottom: 16px;">
-            <div style="width: 48px; height: 48px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">1</div>
+        <div class="gradient-border float-animation">
+          <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(14, 165, 233, 0.05));">
+            <div style="text-align: center; margin-bottom: 16px;">
+              <div class="pulse-ring" style="width: 48px; height: 48px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">1</div>
             <h3 style="color: var(--primary); margin: 0;">Ngắn Hạn</h3>
             <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">1-3 tháng</p>
           </div>
@@ -1979,12 +2454,14 @@ GET  /api/admin/dashboard   # Thống kê admin
             • Export báo cáo PDF/Excel<br>
             • Dark mode & đa ngôn ngữ
           </div>
+          </div>
         </div>
 
         <!-- Trung hạn -->
-        <div class="glass-card" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05)); border-left: 4px solid var(--secondary);">
-          <div style="text-align: center; margin-bottom: 16px;">
-            <div style="width: 48px; height: 48px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">2</div>
+        <div class="gradient-border float-animation" style="animation-delay: 0.2s;">
+          <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(139, 92, 246, 0.05));">
+            <div style="text-align: center; margin-bottom: 16px;">
+              <div class="pulse-ring" style="width: 48px; height: 48px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">2</div>
             <h3 style="color: var(--secondary); margin: 0;">Trung Hạn</h3>
             <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">3-6 tháng</p>
           </div>
@@ -1995,12 +2472,14 @@ GET  /api/admin/dashboard   # Thống kê admin
             • Diễn đàn hỏi đáp SV<br>
             • Tích hợp lịch Google
           </div>
+          </div>
         </div>
 
         <!-- Dài hạn -->
-        <div class="glass-card" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(236, 72, 153, 0.05)); border-left: 4px solid var(--accent);">
-          <div style="text-align: center; margin-bottom: 16px;">
-            <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">3</div>
+        <div class="gradient-border float-animation" style="animation-delay: 0.4s;">
+          <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(236, 72, 153, 0.05));">
+            <div style="text-align: center; margin-bottom: 16px;">
+              <div class="pulse-ring" style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 24px; font-weight: 700; color: white;">3</div>
             <h3 style="color: var(--accent); margin: 0;">Dài Hạn</h3>
             <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">6-12 tháng</p>
           </div>
@@ -2010,6 +2489,7 @@ GET  /api/admin/dashboard   # Thống kê admin
             • Tích hợp hệ thống học vụ<br>
             • Tối ưu hiệu năng & cache<br>
             • Hệ thống backup tự động
+          </div>
           </div>
         </div>
       </div>
@@ -2048,23 +2528,23 @@ GET  /api/admin/dashboard   # Thống kê admin
     <!-- Slide 20: Thank You -->
     <div class="slide bg-image-slide" style="--bg-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1920&h=1080&fit=crop');">
       <div style="text-align: center;">
-        <h1 style="font-size: 96px; margin-bottom: 32px;">Cảm Ơn!</h1>
-        <p class="subtitle" style="font-size: 28px;">Mời thầy/cô và các bạn đặt câu hỏi</p>
+        <h1 style="font-size: 96px; margin-bottom: 32px; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.7); filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));">Cảm Ơn!</h1>
+        <p class="subtitle" style="font-size: 28px; color: #ffffff; font-weight: 600; text-shadow: 0 3px 15px rgba(0, 0, 0, 0.95);">Mời ban giám khảo đặt câu hỏi</p>
 
-        <div class="glass-card" style="max-width: 700px; margin-top: 64px;">
-          <h3 style="margin-bottom: 24px; font-size: 24px;">Thông Tin Liên Hệ</h3>
+        <div class="glass-card" style="max-width: 700px; margin-top: 64px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px);">
+          <h3 style="margin-bottom: 24px; font-size: 24px; color: #ffffff; font-weight: 700; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Thông Tin Liên Hệ</h3>
           <div style="display: flex; flex-direction: column; gap: 16px; font-size: 18px;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
-              <span class="material-icons" style="color: var(--primary);">person</span>
-              <span>Sinh viên: Trần Tuấn Tú</span>
+              <span class="material-icons" style="color: #0ea5e9;">person</span>
+              <span style="color: #ffffff; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Thí sinh: Trần Tuấn Tú</span>
             </div>
             <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
-              <span class="material-icons" style="color: var(--primary);">email</span>
-              <span>Email: contact@ctech.edu.vn</span>
+              <span class="material-icons" style="color: #0ea5e9;">email</span>
+              <span style="color: #ffffff; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Email: contact@ctech.edu.vn</span>
             </div>
             <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
-              <span class="material-icons" style="color: var(--primary);">phone</span>
-              <span>Hotline: 1800 6770</span>
+              <span class="material-icons" style="color: #0ea5e9;">phone</span>
+              <span style="color: #ffffff; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Hotline: 1800 6770</span>
             </div>
           </div>
         </div>
@@ -2190,6 +2670,178 @@ GET  /api/admin/dashboard   # Thống kê admin
 
     // Initialize
     updateSlide();
+
+    // ==================== ADVANCED WEB EFFECTS ====================
+
+    // Mouse Cursor Glow Tracking
+    const cursorGlow = document.getElementById('cursorGlow');
+    let mouseX = 0;
+    let mouseY = 0;
+    let cursorX = 0;
+    let cursorY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    // Smooth cursor glow animation
+    function animateCursorGlow() {
+      cursorX += (mouseX - cursorX) * 0.1;
+      cursorY += (mouseY - cursorY) * 0.1;
+      cursorGlow.style.left = cursorX + 'px';
+      cursorGlow.style.top = cursorY + 'px';
+      requestAnimationFrame(animateCursorGlow);
+    }
+    animateCursorGlow();
+
+    // 3D Tilt Effect for Cards
+    const tilt3DCards = document.querySelectorAll('.tilt-3d, .feature-card, .glass-card');
+
+    tilt3DCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * 10;
+        const rotateY = ((x - centerX) / centerX) * 10;
+
+        card.style.transform = `perspective(1000px) rotateX(${-rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+      });
+    });
+
+    // Magnetic Card Effect
+    const magneticCards = document.querySelectorAll('.magnetic-card, .feature-card');
+
+    magneticCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+
+        const moveX = x * 0.15;
+        const moveY = y * 0.15;
+
+        card.style.transform = `translate(${moveX}px, ${moveY}px)`;
+      });
+
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translate(0, 0)';
+      });
+    });
+
+    // Interactive Ripple Effect
+    const rippleElements = document.querySelectorAll('.ripple, .nav-btn, .badge');
+
+    rippleElements.forEach(element => {
+      element.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.style.position = 'absolute';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(255, 255, 255, 0.6)';
+        ripple.style.transform = 'scale(0)';
+        ripple.style.animation = 'rippleEffect 0.6s ease-out';
+        ripple.style.pointerEvents = 'none';
+
+        this.style.position = 'relative';
+        this.style.overflow = 'hidden';
+        this.appendChild(ripple);
+
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // Add ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes rippleEffect {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Parallax scroll effect for slides
+    let lastScrollTime = 0;
+    document.addEventListener('wheel', (e) => {
+      const now = Date.now();
+      if (now - lastScrollTime < 1000) return;
+      lastScrollTime = now;
+
+      if (e.deltaY > 0) {
+        nextSlide();
+      } else if (e.deltaY < 0) {
+        prevSlide();
+      }
+    }, { passive: true });
+
+    // Enhance glass-card hover effects
+    const glassCards = document.querySelectorAll('.glass-card');
+    glassCards.forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+      });
+    });
+
+    // Random floating animation delays for feature cards
+    const featureCards = document.querySelectorAll('.feature-card');
+    featureCards.forEach((card, index) => {
+      card.style.animationDelay = `${index * 0.2}s`;
+    });
+
+    // Intersection Observer for scroll-triggered animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe all feature cards and glass cards
+    document.querySelectorAll('.feature-card, .glass-card').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+
+    // Add gradient tracking to mouse position
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+
+      document.documentElement.style.setProperty('--mouse-x', x + '%');
+      document.documentElement.style.setProperty('--mouse-y', y + '%');
+    });
+
+    // Performance monitoring
+    console.log('%c✨ Advanced Web Effects Loaded', 'color: #667eea; font-size: 16px; font-weight: bold;');
+    console.log('%cThis presentation uses advanced CSS and JavaScript features that PowerPoint cannot achieve!', 'color: #764ba2; font-size: 12px;');
   </script>
 </body>
 </html>
