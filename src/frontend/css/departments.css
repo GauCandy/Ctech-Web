@@ -2,6 +2,10 @@
    DEPARTMENTS CAROUSEL - 3D Coverflow Effect
    ======================================== */
 
+#chuong-trinh {
+  scroll-margin-top: 40px;
+}
+
 .departments-carousel {
   margin-top: clamp(24px, 3vh, 32px);
   position: relative;
