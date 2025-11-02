@@ -168,30 +168,41 @@
             <div class="payment-section-wrapper">
               <h4>Thanh toán</h4>
 
-              <div class="payment-qr-container">
-                <div class="payment-qr-code">
-                  <img id="paymentQRImage" src="" alt="QR Code">
-                </div>
-                <p style="color: #64748b; font-size: 14px; text-align: center; margin-top: 12px;">Quét mã QR để thanh toán</p>
+              <!-- Nút mua hàng (hiện đầu tiên) -->
+              <div id="purchaseButtonContainer" style="text-align: center; padding: 20px 0;">
+                <button type="button" id="purchaseButton" class="services-button primary" style="width: 100%; padding: 12px 24px; font-size: 16px; font-weight: 600;">
+                  Mua hàng
+                </button>
+                <p style="color: #64748b; font-size: 14px; margin-top: 12px;">Nhấn để tạo mã QR thanh toán</p>
               </div>
 
-              <div class="payment-code-info">
-                <div class="payment-code-label">Mã giao dịch</div>
-                <div class="payment-code-value" id="paymentCodeValue">-</div>
-              </div>
+              <!-- Phần QR và thông tin thanh toán (ẩn ban đầu) -->
+              <div id="paymentInfoContainer" style="display: none;">
+                <div class="payment-qr-container">
+                  <div class="payment-qr-code">
+                    <img id="paymentQRImage" src="" alt="QR Code">
+                  </div>
+                  <p style="color: #64748b; font-size: 14px; text-align: center; margin-top: 12px;">Quét mã QR để thanh toán</p>
+                </div>
 
-              <div class="payment-bank-info" id="bankInfo">
-                <div class="bank-info-item">
-                  <strong>Ngân hàng:</strong>
-                  <span id="bankName">-</span>
+                <div class="payment-code-info">
+                  <div class="payment-code-label">Mã giao dịch</div>
+                  <div class="payment-code-value" id="paymentCodeValue">-</div>
                 </div>
-                <div class="bank-info-item">
-                  <strong>Tài khoản:</strong>
-                  <span id="bankNumber">-</span>
-                </div>
-                <div class="bank-info-item">
-                  <strong>Người nhận:</strong>
-                  <span id="bankOwner">-</span>
+
+                <div class="payment-bank-info" id="bankInfo">
+                  <div class="bank-info-item">
+                    <strong>Ngân hàng:</strong>
+                    <span id="bankName">-</span>
+                  </div>
+                  <div class="bank-info-item">
+                    <strong>Tài khoản:</strong>
+                    <span id="bankNumber">-</span>
+                  </div>
+                  <div class="bank-info-item">
+                    <strong>Người nhận:</strong>
+                    <span id="bankOwner">-</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1275,10 +1286,27 @@
           const canPurchase = isLoggedIn && service.isActive && (role === 'teacher' || role === 'student');
 
           const paymentColumn = document.getElementById('paymentColumn');
+          const purchaseButtonContainer = document.getElementById('purchaseButtonContainer');
+          const paymentInfoContainer = document.getElementById('paymentInfoContainer');
+          const purchaseButton = document.getElementById('purchaseButton');
+
           if (canPurchase) {
             paymentColumn.style.display = 'block';
-            // Auto load payment info
-            loadPaymentInfo(service);
+            // Hiện nút mua hàng, ẩn thông tin thanh toán
+            purchaseButtonContainer.style.display = 'block';
+            paymentInfoContainer.style.display = 'none';
+
+            // Gắn sự kiện click vào nút mua hàng
+            purchaseButton.onclick = async () => {
+              purchaseButton.disabled = true;
+              purchaseButton.textContent = 'Đang tạo mã QR...';
+
+              await loadPaymentInfo(service);
+
+              // Ẩn nút, hiện thông tin thanh toán
+              purchaseButtonContainer.style.display = 'none';
+              paymentInfoContainer.style.display = 'block';
+            };
           } else {
             paymentColumn.style.display = 'none';
           }
