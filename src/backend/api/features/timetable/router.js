@@ -1,6 +1,10 @@
 const express = require('express');
 const multer = require('multer');
-const { parseTimetableUploadHandler } = require('./controllers/timetableController');
+const {
+  parseTimetableUploadHandler,
+  shareScheduleHandler,
+  getSharedScheduleHandler
+} = require('./controllers/timetableController');
 
 const router = express.Router();
 
@@ -13,6 +17,8 @@ const upload = multer({
 });
 
 router.post('/parse', upload.single('file'), parseTimetableUploadHandler);
+router.post('/share', shareScheduleHandler);
+router.get('/share/:shareId', getSharedScheduleHandler);
 
 module.exports = {
   timetableRouter: router,

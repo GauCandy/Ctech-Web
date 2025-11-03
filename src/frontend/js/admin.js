@@ -121,34 +121,49 @@ function showPage(pageId, event) {
 // ============== DASHBOARD ==============
 async function loadDashboardStats() {
   try {
-    // Fake data for demo (không gọi API thật)
-    const fakeData = {
-      summary: {
-        totalUsers: Math.floor(Math.random() * 100) + 200, // 200-300
-        ordersThisMonth: Math.floor(Math.random() * 50) + 100, // 100-150
-        totalRevenue: (Math.random() * 30000000) + 40000000, // 40-70M
-        activeServices: Math.floor(Math.random() * 5) + 10, // 10-15
-      },
-      topServices: [
-        { name: 'Vé gửi xe tháng', orderCount: Math.floor(Math.random() * 50) + 150 },
-        { name: 'Xuất ăn căn tin', orderCount: Math.floor(Math.random() * 40) + 120 },
-        { name: 'Vé gửi xe ngày', orderCount: Math.floor(Math.random() * 60) + 140 },
-        { name: 'Nước ép', orderCount: Math.floor(Math.random() * 30) + 80 },
-        { name: 'Đồ học tập', orderCount: Math.floor(Math.random() * 25) + 90 },
-      ]
-    };
+    const session = getSession();
+    if (!session || !session.token) {
+      window.location.href = '/login';
+      return;
+    }
+
+    // Gọi API thật để lấy thống kê
+    const response = await fetch('/api/admin/stats', {
+      headers: {
+        'Authorization': `Bearer ${session.token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to load stats');
+    }
+
+    const data = await response.json();
 
     // Update stat cards
-    document.getElementById('totalUsers').textContent = fakeData.summary.totalUsers;
-    document.getElementById('ordersThisMonth').textContent = fakeData.summary.ordersThisMonth;
-    document.getElementById('totalRevenue').textContent = formatCurrency(fakeData.summary.totalRevenue);
-    document.getElementById('activeServices').textContent = fakeData.summary.activeServices;
+    document.getElementById('totalUsers').textContent = data.summary.totalUsers;
+    document.getElementById('ordersThisMonth').textContent = data.summary.ordersThisMonth;
+    document.getElementById('totalRevenue').textContent = formatCurrency(data.summary.totalRevenue);
+    document.getElementById('activeServices').textContent = data.summary.activeServices;
 
     // Update top services chart
-    updateTopServicesChart(fakeData.topServices);
+    if (data.topServices && data.topServices.length > 0) {
+      updateTopServicesChart(data.topServices);
+    } else {
+      // Hiển thị thông báo nếu chưa có dữ liệu
+      const ctx = document.getElementById('topServicesChart');
+      if (ctx && ctx.parentElement) {
+        ctx.parentElement.innerHTML = '<p style="text-align: center; color: #6b7280; padding: 40px;">Chưa có dữ liệu dịch vụ</p>';
+      }
+    }
 
   } catch (error) {
     console.error('Error loading dashboard stats:', error);
+    // Hiển thị lỗi cho người dùng
+    document.getElementById('totalUsers').textContent = '0';
+    document.getElementById('ordersThisMonth').textContent = '0';
+    document.getElementById('totalRevenue').textContent = formatCurrency(0);
+    document.getElementById('activeServices').textContent = '0';
   }
 }
 

@@ -59,6 +59,10 @@
             <p class="section-subtitle">
               Tải lên file PDF thời khóa biểu của bạn để xem lịch học chi tiết theo tuần
             </p>
+            <div id="offline-indicator" class="offline-indicator" hidden>
+              <span class="material-icons">cloud_off</span>
+              <span>Đang offline - Chỉ xem được TKB đã lưu</span>
+            </div>
           </div>
 
           <!-- Bảng giờ học cố định -->
@@ -171,9 +175,15 @@
             <div class="schedule-header">
               <h2 id="schedule-class-name">Thời khóa biểu</h2>
               <div class="schedule-controls">
+                <select id="saved-schedules-select" class="week-select" title="Xem TKB đã lưu">
+                  <option value="">TKB đã lưu...</option>
+                </select>
                 <select id="week-select" class="week-select">
                   <option value="">Chọn tuần...</option>
                 </select>
+                <button type="button" id="share-schedule-btn" class="btn-icon" title="Chia sẻ TKB">
+                  <span class="material-icons">share</span>
+                </button>
               </div>
             </div>
 
@@ -302,9 +312,200 @@
         const scheduleView = document.getElementById('schedule-view');
         const scheduleMeta = document.getElementById('schedule-meta');
         const scheduleClassName = document.getElementById('schedule-class-name');
+        const savedSchedulesSelect = document.getElementById('saved-schedules-select');
+        const shareScheduleBtn = document.getElementById('share-schedule-btn');
 
         let scheduleData = null;
         let selectedClassName = null;
+        let currentScheduleId = null;
+
+        const STORAGE_KEY = 'saved_schedules';
+        const offlineIndicator = document.getElementById('offline-indicator');
+        let isOnline = true;
+
+        // Check real internet connectivity by pinging server
+        async function checkInternetConnection() {
+          try {
+            // Try to fetch from our own API first (faster)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s timeout
+
+            const response = await fetch('/api/status', {
+              method: 'HEAD',
+              cache: 'no-cache',
+              signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+            return response.ok;
+          } catch (error) {
+            // If our API fails, try Google as fallback
+            try {
+              const controller = new AbortController();
+              const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+              await fetch('https://www.google.com/favicon.ico', {
+                method: 'HEAD',
+                mode: 'no-cors',
+                cache: 'no-cache',
+                signal: controller.signal
+              });
+
+              clearTimeout(timeoutId);
+              return true;
+            } catch (err) {
+              return false;
+            }
+          }
+        }
+
+        // Update online status with real check
+        async function updateOnlineStatus() {
+          const online = await checkInternetConnection();
+          isOnline = online;
+
+          if (!online) {
+            offlineIndicator.hidden = false;
+            // Disable share button when offline
+            if (shareScheduleBtn) {
+              shareScheduleBtn.disabled = true;
+              shareScheduleBtn.title = 'Không thể chia sẻ khi offline';
+            }
+          } else {
+            offlineIndicator.hidden = true;
+            // Re-enable share button when online
+            if (shareScheduleBtn && scheduleData) {
+              shareScheduleBtn.disabled = false;
+              shareScheduleBtn.title = 'Chia sẻ TKB';
+            }
+          }
+
+          return online;
+        }
+
+        // Check periodically (every 30 seconds when page is visible)
+        let statusCheckInterval;
+        function startStatusCheck() {
+          updateOnlineStatus(); // Check immediately
+          statusCheckInterval = setInterval(updateOnlineStatus, 30000);
+        }
+
+        function stopStatusCheck() {
+          if (statusCheckInterval) {
+            clearInterval(statusCheckInterval);
+          }
+        }
+
+        // Only check when page is visible to save battery/resources
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) {
+            stopStatusCheck();
+          } else {
+            startStatusCheck();
+          }
+        });
+
+        // Also listen to browser online/offline events as hint
+        window.addEventListener('online', () => {
+          updateOnlineStatus();
+        });
+
+        window.addEventListener('offline', () => {
+          updateOnlineStatus();
+        });
+
+        // LocalStorage functions
+        function getSavedSchedules() {
+          try {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            return saved ? JSON.parse(saved) : [];
+          } catch (error) {
+            console.error('Error loading saved schedules:', error);
+            return [];
+          }
+        }
+
+        function saveSchedule(scheduleData, fileName) {
+          try {
+            const schedules = getSavedSchedules();
+            const id = Date.now().toString();
+            const newSchedule = {
+              id,
+              fileName: fileName || 'Thời khóa biểu',
+              uploadedAt: new Date().toISOString(),
+              data: scheduleData
+            };
+
+            // Thêm schedule mới vào đầu danh sách
+            schedules.unshift(newSchedule);
+
+            // Giới hạn chỉ lưu 10 TKB gần nhất
+            if (schedules.length > 10) {
+              schedules.splice(10);
+            }
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(schedules));
+            return id;
+          } catch (error) {
+            console.error('Error saving schedule:', error);
+            return null;
+          }
+        }
+
+        function loadScheduleById(id) {
+          const schedules = getSavedSchedules();
+          return schedules.find(s => s.id === id);
+        }
+
+        function deleteScheduleById(id) {
+          try {
+            const schedules = getSavedSchedules();
+            const filtered = schedules.filter(s => s.id !== id);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+          } catch (error) {
+            console.error('Error deleting schedule:', error);
+          }
+        }
+
+        function populateSavedSchedulesDropdown() {
+          const schedules = getSavedSchedules();
+          savedSchedulesSelect.innerHTML = '<option value="">TKB đã lưu...</option>';
+
+          schedules.forEach(schedule => {
+            const option = document.createElement('option');
+            option.value = schedule.id;
+            const date = new Date(schedule.uploadedAt);
+            const dateStr = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+            option.textContent = `${schedule.fileName} - ${dateStr}`;
+            savedSchedulesSelect.appendChild(option);
+          });
+        }
+
+        function loadMostRecentSchedule() {
+          const schedules = getSavedSchedules();
+          if (schedules.length > 0) {
+            const mostRecent = schedules[0];
+            loadScheduleFromSaved(mostRecent);
+            return true;
+          }
+          return false;
+        }
+
+        function loadScheduleFromSaved(savedSchedule) {
+          scheduleData = savedSchedule.data;
+          currentScheduleId = savedSchedule.id;
+
+          // Populate dropdowns
+          populateDropdowns();
+          populateSavedSchedulesDropdown();
+
+          // Set selected value in dropdown
+          savedSchedulesSelect.value = savedSchedule.id;
+
+          // Hide upload section and show schedule
+          uploadSection.style.display = 'none';
+          scheduleContainer.hidden = false;
+        }
 
         const daysMap = {
           'Thu 2': 'Thứ 2',
@@ -361,8 +562,16 @@
             scheduleData = await response.json();
             uploadStatus.innerHTML = '<div class="status-success"><span class="material-icons">check_circle</span> Tải lên thành công!</div>';
 
+            // Save to localStorage
+            const savedId = saveSchedule(scheduleData, file.name);
+            currentScheduleId = savedId;
+
             // Populate dropdowns
             populateDropdowns();
+            populateSavedSchedulesDropdown();
+            if (savedId) {
+              savedSchedulesSelect.value = savedId;
+            }
             scheduleContainer.hidden = false;
             uploadBtn.disabled = false;
 
@@ -776,6 +985,213 @@
         }
 
         weekSelect.addEventListener('change', renderSchedule);
+
+        // Saved schedules dropdown change handler
+        savedSchedulesSelect.addEventListener('change', (e) => {
+          const selectedId = e.target.value;
+          if (!selectedId) return;
+
+          const savedSchedule = loadScheduleById(selectedId);
+          if (savedSchedule) {
+            loadScheduleFromSaved(savedSchedule);
+          }
+        });
+
+        // Share button handler
+        shareScheduleBtn.addEventListener('click', async () => {
+          if (!scheduleData || !selectedClassName) {
+            alert('Không có thời khóa biểu để chia sẻ');
+            return;
+          }
+
+          try {
+            // Show loading
+            shareScheduleBtn.disabled = true;
+            shareScheduleBtn.innerHTML = '<span class="material-icons spinning">sync</span>';
+
+            // Upload to server
+            const response = await fetch('/api/timetable/share', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                scheduleData: scheduleData,
+                fileName: currentScheduleId ? loadScheduleById(currentScheduleId)?.fileName : 'Thời khóa biểu'
+              })
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to share schedule');
+            }
+
+            const result = await response.json();
+            const selectedWeek = Number.parseInt(weekSelect.value, 10);
+            const shareUrl = `${window.location.origin}${result.shareUrl}`;
+            const shareText = `Thời khóa biểu - ${selectedClassName}${Number.isFinite(selectedWeek) ? ` (Tuần ${selectedWeek})` : ''}`;
+
+            // Restore button
+            shareScheduleBtn.disabled = false;
+            shareScheduleBtn.innerHTML = '<span class="material-icons">share</span>';
+
+            // Try Web Share API first
+            if (navigator.share) {
+              try {
+                await navigator.share({
+                  title: shareText,
+                  text: shareText,
+                  url: shareUrl
+                });
+              } catch (error) {
+                if (error.name !== 'AbortError') {
+                  console.error('Error sharing:', error);
+                  fallbackShare(shareUrl, shareText);
+                }
+              }
+            } else {
+              fallbackShare(shareUrl, shareText);
+            }
+          } catch (error) {
+            console.error('Error creating share link:', error);
+            shareScheduleBtn.disabled = false;
+            shareScheduleBtn.innerHTML = '<span class="material-icons">share</span>';
+            alert('Không thể tạo link chia sẻ. Vui lòng thử lại.');
+          }
+        });
+
+        function fallbackShare(url, text) {
+          // Copy to clipboard
+          const fullText = `${text}\n${url}`;
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(fullText)
+              .then(() => {
+                alert('Đã sao chép link vào clipboard!');
+              })
+              .catch((error) => {
+                console.error('Copy failed:', error);
+                promptManualCopy(fullText);
+              });
+          } else {
+            promptManualCopy(fullText);
+          }
+        }
+
+        function promptManualCopy(text) {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+
+          try {
+            document.execCommand('copy');
+            alert('Đã sao chép link vào clipboard!');
+          } catch (error) {
+            console.error('Copy failed:', error);
+            alert('Không thể sao chép. Link: ' + window.location.href);
+          }
+
+          document.body.removeChild(textarea);
+        }
+
+        // Load shared schedule from URL
+        async function loadSharedScheduleFromUrl() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const shareId = urlParams.get('share');
+
+          if (!shareId) {
+            return false;
+          }
+
+          // Check if offline
+          if (!isOnline) {
+            console.log('[Schedule] Offline - cannot load shared schedule from URL');
+            uploadStatus.innerHTML = '<div class="status-error"><span class="material-icons">cloud_off</span> Không thể tải TKB được chia sẻ khi offline. Vui lòng kết nối internet và thử lại.</div>';
+            uploadStatus.style.display = 'block';
+
+            // Try to load most recent local schedule as fallback
+            const hasLocalSchedule = loadMostRecentSchedule();
+            if (hasLocalSchedule) {
+              uploadStatus.innerHTML += '<div class="status-success" style="margin-top: 0.5rem;"><span class="material-icons">info</span> Đã tải TKB từ bộ nhớ local thay thế.</div>';
+            }
+
+            return hasLocalSchedule;
+          }
+
+          try {
+            const response = await fetch(`/api/timetable/share/${shareId}`);
+
+            if (!response.ok) {
+              throw new Error('Failed to load shared schedule');
+            }
+
+            const result = await response.json();
+
+            // Load the shared schedule
+            scheduleData = result.scheduleData;
+            currentScheduleId = null; // Not a local schedule
+
+            // Save to localStorage for offline access
+            const savedId = saveSchedule(result.scheduleData, result.fileName || 'Thời khóa biểu (Đã chia sẻ)');
+            currentScheduleId = savedId;
+
+            // Populate dropdowns
+            populateDropdowns();
+            populateSavedSchedulesDropdown();
+            if (savedId) {
+              savedSchedulesSelect.value = savedId;
+            }
+
+            // Hide upload section and show schedule
+            uploadSection.style.display = 'none';
+            scheduleContainer.hidden = false;
+
+            // Show success message
+            uploadStatus.innerHTML = '<div class="status-success"><span class="material-icons">cloud_done</span> Đã tải TKB được chia sẻ và lưu vào bộ nhớ để xem offline.</div>';
+            uploadStatus.style.display = 'block';
+            setTimeout(() => {
+              uploadStatus.style.display = 'none';
+            }, 5000);
+
+            return true;
+          } catch (error) {
+            console.error('Error loading shared schedule:', error);
+            uploadStatus.innerHTML = '<div class="status-error"><span class="material-icons">error</span> Không thể tải TKB được chia sẻ. Link có thể đã hết hạn hoặc không tồn tại.</div>';
+            uploadStatus.style.display = 'block';
+            return false;
+          }
+        }
+
+        // Initialize: Load schedule on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+          // Start periodic online status check
+          startStatusCheck();
+
+          // Wait for initial status check to complete
+          await updateOnlineStatus();
+
+          // First, try to load from share URL
+          const loadedFromShare = await loadSharedScheduleFromUrl();
+
+          if (!loadedFromShare) {
+            // If no share URL, try to load most recent local schedule
+            const hasSchedule = loadMostRecentSchedule();
+            if (!hasSchedule) {
+              // No saved schedules, show upload section
+              if (isOnline) {
+                uploadSection.style.display = 'flex';
+              } else {
+                // Offline and no local schedules - show message
+                uploadSection.style.display = 'flex';
+                uploadStatus.innerHTML = '<div class="status-error"><span class="material-icons">cloud_off</span> Bạn đang offline và chưa có TKB nào được lưu. Vui lòng kết nối internet để tải lên TKB.</div>';
+                uploadStatus.style.display = 'block';
+              }
+              scheduleContainer.hidden = true;
+            }
+          }
+        });
       })();
     </script>
 

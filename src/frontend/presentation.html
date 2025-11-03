@@ -1533,33 +1533,33 @@
       <h2 style="text-align: center;">Vấn Đề Hiện Tại</h2>
       <p class="subtitle" style="text-align: center;">Pain points của hệ thống quản lý truyền thống</p>
 
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; width: 100%; max-width: 1200px;">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; width: 100%; max-width: 1400px;">
         <div class="icon-list-item">
-          <span class="material-icons" style="color: #ef4444;">error</span>
+          <span class="material-icons" style="color: #ef4444;">search_off</span>
           <div>
-            <div style="font-weight: 700; font-size: 32px; margin-bottom: 8px;">Quy trình thủ công</div>
-            <div style="color: var(--text-muted); font-size: 24px;">Sinh viên phải đến trực tiếp các phòng&nbsp;ban để đăng&nbsp;ký dịch&nbsp;vụ</div>
+            <div style="font-weight: 700; font-size: 32px; margin-bottom: 8px;">Thiếu Nơi Tra Cứu</div>
+            <div style="color: var(--text-muted); font-size: 24px;">Không có nền tảng tập trung để tra cứu thông&nbsp;tin dịch&nbsp;vụ, học phí, quy định</div>
           </div>
         </div>
         <div class="icon-list-item">
-          <span class="material-icons" style="color: #f59e0b;">schedule</span>
+          <span class="material-icons" style="color: #f59e0b;">support_agent</span>
           <div>
-            <div style="font-weight: 700; font-size: 32px; margin-bottom: 8px;">Thanh toán chậm</div>
-            <div style="color: var(--text-muted); font-size: 24px;">Phải xếp hàng, mất thời&nbsp;gian, không tiện lợi</div>
+            <div style="font-weight: 700; font-size: 32px; margin-bottom: 8px;">Thiếu Hỗ Trợ 24/7</div>
+            <div style="color: var(--text-muted); font-size: 24px;">Không có trợ lý ảo hỗ trợ tự động, học&nbsp;sinh và khách phải chờ đợi nhân viên</div>
           </div>
         </div>
         <div class="icon-list-item">
-          <span class="material-icons" style="color: #8b5cf6;">info_outline</span>
+          <span class="material-icons" style="color: #8b5cf6;">event_busy</span>
           <div>
-            <div style="font-weight: 700; font-size: 32px; margin-bottom: 8px;">Thiếu thông&nbsp;tin</div>
-            <div style="color: var(--text-muted); font-size: 24px;">Khó tra cứu lịch&nbsp;học, dịch&nbsp;vụ, thông&nbsp;tin trường</div>
+            <div style="font-weight: 700; font-size: 32px; margin-bottom: 8px;">TKB Khó Nắm Bắt</div>
+            <div style="color: var(--text-muted); font-size: 24px;">Thời khóa biểu từ Sở GD dạng PDF, người mới khó hiểu và tra cứu</div>
           </div>
         </div>
         <div class="icon-list-item">
-          <span class="material-icons" style="color: #06b6d4;">folder_off</span>
+          <span class="material-icons" style="color: #06b6d4;">payment</span>
           <div>
-            <div style="font-weight: 700; font-size: 32px; margin-bottom: 8px;">Quản lý phân tán</div>
-            <div style="color: var(--text-muted); font-size: 24px;">Dữ liệu nằm rải rác nhiều nơi, khó kiểm soát</div>
+            <div style="font-weight: 700; font-size: 32px; margin-bottom: 8px;">Thanh Toán Thủ Công</div>
+            <div style="color: var(--text-muted); font-size: 24px;">Phải đến trực tiếp quầy để thanh&nbsp;toán dịch&nbsp;vụ, mất thời&nbsp;gian</div>
           </div>
         </div>
       </div>
@@ -1576,12 +1576,12 @@
           <div class="feature-icon">
             <span class="material-icons">school</span>
           </div>
-          <div class="feature-title">Sinh Viên & Giáo Viên</div>
+          <div class="feature-title">Học Sinh</div>
           <div class="feature-desc">
-            • Tra cứu thông&nbsp;tin<br>
-            • Đăng ký dịch&nbsp;vụ<br>
+            • Tra cứu thông&nbsp;tin dịch&nbsp;vụ<br>
+            • Đăng ký dịch&nbsp;vụ trường<br>
             • Thanh toán trực tuyến<br>
-            • Xem lịch&nbsp;học<br>
+            • Xem thời khóa biểu<br>
             • Chatbot hỗ trợ 24/7
           </div>
         </div>
@@ -1602,13 +1602,13 @@
           <div class="feature-icon">
             <span class="material-icons">public</span>
           </div>
-          <div class="feature-title">Khách Truy Cập</div>
+          <div class="feature-title">Khách Tham Quan</div>
           <div class="feature-desc">
             • Tìm hiểu về trường<br>
             • Các chương trình đào tạo<br>
             • Thông tin tuyển&nbsp;sinh<br>
-            • Liên hệ<br>
-            • FAQ
+            • Liên hệ & FAQ<br>
+            • Chatbot hỗ trợ
           </div>
         </div>
       </div>
@@ -1779,96 +1779,74 @@
       <h2 style="text-align: center;">Cấu Trúc Dự Án</h2>
       <p class="subtitle" style="text-align: center;">Modular architecture với feature-based structure</p>
 
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; max-width: 1100px; margin-top: 32px;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(600px, 1fr)); gap: 32px; max-width: 1400px; margin-top: 32px; width: 100%;">
         <div class="glass-card">
           <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
             <span class="material-icons" style="color: var(--secondary);">folder</span>
             Backend
           </h3>
           <div class="folder-tree">
-            <!-- api/ -->
+            <!-- index.js -->
+            <div class="folder-item indent-0">
+              <span class="folder-icon file material-icons">play_circle</span>
+              <span class="folder-name file">index.js</span>
+              <span class="folder-desc">Khởi động hệ thống</span>
+            </div>
+
+            <!-- src/ -->
             <div class="folder-item indent-0">
               <span class="folder-icon folder material-icons">folder</span>
+              <span class="folder-name folder">src/</span>
+              <span class="folder-desc">Source code</span>
+            </div>
+
+            <!-- server.js -->
+            <div class="folder-item indent-1">
+              <span class="folder-icon file material-icons">dns</span>
+              <span class="folder-name file">server.js</span>
+              <span class="folder-desc">Express server</span>
+            </div>
+
+            <!-- database/ -->
+            <div class="folder-item indent-1">
+              <span class="folder-icon database material-icons">storage</span>
+              <span class="folder-name folder">database/</span>
+              <span class="folder-desc">Kết nối MySQL</span>
+            </div>
+
+            <!-- api/ -->
+            <div class="folder-item indent-1">
+              <span class="folder-icon folder material-icons">api</span>
               <span class="folder-name folder">api/</span>
               <span class="folder-desc">REST API endpoints</span>
             </div>
 
-            <!-- features/ -->
-            <div class="folder-item indent-1">
-              <span class="folder-icon folder material-icons">folder</span>
-              <span class="folder-name folder">features/</span>
-              <span class="folder-desc">Feature modules</span>
-            </div>
-
-            <!-- Feature modules -->
-            <div class="folder-item indent-2">
-              <span class="folder-icon folder material-icons">admin_panel_settings</span>
-              <span class="folder-name folder">admin/</span>
-              <span class="folder-desc">Quản trị hệ thống</span>
-            </div>
-
+            <!-- auth/ -->
             <div class="folder-item indent-2">
               <span class="folder-icon folder material-icons">lock</span>
               <span class="folder-name folder">auth/</span>
-              <span class="folder-desc">Xác thực JWT</span>
+              <span class="folder-desc">Xác thực & phân quyền</span>
             </div>
 
-            <div class="folder-item indent-2">
-              <span class="folder-icon special material-icons">smart_toy</span>
-              <span class="folder-name folder">chatbot/</span>
-              <span class="folder-desc">AI Chat GPT-4 + RAG</span>
-            </div>
-
-            <div class="folder-item indent-2">
-              <span class="folder-icon folder material-icons">shopping_cart</span>
-              <span class="folder-name folder">orders/</span>
-              <span class="folder-desc">Đơn hàng & thanh&nbsp;toán</span>
-            </div>
-
+            <!-- services/ -->
             <div class="folder-item indent-2">
               <span class="folder-icon folder material-icons">business_center</span>
               <span class="folder-name folder">services/</span>
               <span class="folder-desc">Quản lý dịch&nbsp;vụ</span>
             </div>
 
+            <!-- timetable/ -->
             <div class="folder-item indent-2">
               <span class="folder-icon folder material-icons">calendar_today</span>
               <span class="folder-name folder">timetable/</span>
               <span class="folder-desc">Lịch học & TKB</span>
             </div>
 
+            <!-- chatbot/ -->
             <div class="folder-item indent-2">
-              <span class="folder-icon folder material-icons">local_offer</span>
-              <span class="folder-name folder">vouchers/</span>
-              <span class="folder-desc">Quản lý voucher</span>
-            </div>
-
-            <!-- shared/ -->
-            <div class="folder-item indent-1">
-              <span class="folder-icon folder material-icons">share</span>
-              <span class="folder-name folder">shared/</span>
-              <span class="folder-desc">Shared utilities</span>
-            </div>
-
-            <!-- database/ -->
-            <div class="folder-item indent-0">
-              <span class="folder-icon database material-icons">storage</span>
-              <span class="folder-name folder">database/</span>
-              <span class="folder-desc">MySQL connection</span>
-            </div>
-
-            <!-- middleware/ -->
-            <div class="folder-item indent-0">
-              <span class="folder-icon folder material-icons">security</span>
-              <span class="folder-name folder">middleware/</span>
-              <span class="folder-desc">Auth & validation</span>
-            </div>
-
-            <!-- server/ -->
-            <div class="folder-item indent-0">
-              <span class="folder-icon folder material-icons">dns</span>
-              <span class="folder-name folder">server/</span>
-              <span class="folder-desc">Express server</span>
+              <span class="folder-icon special material-icons">smart_toy</span>
+              <span class="folder-name folder">chatbot/</span>
+              <span class="folder-desc">AI Chat GPT-4</span>
             </div>
           </div>
         </div>
@@ -1939,27 +1917,39 @@
       <h2 style="text-align: center;">Bảo Mật & Phân Quyền</h2>
       <p class="subtitle" style="text-align: center;">Multi-layer security với JWT và RBAC</p>
 
-      <div class="feature-grid" style="grid-template-columns: repeat(3, 1fr); max-width: 1000px;">
+      <div class="feature-grid" style="grid-template-columns: repeat(3, 1fr); max-width: 1200px;">
         <div class="feature-card">
           <div class="feature-icon">
             <span class="material-icons">admin_panel_settings</span>
           </div>
           <div class="feature-title">Admin</div>
-          <div class="feature-desc">Toàn quyền quản lý hệ thống</div>
+          <div class="feature-desc">
+            • Quản lý dịch&nbsp;vụ<br>
+            • Quản lý người dùng<br>
+            • Xem thống kê & báo&nbsp;cáo
+          </div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
             <span class="material-icons">school</span>
           </div>
-          <div class="feature-title">Teacher</div>
-          <div class="feature-desc">Xem dịch&nbsp;vụ, thanh&nbsp;toán, tra cứu lịch</div>
+          <div class="feature-title">Học Sinh</div>
+          <div class="feature-desc">
+            • Đăng ký & thanh&nbsp;toán<br>
+            • Xem thời khóa biểu<br>
+            • Chat với AI
+          </div>
         </div>
         <div class="feature-card">
           <div class="feature-icon">
-            <span class="material-icons">person</span>
+            <span class="material-icons">public</span>
           </div>
-          <div class="feature-title">Student</div>
-          <div class="feature-desc">Xem dịch&nbsp;vụ, thanh&nbsp;toán, tra cứu lịch</div>
+          <div class="feature-title">Khách</div>
+          <div class="feature-desc">
+            • Xem thông&nbsp;tin trường<br>
+            • Chat với AI<br>
+            • Tra cứu thông&nbsp;tin
+          </div>
         </div>
       </div>
 
@@ -2000,7 +1990,7 @@
     <div class="slide slide-with-corner">
       <div class="badge">PHẦN 3: CÁC TÍNH NĂNG CHÍNH</div>
       <h2 style="text-align: center;">3 Tính Năng Chính</h2>
-      <p class="subtitle" style="text-align: center;">Hướng đến học sinh - sinh&nbsp;viên</p>
+      <p class="subtitle" style="text-align: center;">Hướng đến học&nbsp;sinh và khách tham quan</p>
 
       <div class="feature-grid" style="grid-template-columns: repeat(3, 1fr); max-width: 1200px;">
         <div class="feature-card" style="cursor: pointer;">
@@ -2008,7 +1998,7 @@
             <span class="material-icons">shopping_cart</span>
           </div>
           <div class="number-highlight" style="font-size: 48px;">01</div>
-          <div class="feature-title">Dịch Vụ Sinh Viên</div>
+          <div class="feature-title">Dịch Vụ Trường Học</div>
           <div class="feature-desc">
             • 7+ dịch&nbsp;vụ (canteen, gửi&nbsp;xe...)<br>
             • Thanh toán VietQR<br>
@@ -2064,7 +2054,7 @@
           <h3 style="margin-bottom: 20px;">User Features</h3>
           <div class="icon-list-item" style="margin-bottom: 16px;">
             <span class="material-icons">inventory_2</span>
-            <span>Danh sách dịch&nbsp;vụ dành cho sinh&nbsp;viên</span>
+            <span>Danh sách dịch&nbsp;vụ dành cho học&nbsp;sinh</span>
           </div>
           <div class="icon-list-item" style="margin-bottom: 16px;">
             <span class="material-icons">search</span>
@@ -2099,12 +2089,6 @@
             <span>Bật/tắt dịch&nbsp;vụ (soft delete)</span>
           </div>
         </div>
-      </div>
-
-      <div class="glass-card" style="max-width: 800px; margin-top: 32px; text-align: center;">
-        <p style="color: var(--primary); font-size: 24px; font-weight: 600;">
-          💻 Live Demo tại: <a href="http://localhost:3000/services" target="_blank" style="color: var(--primary); text-decoration: underline;">localhost:3000/services</a>
-        </p>
       </div>
     </div>
 
@@ -2196,12 +2180,6 @@
           </div>
         </div>
       </div>
-
-      <div class="glass-card" style="max-width: 800px; margin-top: 32px; text-align: center;">
-        <p style="color: var(--primary); font-size: 24px; font-weight: 600;">
-          💻 Live Demo: Mở website và click nút "Cần trợ giúp?" ở góc phải
-        </p>
-      </div>
     </div>
 
     <!-- ==================== PHẦN 4: DEMO ==================== -->
@@ -2266,26 +2244,6 @@
           <div class="feature-title">Admin</div>
           <div class="feature-desc">Quản lý dịch&nbsp;vụ CRUD</div>
         </div>
-      </div>
-    </div>
-
-    <!-- Slide 16: Live Demo -->
-    <div class="slide bg-image-slide" style="--bg-image: url('https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=1920&h=1080&fit=crop');">
-      <div class="badge">PHẦN 4: DEMO TRỰC TIẾP</div>
-      <h2 style="text-align: center;">Live Demo</h2>
-      <p class="subtitle" style="text-align: center;">Trình diễn hệ thống thực tế</p>
-
-      <div class="glass-card" style="max-width: 600px; text-align: center; padding: 80px 60px; position: relative; z-index: 100;">
-        <span class="material-icons" style="font-size: 140px; color: var(--primary); margin-bottom: 32px; animation: badgePulse 2s ease-in-out infinite;">play_circle</span>
-        <h3 style="font-size: 48px; margin-bottom: 24px;">Chuyển sang Website Demo</h3>
-        <p style="font-size: 28px; color: var(--text-muted); margin-bottom: 48px;">
-          Quay lại trang home trong tab mới
-        </p>
-
-        <a href="http://localhost:3000/home" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 20px 48px; background: linear-gradient(135deg, #0ea5e9, #8b5cf6); color: #ffffff; font-size: 22px; font-weight: 700; border-radius: 16px; text-decoration: none; box-shadow: 0 8px 32px rgba(14, 165, 233, 0.4); transition: all 0.3s ease; cursor: pointer; position: relative; z-index: 1000;" onmouseover="this.style.transform='translateY(-4px) scale(1.05)'; this.style.boxShadow='0 12px 48px rgba(14, 165, 233, 0.6)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 8px 32px rgba(14, 165, 233, 0.4)';">
-          <span class="material-icons" style="vertical-align: middle; margin-right: 12px; font-size: 28px;">open_in_new</span>
-          Quay Lại Trang Home
-        </a>
       </div>
     </div>
 
@@ -2408,59 +2366,36 @@
     <div class="slide slide-with-accent">
       <div class="badge">PHẦN 5: KẾT LUẬN</div>
       <h2 style="text-align: center; text-shadow: 0 3px 12px rgba(0, 0, 0, 0.8);">Hướng Phát Triển</h2>
-      <p class="subtitle" style="text-align: center; color: #e2e8f0; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Roadmap 3 giai đoạn</p>
+      <p class="subtitle" style="text-align: center; color: #e2e8f0; font-weight: 600; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Định hướng phát triển trọng tâm</p>
 
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; max-width: 1100px; margin-top: 40px;">
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; max-width: 900px; margin-top: 40px;">
         <!-- Ngắn hạn -->
         <div class="gradient-border float-animation">
           <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.15), rgba(14, 165, 233, 0.08));">
             <div style="text-align: center; margin-bottom: 16px;">
               <div class="pulse-ring" style="width: 56px; height: 56px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; font-weight: 700; color: white; box-shadow: 0 4px 16px rgba(14, 165, 233, 0.5);">1</div>
-            <h3 style="color: #0ea5e9; margin: 0; font-size: 32px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Ngắn Hạn</h3>
-            <p style="font-size: 24px; color: #cbd5e1; margin-top: 8px; font-weight: 600; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">1-3 tháng</p>
-          </div>
-          <div style="font-size: 24px; color: #e2e8f0; line-height: 1.8; font-weight: 500; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">
-            • Thông báo Email & SMS<br>
-            • Xác thực OTP đăng&nbsp;ký<br>
-            • Export báo&nbsp;cáo PDF/Excel<br>
-            • Hỗ trợ đa ngôn ngữ
-          </div>
-          </div>
-        </div>
-
-        <!-- Trung hạn -->
-        <div class="gradient-border float-animation" style="animation-delay: 0.2s;">
-          <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(139, 92, 246, 0.08));">
-            <div style="text-align: center; margin-bottom: 16px;">
-              <div class="pulse-ring" style="width: 56px; height: 56px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; font-weight: 700; color: white; box-shadow: 0 4px 16px rgba(139, 92, 246, 0.5);">2</div>
-            <h3 style="color: #8b5cf6; margin: 0; font-size: 32px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Trung Hạn</h3>
-            <p style="font-size: 24px; color: #cbd5e1; margin-top: 8px; font-weight: 600; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">3-6 tháng</p>
-          </div>
-          <div style="font-size: 24px; color: #e2e8f0; line-height: 1.8; font-weight: 500; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">
-            • Ứng dụng di động (PWA)<br>
-            • Điểm danh QR Code<br>
-            • Hệ thống đánh giá dịch&nbsp;vụ<br>
-            • Diễn đàn hỏi đáp SV<br>
-            • Tích hợp lịch Google
-          </div>
+              <h3 style="color: #0ea5e9; margin: 0; font-size: 32px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Ngắn Hạn</h3>
+            </div>
+            <div style="font-size: 24px; color: #e2e8f0; line-height: 1.8; font-weight: 500; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">
+              &bull; Hoàn thiện trang web hoạt động dựa trên API<br>
+              &bull; Xây dựng trang web học vụ hỗ trợ sinh viên<br>
+              &bull; Chuẩn hóa nền tảng để dễ dàng thiết lập thêm API
+            </div>
           </div>
         </div>
 
         <!-- Dài hạn -->
-        <div class="gradient-border float-animation" style="animation-delay: 0.4s;">
+        <div class="gradient-border float-animation" style="animation-delay: 0.2s;">
           <div class="gradient-border-inner" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.08));">
             <div style="text-align: center; margin-bottom: 16px;">
-              <div class="pulse-ring" style="width: 56px; height: 56px; background: #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; font-weight: 700; color: white; box-shadow: 0 4px 16px rgba(34, 197, 94, 0.5);">3</div>
-            <h3 style="color: #22c55e; margin: 0; font-size: 32px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Dài Hạn</h3>
-            <p style="font-size: 24px; color: #cbd5e1; margin-top: 8px; font-weight: 600; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">6-12 tháng</p>
-          </div>
-          <div style="font-size: 24px; color: #e2e8f0; line-height: 1.8; font-weight: 500; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">
-            • Chatbot tích hợp giọng nói<br>
-            • Hệ thống thống kê & báo&nbsp;cáo<br>
-            • Tích hợp hệ thống học&nbsp;vụ<br>
-            • Tối ưu hiệu năng & cache<br>
-            • Hệ thống backup tự động
-          </div>
+              <div class="pulse-ring" style="width: 56px; height: 56px; background: #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 28px; font-weight: 700; color: white; box-shadow: 0 4px 16px rgba(34, 197, 94, 0.5);">2</div>
+              <h3 style="color: #22c55e; margin: 0; font-size: 32px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);">Dài Hạn</h3>
+            </div>
+            <div style="font-size: 24px; color: #e2e8f0; line-height: 1.8; font-weight: 500; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);">
+              &bull; Mở rộng hỗ trợ đa nền tảng, không giới hạn ở web<br>
+              &bull; Triển khai trên thiết bị điện tử, thiết bị nhúng và các hệ sinh thái khác<br>
+              &bull; Phát triển thêm tính năng chuyên sâu theo nhu cầu người dùng
+            </div>
           </div>
         </div>
       </div>

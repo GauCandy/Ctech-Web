@@ -3,7 +3,7 @@
  * Cache static assets and API responses for offline functionality
  */
 
-const CACHE_VERSION = 'ctech-v1';
+const CACHE_VERSION = 'ctech-v2'; // Updated for offline schedule support
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const API_CACHE = `${CACHE_VERSION}-api`;
 const IMAGE_CACHE = `${CACHE_VERSION}-images`;

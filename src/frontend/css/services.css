@@ -2,6 +2,7 @@
   --services-hero-bg: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
   --services-main-bg: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
   --services-card-bg: #ffffff;
+  --services-panel-bg: #ffffff;
   --services-border: #e2e8f0;
   --services-border-hover: #0047ab;
   --services-text-main: #0f172a;
@@ -21,6 +22,7 @@
   --services-hero-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
   --services-main-bg: linear-gradient(135deg, #0f172a 0%, #020617 100%);
   --services-card-bg: #1e293b;
+  --services-panel-bg: rgba(30, 41, 59, 0.98);
   --services-border: #334155;
   --services-border-hover: #60a5fa;
   --services-text-main: #f1f5f9;
