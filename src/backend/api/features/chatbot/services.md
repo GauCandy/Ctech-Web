@@ -2,7 +2,7 @@
 
 > **Tài liệu tham chiếu cho BotChat Support - Trợ lý ảo Trường Cao đẳng CTECH**
 
-📅 **Cập nhật:** 10:03 04/11/2025  
+📅 **Cập nhật:** 15:08 04/11/2025  
 🔄 **Trạng thái:** Tự động đồng bộ từ hệ thống  
 📊 **Tổng số dịch vụ:** 10
 
@@ -213,4 +213,4 @@ Bao gồm 1 xuất tôm chiên
 - 📧 Email: contact@ctech.edu.vn
 - ☎️ Hotline: 1800 6770
 
-> *Tài liệu được tạo tự động lúc 2025-11-04T03:03:35.401Z*
+> *Tài liệu được tạo tự động lúc 2025-11-04T08:08:12.618Z*
