@@ -2,9 +2,9 @@
 
 > **Tài liệu tham chiếu cho BotChat Support - Trợ lý ảo Trường Cao đẳng CTECH**
 
-📅 **Cập nhật:** 15:08 04/11/2025  
+📅 **Cập nhật:** 01:04 05/11/2025  
 🔄 **Trạng thái:** Tự động đồng bộ từ hệ thống  
-📊 **Tổng số dịch vụ:** 10
+📊 **Tổng số dịch vụ:** 12
 
 ---
 
@@ -191,6 +191,32 @@ Bao gồm 1 xuất tôm chiên
 > *Hiện nhà trường chưa cung cấp mô tả chi tiết cho dịch vụ này.*
 
 
+### ✅ DV011 - mượn sách thư viện
+
+| Thông tin | Chi tiết |
+|-----------|----------|
+| **Trạng thái** | Hoạt động |
+| **Giá** | 10.000 VND |
+| **Cập nhật** | 04/11/2025 |
+
+**Mô tả:**
+
+có thể mượn một cuốn sách trong thư viện trong 1 tuần
+
+
+### ✅ DV012 - vé xe
+
+| Thông tin | Chi tiết |
+|-----------|----------|
+| **Trạng thái** | Hoạt động |
+| **Giá** | 1.000 VND |
+| **Cập nhật** | 04/11/2025 |
+
+**Mô tả:**
+
+vé gửi xe trong trường
+
+
 ## ⛔ Dịch vụ ngừng cung cấp
 
 > **Lưu ý:** Các dịch vụ bên dưới đã ngừng hoạt động. Chỉ cung cấp thông tin khi người dùng hỏi.
@@ -213,4 +239,4 @@ Bao gồm 1 xuất tôm chiên
 - 📧 Email: contact@ctech.edu.vn
 - ☎️ Hotline: 1800 6770
 
-> *Tài liệu được tạo tự động lúc 2025-11-04T08:08:12.618Z*
+> *Tài liệu được tạo tự động lúc 2025-11-04T18:04:20.429Z*
