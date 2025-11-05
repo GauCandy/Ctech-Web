@@ -261,17 +261,13 @@ Lấy danh sách dịch vụ (có cache 5 phút).
 ```
 
 **Cache Behavior:**
-```
-[Cache] MISS: GET:/api/services?category=Gửi xe
-[Cache] CACHED: GET:/api/services?category=Gửi xe (TTL: 300s)
-[Cache] HIT: GET:/api/services?category=Gửi xe
-```
+NO CACHE - Data loaded directly from database for real-time updates.
 
 ---
 
 ### GET /api/services/categories
 
-Lấy danh sách các category (có cache 5 phút).
+Lấy danh sách các category (real-time, NO CACHE).
 
 **Success Response (200):**
 ```json
@@ -698,7 +694,7 @@ Authorization: Bearer <token>
 
 ### POST /api/chatbot/chat
 
-Gửi tin nhắn đến AI chatbot (có cache 10 phút).
+Gửi tin nhắn đến AI chatbot (có cache 10 phút cho same message).
 
 **Request Body:**
 ```json
@@ -1393,27 +1389,32 @@ Kiểm tra trạng thái hệ thống (health check, không cần authentication
 ### Cache Configuration
 
 **Cached Endpoints:**
-- `GET /api/services` - TTL: **300s** (5 phút)
-- `GET /api/services/categories` - TTL: **300s** (5 phút)
-- `POST /api/chatbot/chat` - TTL: **600s** (10 phút)
+- `POST /api/chatbot/chat` - TTL: **600s** (10 phút) ✅
+
+**NOT Cached Endpoints:**
+- `GET /api/services` - Real-time từ database ❌
+- `GET /api/services/categories` - Real-time từ database ❌
+- Tất cả endpoints khác - No cache ❌
+
+**Why Services NOT Cached:**
+Services endpoints load trực tiếp từ database để đảm bảo admin changes hiển thị ngay lập tức cho users. Cache bị disable để guarantee real-time updates.
 
 **Cache Implementation:**
 - In-memory cache với Map
-- TTL-based expiration
+- TTL-based expiration (10 minutes cho chatbot)
 - Auto cleanup every 5 minutes
-- Fallback support on 5xx errors
+- Fallback support on 5xx errors (chỉ chatbot)
 
 **Cache Logs:**
 ```
-[Cache] MISS: GET:/api/services
-[Cache] CACHED: GET:/api/services (TTL: 300s)
-[Cache] HIT: GET:/api/services
-[Cache] FALLBACK: GET:/api/services (khi server error)
+[Cache] MISS: POST:/api/chatbot/chat
+[Cache] CACHED: POST:/api/chatbot/chat (TTL: 600s)
+[Cache] HIT: POST:/api/chatbot/chat
+[Cache] FALLBACK: POST:/api/chatbot/chat (khi server error)
 ```
 
 **Cache Invalidation:**
-- Cache tự động expire sau TTL
-- Admin actions (create/update/delete services) không tự động clear cache
+- Cache tự động expire sau TTL (10 phút)
 - Cache clear toàn bộ khi restart server
 
 ---

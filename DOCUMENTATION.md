@@ -487,6 +487,9 @@ Hoặc trên Linux/Mac:
 mkdir -p uploads/services
 ```
 
+**Lưu ý về Database:**
+Database schema sẽ được **tự động tạo** khi server khởi động lần đầu. Server tự động đọc `src/backend/database/schema.sql` và tạo tất cả các bảng. Không cần chạy manual SQL script!
+
 ### Bước 6: Khởi Động Server
 
 ```bash
@@ -705,8 +708,8 @@ students (1) ──> (0..1) student_device_registry
 
 ### Services
 
-- `GET /api/services` - Lấy danh sách dịch vụ (cached)
-- `GET /api/services/categories` - Lấy danh sách categories (cached)
+- `GET /api/services` - Lấy danh sách dịch vụ (real-time, NO CACHE)
+- `GET /api/services/categories` - Lấy danh sách categories (real-time, NO CACHE)
 - `GET /api/services/:code` - Lấy chi tiết dịch vụ
 - `POST /api/services/:code/purchase` - Mua dịch vụ (tạo order + QR)
 - `GET /api/services/vouchers` - Lấy danh sách vouchers
@@ -880,18 +883,21 @@ class CacheService {
 
 ### Cache Configuration
 
-- **Services**: TTL 300s (5 minutes)
-- **Chatbot**: TTL 600s (10 minutes)
-- **Fallback on error**: Return stale cache on 5xx errors
+- **Chatbot**: TTL 600s (10 minutes) ✅
+- **Services**: NO CACHE - Real-time từ database ❌
+- **Fallback on error**: Return stale cache on 5xx errors (chỉ chatbot)
 - **Auto cleanup**: Every 5 minutes
+
+**Why Services NOT Cached:**
+Admin cần thấy thay đổi ngay lập tức. Cache bị tắt để đảm bảo data luôn real-time.
 
 ### Cache Logs
 
 ```
-[Cache] MISS: GET:/api/services
-[Cache] CACHED: GET:/api/services (TTL: 300s)
-[Cache] HIT: GET:/api/services
-[Cache] FALLBACK: GET:/api/services (on server error)
+[Cache] MISS: POST:/api/chatbot/chat
+[Cache] CACHED: POST:/api/chatbot/chat (TTL: 600s)
+[Cache] HIT: POST:/api/chatbot/chat
+[Cache] FALLBACK: POST:/api/chatbot/chat (on server error)
 ```
 
 ---

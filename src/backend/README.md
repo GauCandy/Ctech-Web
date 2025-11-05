@@ -76,8 +76,8 @@ app.use('/uploads', express.static(uploadsDir));
 // Routes
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
-app.use('/api/services', cacheMiddleware({ ttl: 300 }), servicesRouter);
-app.use('/api/chatbot', cacheMiddleware({ ttl: 600 }), chatbotRouter);
+app.use('/api/services', servicesRouter); // NO CACHE - real-time updates
+app.use('/api/chatbot', cacheMiddleware({ ttl: 600 }), chatbotRouter); // 10 min cache
 app.use('/api/timetable', timetableRouter);
 app.use('/api/orders', ordersRouter);
 app.use('/api/vouchers', vouchersRouter);
@@ -86,7 +86,8 @@ app.use('/api/vouchers', vouchersRouter);
 **Key Features:**
 - CORS enabled cho tất cả origins
 - Static file serving cho frontend
-- Cache middleware cho services và chatbot
+- Cache middleware chỉ cho chatbot (10 minutes)
+- Services load trực tiếp từ database (no cache - real-time updates)
 - Error handling middleware
 
 ### 2. Database Connection (`database/connection.js`)
@@ -226,25 +227,21 @@ async function exportServicesCatalog() {
 ### Services (`features/services/`)
 
 **Routes:**
-- `GET /api/services` - List services (cached 5 min)
-- `GET /api/services/categories` - List categories (cached 5 min)
-- `GET /api/services/:serviceId` - Get service details
-- `POST /api/services` - Create service (admin only, multipart/form-data)
-- `PUT /api/services/:serviceId` - Update service (admin only)
-- `DELETE /api/services/:serviceId` - Delete service (admin only)
+- `GET /api/services` - List services (NO CACHE - real-time from DB)
+- `GET /api/services/categories` - List categories (NO CACHE)
+- `GET /api/services/:code` - Get service details
+- `GET /api/services/:code/vouchers` - Get vouchers for service
+- `GET /api/services/vouchers` - List active vouchers
+- `GET /api/services/5c-images/:id` - Get 5C department images
+- `POST /api/services/:code/purchase` - Purchase service (requires auth)
 
 **Features:**
-- Query params: `category`, `status`, `search`
-- Image upload với Multer
-- Cache với 5 phút TTL
-- Fallback cache on error
+- Query params: `q` (search), `active` (filter), `category` (filter)
+- Real-time data - no caching để admin changes hiển thị ngay
+- Image upload với Multer (admin routes)
 
-**Cache Behavior:**
-```
-Request 1: MISS → Query DB → CACHED (TTL: 300s)
-Request 2 (within 5 min): HIT → Return cached
-Request 3 (after 5 min): MISS → Query DB → CACHED
-```
+**Why No Cache:**
+Services cần real-time updates khi admin thay đổi. Cache được disable để đảm bảo users luôn thấy data mới nhất.
 
 ### Chatbot (`features/chatbot/`)
 
@@ -314,8 +311,8 @@ Request 3 (after 5 min): MISS → Query DB → CACHED
 ## Middleware
 
 ### Cache Middleware
-- Applied to: Services, Chatbot
-- TTL: 300s (services), 600s (chatbot)
+- Applied to: **Chatbot only** (services không dùng cache)
+- TTL: 600s (10 minutes) cho chatbot
 - Fallback on 5xx errors
 - Logging: MISS/HIT/CACHED/FALLBACK
 
@@ -428,9 +425,9 @@ OPENAI_API_KEY=sk-...
 - Auto-reconnect on failure
 
 ### 2. Caching
-- In-memory cache với TTL
-- Reduce database queries
-- Fallback on errors
+- In-memory cache chỉ cho chatbot (TTL: 10 minutes)
+- Services load trực tiếp từ DB (no cache)
+- Fallback on errors cho cached routes
 
 ### 3. Async/Await
 - Non-blocking I/O

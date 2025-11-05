@@ -77,19 +77,7 @@ BANK_NAME=MB Bank
 - Nếu không dùng chatbot, có thể bỏ qua `OPENAI_API_KEY`
 - Bank info dùng để tạo VietQR code thanh toán
 
-### Bước 4: Setup database schema
-
-Database schema sẽ được tự động tạo khi chạy server lần đầu tiên. Server sẽ đọc file `src/backend/database/schema.sql` và tạo các bảng:
-
-- `user_accounts` - Tài khoản người dùng
-- `students`, `teachers`, `admin_profiles` - Hồ sơ theo role
-- `user_sessions` - Session tokens
-- `services` - Dịch vụ trường cung cấp
-- `orders` - Đơn hàng
-- `vouchers` - Mã giảm giá
-- `student_device_registry` - Quản lý thiết bị sinh viên
-
-### Bước 5: Tạo thư mục uploads
+### Bước 4: Tạo thư mục uploads
 
 ```bash
 mkdir uploads
@@ -101,6 +89,19 @@ Hoặc trên Linux/Mac:
 ```bash
 mkdir -p uploads/services
 ```
+
+**Lưu ý:** Database schema sẽ được **tự động tạo** khi chạy server lần đầu tiên. Server tự động đọc file `src/backend/database/schema.sql` và tạo các bảng:
+
+- `user_accounts` - Tài khoản người dùng
+- `students`, `teachers`, `admin_profiles` - Hồ sơ theo role
+- `user_sessions` - Session tokens
+- `services` - Dịch vụ trường cung cấp
+- `orders` - Đơn hàng
+- `vouchers` - Mã giảm giá
+- `student_device_registry` - Quản lý thiết bị sinh viên
+- `student_device_logins` - Lịch sử đăng nhập thiết bị
+
+Không cần chạy manual SQL script!
 
 ## ▶️ Chạy ứng dụng
 
@@ -117,6 +118,11 @@ Database connection pool is ready.
 Services catalog exported to ... (X services, extraTxt=Y).
 API server listening on port 3000
 ```
+
+**Lưu ý:** Lần chạy đầu tiên, server sẽ tự động:
+1. Tạo tất cả các bảng từ schema.sql
+2. Export services catalog cho chatbot
+3. Khởi động web server trên port 3000
 
 ### Truy cập ứng dụng
 
@@ -216,17 +222,17 @@ curl http://localhost:3000/api/services \
 
 ## 🎯 Tính năng chính
 
-- ✅ **Authentication** - Login với JWT session tokens
+- ✅ **Authentication** - Login với session tokens (remember me support)
 - ✅ **User Management** - Quản lý sinh viên, giáo viên, admin
-- ✅ **Services** - Catalog dịch vụ với categories
+- ✅ **Services** - Catalog dịch vụ với categories (real-time updates)
 - ✅ **Orders** - Đặt hàng và thanh toán qua VietQR
 - ✅ **Vouchers** - Hệ thống mã giảm giá
 - ✅ **Timetable** - Upload và parse PDF thời khóa biểu
-- ✅ **Chatbot** - AI chatbot với OpenAI
+- ✅ **Chatbot** - AI chatbot với OpenAI (cached responses)
 - ✅ **Admin Panel** - Quản lý users, services, orders
 - ✅ **Presentation Mode** - Thuyết trình với điều khiển từ xa
 - ✅ **Theme System** - Đổi theme động
-- ✅ **Cache System** - In-memory caching
+- ✅ **Device Management** - 1 thiết bị per sinh viên
 
 ## 🐛 Troubleshooting
 
@@ -268,11 +274,13 @@ npm install
 
 ### Database tables không được tạo
 
-**Nguyên nhân:** File schema.sql không được execute hoặc lỗi quyền
+**Nguyên nhân:** File schema.sql không tồn tại hoặc lỗi quyền
 
 **Giải pháp:**
-1. Chạy manual: `mysql -u root -p ctech_db < src/backend/database/schema.sql`
-2. Kiểm tra user MySQL có quyền CREATE TABLE không
+1. Kiểm tra file `src/backend/database/schema.sql` có tồn tại không
+2. Server tự động load schema khi khởi động, kiểm tra logs
+3. Nếu vẫn lỗi, chạy manual: `mysql -u root -p ctech < src/backend/database/schema.sql`
+4. Kiểm tra user MySQL có quyền CREATE TABLE không
 
 ## 🔒 Security Notes
 
