@@ -2,7 +2,7 @@
 
 > **Tài liệu tham chiếu cho BotChat Support - Trợ lý ảo Trường Cao đẳng CTECH**
 
-📅 **Cập nhật:** 01:04 05/11/2025  
+📅 **Cập nhật:** 07:38 05/11/2025  
 🔄 **Trạng thái:** Tự động đồng bộ từ hệ thống  
 📊 **Tổng số dịch vụ:** 12
 
@@ -239,4 +239,4 @@ vé gửi xe trong trường
 - 📧 Email: contact@ctech.edu.vn
 - ☎️ Hotline: 1800 6770
 
-> *Tài liệu được tạo tự động lúc 2025-11-04T18:04:20.429Z*
+> *Tài liệu được tạo tự động lúc 2025-11-05T00:38:25.107Z*
