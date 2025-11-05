@@ -2,9 +2,9 @@
 
 > **Tài liệu tham chiếu cho BotChat Support - Trợ lý ảo Trường Cao đẳng CTECH**
 
-📅 **Cập nhật:** 07:38 05/11/2025  
+📅 **Cập nhật:** 08:50 05/11/2025  
 🔄 **Trạng thái:** Tự động đồng bộ từ hệ thống  
-📊 **Tổng số dịch vụ:** 12
+📊 **Tổng số dịch vụ:** 13
 
 ---
 
@@ -232,6 +232,19 @@ vé gửi xe trong trường
 > *Hiện nhà trường chưa cung cấp mô tả chi tiết cho dịch vụ này.*
 
 
+### ⛔ DV013 - vé xe
+
+| Thông tin | Chi tiết |
+|-----------|----------|
+| **Trạng thái** | Ngừng cung cấp |
+| **Giá** | 1.000 VND |
+| **Cập nhật** | 05/11/2025 |
+
+**Mô tả:**
+
+gửi xe tại trường
+
+
 ---
 
 ## 📞 Liên hệ hỗ trợ
@@ -239,4 +252,4 @@ vé gửi xe trong trường
 - 📧 Email: contact@ctech.edu.vn
 - ☎️ Hotline: 1800 6770
 
-> *Tài liệu được tạo tự động lúc 2025-11-05T00:38:25.107Z*
+> *Tài liệu được tạo tự động lúc 2025-11-05T01:50:22.947Z*
